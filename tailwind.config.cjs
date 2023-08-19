@@ -2,9 +2,6 @@
 module.exports = {
     content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
     theme: {
-        screens: {
-            'sm': '550px',
-        },
         fontFamily: {
 
         },
@@ -19,7 +16,7 @@ module.exports = {
                 'icon-hover': '#9d7cd8',
             },
             flexBasis: {
-                'nav-sm': '13.7%',
+                'nav-sm': '14.7%',
             },
         },
     },
