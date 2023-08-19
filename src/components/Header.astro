@@ -1,0 +1,52 @@
+---
+import Discord from "./Discord.astro";
+import GitHub from "./GitHub.astro";
+import Home from "./Home.astro";
+import LinkedIn from "./LinkedIn.astro";
+---
+<header class="sticky" id="home">
+    <nav class="m-4 p-0">
+        <ul class="m-0 sm:my-0 sm:mx-auto p-0 flex flex-wrap justify-center sm:justify-between items-center gap-8 sm:gap-4 list-none">
+            <li class="inline-block sm:basis-auto basis-nav-sm">
+                <a class="hover:text-purple" href="">
+                    <Home height="1rem"/>
+                </a>
+            </li>
+            <li class="inline-block sm:basis-auto basis-nav-sm">
+                <a class="hover:text-purple" href="">
+                    About
+                </a>
+            </li>
+            <li class="inline-block sm:basis-auto basis-nav-sm">
+                <a class="hover:text-purple" href="">
+                    Projects
+                </a>
+            </li>
+            <li class="inline-block sm:basis-auto basis-nav-sm">
+                <a class="hover:text-purple" href="">
+                    Guestbook
+                </a>
+            </li>
+            <li class="inline-block sm:basis-auto basis-nav-sm sm:text-left sm:mr-auto">
+                <a class="hover:text-purple" href="">
+                    Resume
+                </a>
+            </li>
+            <li class="inline-block">
+                <a href="">
+                    <GitHub height="1rem"/>
+                </a>
+            </li>
+            <li class="inline-block">
+                <a href="">
+                    <LinkedIn height="1rem"/>
+                </a>
+            </li>
+            <li class="inline-block">
+                <a href="">
+                    <Discord height="1rem"/>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
