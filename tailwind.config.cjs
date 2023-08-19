@@ -16,7 +16,7 @@ module.exports = {
                 'icon-hover': '#9d7cd8',
             },
             flexBasis: {
-                'nav-sm': '14.7%',
+                'nav-sm': '13.6%',
             },
         },
     },
