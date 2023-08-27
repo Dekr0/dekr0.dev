@@ -3,31 +3,34 @@ import Discord from "./Discord.astro";
 import GitHub from "./GitHub.astro";
 import Home from "./Home.astro";
 import LinkedIn from "./LinkedIn.astro";
+import Menu from "./Menu.astro";
+import "../styles/burger.css"
 ---
 <header class="sticky" id="home">
-    <nav class="m-4 p-0">
-        <ul class="m-0 sm:my-0 sm:mx-auto p-0 flex flex-wrap justify-center sm:justify-between items-center gap-6 sm:gap-4 list-none">
-            <li class="inline-block sm:basis-auto basis-nav-sm">
+    <Menu />
+    <nav class="sidebar pt-12 xs:p-0 ml-4 xs:m-4">
+        <ul class="m-0 sm:my-0 sm:mx-auto p-0 flex flex-wrap flex-col xs:flex-row justify-normal xs:justify-center sm:justify-between xs:items-center gap-4 xs:gap-6 sm:gap-4 list-none">
+            <li class="inline-block sm:basis-auto xs:basis-nav-sm">
                 <a class="hover:text-purple" href="">
                     <Home height="1rem"/>
                 </a>
             </li>
-            <li class="inline-block sm:basis-auto basis-nav-sm">
+            <li class="inline-block sm:basis-auto xs:basis-nav-sm">
                 <a class="hover:text-purple" href="">
                     About
                 </a>
             </li>
-            <li class="inline-block sm:basis-auto basis-nav-sm">
+            <li class="inline-block sm:basis-auto xs:basis-nav-sm">
                 <a class="hover:text-purple" href="">
                     Projects
                 </a>
             </li>
-            <li class="inline-block sm:basis-auto basis-nav-sm">
+            <li class="inline-block sm:basis-auto xs:basis-nav-sm">
                 <a class="hover:text-purple" href="">
                     Guestbook
                 </a>
             </li>
-            <li class="inline-block sm:basis-auto basis-nav-sm sm:text-left sm:mr-auto">
+            <li class="inline-block sm:basis-auto xs:basis-nav-sm sm:text-left sm:mr-auto">
                 <a class="p-1 rounded-md bg-purple hover:bg-violet-500" href="">
                     Resume
                 </a>

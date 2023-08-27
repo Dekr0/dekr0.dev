@@ -1,0 +1,71 @@
+:root {
+    --burger-width: 32px;
+    --burger-height: 2px;
+    --burger-gap: 8px;
+    --foreground: #a9b1d6;
+    --animation-timing: 200ms ease-in-out; 
+    --menu-height: calc(var(--burger-height) * 3 + var(--burger-gap) * 2);
+    --menu-margin: 16px;
+    --sqrt: 1.41421356237;
+}
+
+.menu {
+    --x-width: calc(var(--menu-height) * var(--sqrt));
+    display: flex;
+    flex-direction: column;
+    gap: var(--burger-gap);
+    width: max-content;
+    position: absolute;
+    top: var(--menu-margin);
+    left: var(--menu-margin);
+    z-index: 2;
+}
+
+.menu::before,
+.menu input,
+.menu::after {
+    content: "";
+    width: var(--burger-width);
+    height: var(--burger-height);
+    background-color: var(--foreground);
+    border-radius: 9999px;
+    transform-origin: left center;
+    transition: opacity var(--animation-timing), width var(--animation-timing), rotate var(--animation-timing), translate var(--animation-timing), background-color var(--animation-timing);
+}
+
+.menu:has(input:checked)::before {
+    rotate: 45deg;
+    width: var(--x-width);
+    translate: 0 calc(var(--burger-height) / -2);
+}
+
+.menu input {
+    appearance: none; 
+    padding: 0;
+    margin: 0;
+    outline: none;
+    pointer-events: none;
+}
+
+.menu input:checked {
+    opacity: 0;
+    width: 0;
+}
+
+.menu:has(input:checked)::after {
+    rotate: -45deg;
+    width: var(--x-width);
+    translate: 0 calc(var(--burger-height) / 2);;
+}
+
+@media (max-width: 440px) {
+    .sidebar {
+        transition: translate var(--animation-timing);
+        translate: -100%;
+        padding-top: calc(var(--burger-height) + var(--menu-margin) + 1rem);
+    }
+
+    .menu:has(input:checked) + .sidebar {
+        translate: 0;
+    }
+}
