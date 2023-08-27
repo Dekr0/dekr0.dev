@@ -58,6 +58,12 @@
     translate: 0 calc(var(--burger-height) / 2);;
 }
 
+@media (min-width: 440px) {
+    .menu {
+        display: none;
+    }
+}
+
 @media (max-width: 440px) {
     .sidebar {
         transition: translate var(--animation-timing);
