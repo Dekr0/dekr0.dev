@@ -68,7 +68,6 @@
     .sidebar {
         transition: translate var(--animation-timing);
         translate: -100%;
-        padding-top: calc(var(--burger-height) + var(--menu-margin) + 1rem);
     }
 
     .menu:has(input:checked) + .sidebar {
