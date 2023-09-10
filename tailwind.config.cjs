@@ -3,10 +3,10 @@ module.exports = {
     content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
     theme: {
         screens: {
-            'xs': '440px',
+            'xs': '480px',
 
             // => @media (min-width: 640px) { ... }
-            'sm': '485px',
+            'sm': '590px',
 
             'md': '768px',
             // => @media (min-width: 768px) { ... }
@@ -34,7 +34,7 @@ module.exports = {
                 'icon-hover': '#9d7cd8',
             },
             flexBasis: {
-                'nav-sm': '13.6%',
+                'nav-sm': '15%',
             },
         },
     },

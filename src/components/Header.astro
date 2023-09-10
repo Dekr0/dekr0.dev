@@ -4,19 +4,20 @@ import GitHub from "./GitHub.astro";
 import Home from "./Home.astro";
 import LinkedIn from "./LinkedIn.astro";
 import Menu from "./Menu.astro";
+import Envelope from "./Envelope.astro"
 import "../styles/burger.css"
 ---
-<header class="sticky" id="home">
+<header class="sticky top-0 z-50 pt-12 xs:py-4 ml-4 xs:mx-4 bg-bg text-base" id="home">
     <Menu />
-    <nav class="sidebar pt-12 xs:p-0 ml-4 xs:m-4">
-        <ul class="m-0 sm:my-0 sm:mx-auto p-0 flex flex-wrap flex-col xs:flex-row justify-normal xs:justify-center sm:justify-between xs:items-center gap-4 xs:gap-6 sm:gap-4 list-none">
+    <nav class="sidebar">
+        <ul class="m-0 sm:my-0 sm:mx-auto p-0 flex flex-wrap flex-col xs:flex-row justify-normal xs:justify-center sm:justify-between items-center gap-4 xs:gap-6 sm:gap-4 list-none">
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
-                <a class="hover:text-purple" href="">
+                <a class="hover:text-purple" href="#hero">
                     <Home height="1rem"/>
                 </a>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
-                <a class="hover:text-purple" href="">
+                <a class="hover:text-purple" href="#about">
                     About
                 </a>
             </li>
@@ -31,23 +32,28 @@ import "../styles/burger.css"
                 </a>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm sm:text-left sm:mr-auto">
-                <a class="p-1 rounded-md bg-purple hover:bg-violet-500" href="">
+                <a class="p-1 rounded-md bg-purple hover:bg-violet-500" href="/public/Resume.pdf">
                     Resume
                 </a>
             </li>
             <li class="inline-block">
-                <a href="">
-                    <GitHub height="1rem"/>
+                <a href="https://github.com/Dekr0">
+                    <GitHub height="1.5rem"/>
+                </a>
+            </li>
+            <li class="inline-block">
+                <a href="https://www.linkedin.com/in/chengxuan-li">
+                    <LinkedIn height="1.5rem"/>
                 </a>
             </li>
             <li class="inline-block">
                 <a href="">
-                    <LinkedIn height="1rem"/>
+                    <Discord height="1.5rem"/>
                 </a>
             </li>
             <li class="inline-block">
-                <a href="">
-                    <Discord height="1rem"/>
+                <a href="#contact">
+                    <Envelope height="1.5rem"/>
                 </a>
             </li>
         </ul>

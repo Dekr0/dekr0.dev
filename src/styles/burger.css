@@ -3,7 +3,7 @@
     --burger-height: 2px;
     --burger-gap: 8px;
     --foreground: #a9b1d6;
-    --animation-timing: 200ms ease-in-out; 
+    --animation-timing: 400ms ease-in-out; 
     --menu-height: calc(var(--burger-height) * 3 + var(--burger-gap) * 2);
     --menu-margin: 16px;
     --sqrt: 1.41421356237;
@@ -58,19 +58,32 @@
     translate: 0 calc(var(--burger-height) / 2);;
 }
 
-@media (min-width: 440px) {
+@media (min-width: 480px) {
     .menu {
         display: none;
     }
 }
 
-@media (max-width: 440px) {
+@media (max-width: 480px) {
     .sidebar {
+        width: 100%;
+        position: fixed;
+        background: #1a1b26;
         transition: translate var(--animation-timing);
-        translate: -100%;
+        translate:  0 -170%;
+    }
+
+    .sidebar li {
+        max-height: 0;
+        transition: max-height 200ms ease-in-out;
     }
 
     .menu:has(input:checked) + .sidebar {
-        translate: 0;
+        translate: 0 0;
+    }
+
+    .menu:has(input:checked) + .sidebar li {
+        max-height: 500px;
+        transition: max-height 200ms ease-in-out;
     }
 }
