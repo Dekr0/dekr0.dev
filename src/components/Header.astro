@@ -36,22 +36,21 @@ import "../styles/burger.css"
                 </a>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm sm:text-left sm:mr-auto">
-                <a class="p-1 rounded-md bg-purple hover:bg-violet-500" href="https://pub-55ec849fb1c345ecbaa27d557589c483.r2.dev/Resume.pdf">
+                <a class="p-1 rounded-md bg-purple hover:bg-violet-500" href="https://pub-55ec849fb1c345ecbaa27d557589c483.r2.dev/Resume.pdf" target="_blank">
                     Resume
                 </a>
             </li>
             <li class="inline-block">
-                <a href="https://github.com/Dekr0">
+                <a href="https://github.com/Dekr0" target="_blank">
                     <GitHub height="1.5rem"/>
                 </a>
             </li>
-            <li class="inline-block">
-                <a href="https://www.linkedin.com/in/chengxuan-li">
+            <li class="inline-block"> <a href="https://www.linkedin.com/in/chengxuan-li" target="_blank">
                     <LinkedIn height="1.5rem"/>
                 </a>
             </li>
             <li class="inline-block">
-                <a href="https://discord.com/users/136072283444871168">
+                <a href="https://discord.com/users/136072283444871168" target="_blank">
                     <Discord height="1.5rem"/>
                 </a>
             </li>
@@ -64,3 +63,22 @@ import "../styles/burger.css"
         </ul>
     </nav>
 </header>
+
+<script>
+    const burger = document.querySelector('.menu') as HTMLLabelElement;
+    const check = burger.querySelector('input') as HTMLInputElement;
+    const sidebar = document.querySelector('nav') as HTMLElement;
+    if (sidebar !== null) {
+        const links = sidebar.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>;
+        console.log(check);
+        console.log(links);
+        for (const link of links) {
+            if (link.href.length === 0 || link.href.endsWith('Resume.pdf')) continue; 
+                link.addEventListener('click', () => {
+                    if (check !== null) {
+                         check.checked = false;
+                    }
+                });
+        }
+    }
+</script>

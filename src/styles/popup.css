@@ -51,10 +51,11 @@
 
 @media (max-width:590px) {
     .popup .popup-text {
-        left: 90%;
+        width: 180px;
+        left: 0%;
     }
 
     .popup .popup-text::before {
-        left: 23.5%;
+        left: 50%;
     }
 }
