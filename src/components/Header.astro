@@ -1,4 +1,5 @@
 ---
+import Construction from "./Construction.astro"
 import Discord from "./Discord.astro";
 import GitHub from "./GitHub.astro";
 import Home from "./Home.astro";
@@ -7,14 +8,17 @@ import Menu from "./Menu.astro";
 import Envelope from "./Envelope.astro"
 import "../styles/burger.css"
 ---
-<header class="sticky top-0 z-50 pt-12 xs:py-4 ml-4 xs:mx-4 bg-bg text-base" id="home">
+<header class="sticky top-0 z-50 pt-12 xs:py-4 ml-4 xs:mx-6 bg-bg text-base" id="home">
     <Menu />
     <nav class="sidebar">
-        <ul class="m-0 sm:my-0 sm:mx-auto p-0 flex flex-wrap flex-col xs:flex-row justify-normal xs:justify-center sm:justify-between items-center gap-4 xs:gap-6 sm:gap-4 list-none">
+        <ul class="m-0 sm:my-0 sm:mx-auto pb-6 xs:p-0 flex flex-wrap flex-col xs:flex-row justify-normal xs:justify-center sm:justify-around items-center gap-4 xs:gap-6 sm:gap-6 list-none">
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
                 <a class="hover:text-purple" href="#hero">
                     <Home height="1rem"/>
                 </a>
+            </li>
+            <li class="inline-block sm:basis-auto xs:basis-nav-sm">
+                <Construction height="1rem"/>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
                 <a class="hover:text-purple" href="#about">
@@ -47,13 +51,14 @@ import "../styles/burger.css"
                 </a>
             </li>
             <li class="inline-block">
-                <a href="">
+                <a href="https://discord.com/users/136072283444871168">
                     <Discord height="1.5rem"/>
                 </a>
             </li>
             <li class="inline-block">
-                <a href="#contact">
+                <a class="group cursor-pointer flex flex-row gap-2 items-center" href="#contact">
                     <Envelope height="1.5rem"/>
+                    <span class="hidden uppercase font-bold text-icon-color group-hover:text-icon-hover max-sm:inline-flex md:inline-flex">Contact</span>
                 </a>
             </li>
         </ul>

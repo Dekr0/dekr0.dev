@@ -13,6 +13,7 @@
     --x-width: calc(var(--menu-height) * var(--sqrt));
     display: flex;
     flex-direction: column;
+    justify-content: space-around;
     gap: var(--burger-gap);
     width: max-content;
     position: absolute;
@@ -55,16 +56,16 @@
 .menu:has(input:checked)::after {
     rotate: -45deg;
     width: var(--x-width);
-    translate: 0 calc(var(--burger-height) / 2);;
+    translate: 0 calc(var(--burger-height) / 2);
 }
 
-@media (min-width: 480px) {
+@media (min-width: 591px) {
     .menu {
         display: none;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 590px) {
     .sidebar {
         width: 100%;
         position: fixed;

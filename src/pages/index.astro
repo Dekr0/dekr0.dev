@@ -3,10 +3,11 @@ import Head from '../components/Head.astro';
 import Header from '../components/Header.astro';
 import { BookingComponent } from '../components/Booking.tsx';
 import '../styles/fade.css';
+import '../styles/scroll.css'
 ---
 <html lang="en">
     <Head />
-	<body class="scroll-smooth bg-bg text-white antialiased">
+	<body class="no-scrollbar scroll-smooth bg-bg text-white antialiased">
         <main>
             <Header />
             <section id="hero">
@@ -46,7 +47,7 @@ import '../styles/fade.css';
                             <a href="https://www.jumr.dev/" class="underline underline-offset-2 decoration-cyan decoration-2">
                             the portfolio page</a> created by 
                             <a href="https://github.com/juliusmarminge" class="underline underline-offset-2 decoration-cyan decoration-2">Julius Marminge</a>, 
-                            and it was modify and rebuilt using Astro and Tailwind CSS - and is open source at 
+                            and it was modified and rebuilt using Astro and Tailwind CSS - and is open source at 
                             <a href="https://github.com/Dekr0/dekr0.io" class="underline underline-offset-2 decoration-cyan decoration-2">GitHub.</a></p>
                         </li>
                     </ul>
@@ -61,3 +62,13 @@ import '../styles/fade.css';
         </main>
 	</body>
 </html>
+
+<script>
+    const body = document.querySelector('body') as HTMLBodyElement;
+    const msg = document.getElementById("WIP") as HTMLSpanElement;
+    body.addEventListener('click', () => {
+        if (msg.classList.contains("show")) {
+            msg.classList.toggle("show");
+        }
+    });
+</script>

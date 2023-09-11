@@ -3,10 +3,10 @@ module.exports = {
     content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
     theme: {
         screens: {
-            'xs': '480px',
+            'xs': '590px',
 
             // => @media (min-width: 640px) { ... }
-            'sm': '590px',
+            'sm': '680px',
 
             'md': '768px',
             // => @media (min-width: 768px) { ... }
@@ -24,6 +24,15 @@ module.exports = {
 
         },
         extend: {
+            animation: {
+                wiggle: 'wiggle 1s ease-in-out infinite'
+            },
+            keyframes: {
+                wiggle: {
+                    '0%, 100%': { transform: 'rotate(-15deg)' },
+                    '50%': { transform: 'rotate(15deg)' },
+                }
+            },
             colors: {
                 'bg': '#1a1b26',
                 'fg': '#a9b1d6',
@@ -34,7 +43,7 @@ module.exports = {
                 'icon-hover': '#9d7cd8',
             },
             flexBasis: {
-                'nav-sm': '15%',
+                'nav-sm': '12.7%',
             },
         },
     },
