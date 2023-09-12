@@ -1,35 +1,35 @@
 ---
-import Head from '../components/Head.astro';
-import Header from '../components/Header.astro';
-import { BookingComponent } from '../components/Booking.tsx';
-import '../styles/fade.css';
-import '../styles/scroll.css'
+import Head from "../components/Head.astro";
+import Header from "../components/Header.astro";
+import { BookingComponent } from "../components/Booking.tsx";
+import "../styles/fade.css";
+import "../styles/scroll.css";
 ---
 <html lang="en">
-    <Head />
-	<body class="no-scrollbar scroll-smooth bg-bg text-white antialiased">
+    <Head title="Chengxuan Li"/>
+	<body class="no-scrollbar scroll-smooth bg-rp-base text-rp-text antialiased">
         <main>
             <Header />
             <section id="hero">
                 <div class="relative -z-50 h-screen text-center flex flex-col items-center justify-center">
-                    <h2 class="pb-2 text-sm uppercase tracking-[15px] text-gray-400">Computer Engineer</h2>
+                    <h2 class="pb-2 text-sm uppercase tracking-[15px] text-rp-subtle">Computer Engineer</h2>
                     <h1 class="px-10 text-3xl font-semibold md:text-4xl lg:text-6xl">Chengxuan Li</h1>
                 </div>
             </section>
             <section id="about">
                 <div class="fade relative mx-auto min-h-screen max-w-full overflow-hidden py-24 px-4 md:px-10 text-left flex flex-col items-center gap-12" style="opacity: 0">
-                    <h2 class="text-2xl uppercase tracking-[15px] text-gray-400 md:tracking-[20px]">About</h2>
-                    <div class="text-base space-y-10 px-0 py-24 md:px-10 md:py-0">
+                    <h2 class="text-2xl uppercase tracking-[15px] text-rp-subtle md:tracking-[20px]">About</h2>
+                    <div class="text-base text-rp-text space-y-10 px-0 py-24 md:px-10 md:py-0">
                         <p>I'm a computer engineer graduated in Canada. I'm passionate about 
                         building applications, developer tools, embedded software, and plugins 
                         / mods for the games I'm interested in, with a focus on performance, 
                         simplicity, and clarity without compromising necessary user experience. This 
                         idea was inspired from the philosophy of 
-                        <a href="https://suckless.org/philosophy/" class="underline underline-offset-2 decoration-cyan decoration-2" target="_blank">suckless.org</a>
+                        <a href="https://suckless.org/philosophy/" class="underline underline-offset-2 decoration-rp-pine decoration-2" target="_blank">suckless.org</a>
                         .</p>
-                        <p class="text-base">
+                        <p class="text-base text-rp-text">
                             Interested in a chat or a conversation? 
-                            <a href="#contact" class="underline underline-offset-2 decoration-cyan decoration-2">Book my Cal.com!</a>
+                            <a href="#contact" class="underline underline-offset-2 decoration-rp-pine decoration-2">Book my Cal.com!</a>
                         </p>
                     </div>
                 </div>
@@ -37,21 +37,21 @@ import '../styles/scroll.css'
             <section id="projects"></section>
             <section id="contact">
                 <div class="fade relative mx-auto min-h-screen max-w-full overflow-hidden py-24 px-4 md:px-10 text-left flex flex-col gap-12 items-center">
-                    <h2 class="text-2xl uppercase tracking-[15px] text-gray-400 md:tracking-[20px]">Final Words</h2> 
+                    <h2 class="text-2xl uppercase tracking-[15px] text-rp-subtle md:tracking-[20px]">Final Words</h2> 
                     <ul class="list-disc space-y-4 px-4">
-                        <li class="text-base">
+                        <li class="text-base text-rp-text">
                             <p>The current portfolio is still under "construction".</p>
                         </li>
-                        <li class="text-base">
+                        <li class="text-base text-rp-text">
                             <p>The design of this page is based on 
-                            <a href="https://www.jumr.dev/" class="underline underline-offset-2 decoration-cyan decoration-2" target="_blank">
+                            <a href="https://www.jumr.dev/" class="underline underline-offset-2 decoration-rp-pine decoration-2" target="_blank">
                             the portfolio page</a> created by 
-                            <a href="https://github.com/juliusmarminge" class="underline underline-offset-2 decoration-cyan decoration-2" target="_blank">Julius Marminge</a>, 
+                            <a href="https://github.com/juliusmarminge" class="underline underline-offset-2 decoration-rp-pine decoration-2" target="_blank">Julius Marminge</a>, 
                             and it was modified and rebuilt using Astro and Tailwind CSS - and is open source at 
-                            <a href="https://github.com/Dekr0/dekr0.io" class="underline underline-offset-2 decoration-cyan decoration-2" target="_blank">GitHub.</a></p>
+                            <a href="https://github.com/Dekr0/dekr0.io" class="underline underline-offset-2 decoration-rp-pine decoration-2" target="_blank">GitHub.</a></p>
                         </li>
                     </ul>
-                    <div class="w-full space-y-2 text-gray-400">
+                    <div class="w-full space-y-2 text-rp-subtle">
                         <h4 class="text-center text-2xl tracking-wide">Interested in a chat or a conversation? Book my Cal.com!</h4>
                         <div class="w-full">
                             <BookingComponent client:load/>
@@ -62,13 +62,3 @@ import '../styles/scroll.css'
         </main>
 	</body>
 </html>
-
-<script>
-    const body = document.querySelector('body') as HTMLBodyElement;
-    const msg = document.getElementById("WIP") as HTMLSpanElement;
-    body.addEventListener('click', () => {
-        if (msg.classList.contains("show")) {
-            msg.classList.toggle("show");
-        }
-    });
-</script>

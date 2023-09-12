@@ -2,7 +2,7 @@
     --burger-width: 32px;
     --burger-height: 2px;
     --burger-gap: 8px;
-    --foreground: #a9b1d6;
+    --foreground: #e0def4;
     --animation-timing: 400ms ease-in-out; 
     --menu-height: calc(var(--burger-height) * 3 + var(--burger-gap) * 2);
     --menu-margin: 16px;
@@ -69,7 +69,6 @@
     .sidebar {
         width: 100%;
         position: fixed;
-        background: #1a1b26;
         transition: translate var(--animation-timing);
         translate:  0 -170%;
     }

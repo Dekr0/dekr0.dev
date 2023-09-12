@@ -8,12 +8,12 @@ import Menu from "./Menu.astro";
 import Envelope from "./Envelope.astro"
 import "../styles/burger.css"
 ---
-<header class="sticky top-0 z-50 pt-12 xs:py-4 ml-4 xs:mx-6 bg-bg text-base" id="home">
+<header class="sticky top-0 z-50 xs:py-4 xs:ml-4 xs:mx-6 text-rp-subtle xs:backdrop-blur-sm shadow-2xl" id="home">
     <Menu />
-    <nav class="sidebar">
-        <ul class="m-0 sm:my-0 sm:mx-auto pb-6 xs:p-0 flex flex-wrap flex-col xs:flex-row justify-normal xs:justify-center sm:justify-around items-center gap-4 xs:gap-6 sm:gap-6 list-none">
+    <nav class="sidebar max-xs:backdrop-blur-sm">
+        <ul class="m-0 sm:my-0 sm:mx-auto py-6 xs:p-0 flex flex-wrap flex-col xs:flex-row justify-normal xs:justify-center sm:justify-around items-center gap-4 xs:gap-6 sm:gap-6 list-none">
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
-                <a class="hover:text-purple" href="#hero">
+                <a class="hover:text-rp-iris" href="/#hero">
                     <Home height="1rem"/>
                 </a>
             </li>
@@ -21,22 +21,22 @@ import "../styles/burger.css"
                 <Construction height="1rem"/>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
-                <a class="hover:text-purple" href="#about">
+                <a class="hover:text-rp-iris" href="/#about">
                     About
                 </a>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
-                <a class="hover:text-purple" href="">
+                <a class="hover:text-rp-iris" href="/#projects">
                     Projects
                 </a>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm">
-                <a class="hover:text-purple" href="">
+                <a class="hover:text-rp-iris" href="/guestbook/">
                     Guestbook
                 </a>
             </li>
             <li class="inline-block sm:basis-auto xs:basis-nav-sm sm:text-left sm:mr-auto">
-                <a class="p-1 rounded-md bg-purple hover:bg-violet-500" href="https://pub-55ec849fb1c345ecbaa27d557589c483.r2.dev/Resume.pdf" target="_blank">
+                <a class="p-1 rounded-md text-rp-dawn-base bg-rp-love hover:bg-rp-dawn-love" href="https://pub-55ec849fb1c345ecbaa27d557589c483.r2.dev/Resume.pdf" target="_blank">
                     Resume
                 </a>
             </li>
@@ -57,28 +57,9 @@ import "../styles/burger.css"
             <li class="inline-block">
                 <a class="group cursor-pointer flex flex-row gap-2 items-center" href="#contact">
                     <Envelope height="1.5rem"/>
-                    <span class="hidden uppercase font-bold text-icon-color group-hover:text-icon-hover max-sm:inline-flex md:inline-flex">Contact</span>
+                    <span class="hidden uppercase font-bold text-rp-subtle group-hover:text-rp-iris max-sm:inline-flex md:inline-flex">Contact</span>
                 </a>
             </li>
         </ul>
     </nav>
 </header>
-
-<script>
-    const burger = document.querySelector('.menu') as HTMLLabelElement;
-    const check = burger.querySelector('input') as HTMLInputElement;
-    const sidebar = document.querySelector('nav') as HTMLElement;
-    if (sidebar !== null) {
-        const links = sidebar.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>;
-        console.log(check);
-        console.log(links);
-        for (const link of links) {
-            if (link.href.length === 0 || link.href.endsWith('Resume.pdf')) continue; 
-                link.addEventListener('click', () => {
-                    if (check !== null) {
-                         check.checked = false;
-                    }
-                });
-        }
-    }
-</script>
