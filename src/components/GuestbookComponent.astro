@@ -14,8 +14,8 @@
     import type { Database } from "../database.types";
     
     const supabase = createClient<Database>(
-        process.env.PUBLIC_DATABASE_URL,
-        process.env.PUBLIC_DATABASE_API,
+        "https://addcgxwkomotkbjjjoup.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkZGNneHdrb21vdGtiampqb3VwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQ0NzQ3MjAsImV4cCI6MjAxMDA1MDcyMH0.X8fYKPrrKTzggrNvSimVh-CHWodI7LXduO6YMx4FF94",
         {
             auth: {
                 persistSession: false
