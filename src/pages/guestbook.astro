@@ -1,19 +1,14 @@
 ---
 import Head from  "../components/Head.astro";
 import Header from "../components/Header.astro";
+import GuestbookComponent from "../components/GuestbookComponent.astro";
 ---
 <html lang="en">
     <Head title="Guestbook | Chengxuan Li"/>
 	<body class="no-scrollbar scroll-smooth bg-rp-base text-rp-text antialiased">
         <Header />
         <section id="#guestbook">
-            <div class="px-6 py-16 xs:py-8">
-                <h1 class="text-xl uppercase tracking-[15px] text-rp-subtle md:tracking-[20px]">Sign my guestbook</h1>
-                <form class="relative pt-8 max-w-[500px]">
-                    <input aria-label="Your message" placeholder="Your message..." type="text" class=""/>
-                    <button class="absolute" type="submit">Sign</button>
-                </form>
-            </div>
+            <GuestbookComponent />
         </section>
     </body>
 </html>
