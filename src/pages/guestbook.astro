@@ -1,16 +1,39 @@
 ---
-import Head from  "../components/Head.astro";
-import Header from "../components/Header.astro";
-import GuestbookComponent from "../components/GuestbookComponent.astro";
+import Head from "@components/Head.astro";
+import Header from "@components/Header.astro";
+import Auth from "@components/Auth.astro";
+import CommentForm from "@components/CommentForm.astro";
+import { verify } from "src/utils/jwt";
+import getLogger from "src/utils/logger";
+
+let user: string | undefined;
+
+const jwtToken = Astro.cookies.get("jwt_token")?.value;
+if (jwtToken) {
+    user = await verify(jwtToken);
+    getLogger().info(user);
+}
 ---
-<html lang="en">
-    <Head title="Guestbook | Chengxuan Li"/>
-	<body class="no-scrollbar scroll-smooth bg-rp-base text-rp-text antialiased">
+<html lang="en" transition:animate="fade">
+    <Head title="Guestbook | Chengxuan Li" />
+    <body
+        class="no-scrollbar scroll-smooth bg-rp-base text-rp-text antialiased"
+    >
         <Header />
-        <main transition:animate="initial">
+        <main transition:animate="slide">
             <section id="#guestbook">
-                <GuestbookComponent />
+                <div class="px-6 py-16 xs:py-8">
+                    <h1
+                        class="text-xl uppercase tracking-[15px] text-rp-subtle 
+                        md:tracking-[20px]"
+                    >
+                        Sign my guestbook
+                    </h1>
+                </div>
+                { user ? <CommentForm /> : <Auth /> }
+                <comment-section></comment-section>
             </section>
         </main>
     </body>
+    <script src="../scripts/guestbook.ts"></script>
 </html>
