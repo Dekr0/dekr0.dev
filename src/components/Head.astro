@@ -1,53 +1,19 @@
 ---
 import { ViewTransitions } from "astro:transitions";
-const { title } = Astro.props; 
+const { title } = Astro.props;
 ---
 <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oxygen&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oxygen&display=swap"
+        rel="stylesheet"
+    />
     <title>{title}</title>
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <ViewTransitions />
+    <ViewTransitions/>
 </head>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const body = document.querySelector("body");
-
-        const menu = document.querySelector(".menu") as HTMLLabelElement;
-        const checkbox = menu.querySelector("input") as HTMLInputElement;
-        const nav = document.querySelector("nav");
-
-        const btn = document.querySelector(".popup");
-        const msg = document.getElementById("readme");
-
-        body?.addEventListener("click", () => {
-            if (msg?.classList.contains("show")) {
-                msg.classList.toggle("show");
-            }
-        });
-
-        btn?.addEventListener("click", event => {
-            event.stopPropagation();
-            msg?.classList.toggle("show");
-        });
-
-        if (nav !== null) {
-            const anchors = nav.querySelectorAll("a") as NodeListOf<HTMLAnchorElement>;
-            for (const anchor of anchors) {
-                anchor.addEventListener("click", () => {
-                    if (checkbox !== null) {
-                        checkbox.checked = false;
-                    }
-                });
-            }
-        }
-    });
-</script>
