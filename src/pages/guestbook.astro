@@ -4,14 +4,12 @@ import Header from "@components/Header.astro";
 import Auth from "@components/Auth.astro";
 import CommentForm from "@components/CommentForm.astro";
 import { verify } from "src/utils/jwt";
-import getLogger from "src/utils/logger";
 
-let user: string | undefined;
+let user: string | undefined = "User";
 
 const jwtToken = Astro.cookies.get("jwt_token")?.value;
 if (jwtToken) {
     user = await verify(jwtToken);
-    getLogger().info(user);
 }
 ---
 <html lang="en" transition:animate="fade">
@@ -30,7 +28,8 @@ if (jwtToken) {
                         Sign my guestbook
                     </h1>
                 </div>
-                { user ? <CommentForm /> : <Auth /> }
+                { user ? <CommentForm user={user} /> : <Auth /> }
+                <view-count></view-count>
                 <comment-section></comment-section>
             </section>
         </main>

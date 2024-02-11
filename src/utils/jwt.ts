@@ -48,8 +48,6 @@ export async function sign(user: User) {
         maxAge: 60 * 10,
     });
 
-    getLogger().info(jwtCookie);
-
     return jwtCookie;
 }
 
