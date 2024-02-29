@@ -1,17 +1,23 @@
-import type { APIRoute } from "astro";
-import * as cookie from "cookie";
+import { lucia } from "src/auth";
 
-export const POST: APIRoute = async () => {
-    const c = cookie.serialize("jwt_token", "", {
-        path: "/guestbook",
-        maxAge: 0,
-    });
+import type { APIContext } from "astro";
 
-    return new Response("Logout Success", {
-        status: 302,
-        headers: {
-            "Set-Cookie": c,
-            Location: "/guestbook",
-        },
-    });
-};
+export async function POST(context: APIContext) {
+    if (!context.locals.session) {
+        return new Response(null, {
+            status: 401,
+        });
+    }
+
+    await lucia.invalidateSession(context.locals.session.id);
+
+    const sessionCookie = lucia.createBlankSessionCookie();
+
+    context.cookies.set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+    );
+
+    return context.redirect("/guestbook");
+}
