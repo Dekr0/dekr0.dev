@@ -4,7 +4,7 @@ import { db } from "./sqlite";
 import { GitHub, Google } from "arctic";
 
 type DatabaseUserAttributes = {
-    provider_id: string;
+    id: string;
     username: string;
 };
 
@@ -23,15 +23,14 @@ const adapter = new BetterSqlite3Adapter(db, {
 export const lucia = new Lucia(adapter, {
     sessionCookie: {
         attributes: {
-            secure: true,
+            secure: import.meta.env.PROD,
             sameSite: "strict",
-            path: "/guestbook"
         },
     },
     getUserAttributes: (attributes) => {
         return {
+            id: attributes.id,
             username: attributes.username,
-            providerId: attributes.provider_id,
         };
     },
 });
