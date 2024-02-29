@@ -1,16 +1,30 @@
-import type { APIRoute } from "astro";
+import { generateCodeVerifier, generateState } from "arctic";
+import { google } from "src/auth";
 
-export const POST: APIRoute = async ({ redirect }) => {
-    const params = new URLSearchParams();
+import type { APIContext } from "astro";
 
-    params.append("client_id", import.meta.env.GOOGLE_CLIENT_ID);
-    params.append("redirect_uri", import.meta.env.GOOGLE_OAUTH_REDIRECT_URL);
-    params.append("response_type", "code");
-    params.append("scope", import.meta.env.GOOGLE_OAUTH_SCOPE);
-    params.append("prompt", "consent");
-    params.append("access_type", "offline");
+const MAXAGE = 60 * 10;
 
-    const url = `${import.meta.env.GOOGLE_OAUTH_URL}?${params.toString()}`;
+export async function POST(context: APIContext): Promise<Response> {
+    const state = generateState();
+    const codeVerifier = generateCodeVerifier();
+    const url = await google.createAuthorizationURL(state, codeVerifier);
 
-    return redirect(url);
-};
+    context.cookies.set("state", state, {
+        httpOnly: true,
+        maxAge: MAXAGE,
+        path: "/",
+        sameSite: "strict",
+        secure: import.meta.env.PROD,
+    });
+
+    context.cookies.set("code_verifier", state, {
+        httpOnly: true,
+        maxAge: MAXAGE,
+        path: "/",
+        sameSite: "strict",
+        secure: import.meta.env.PROD,
+    });
+
+    return context.redirect(url.toString());
+}
