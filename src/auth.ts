@@ -2,6 +2,7 @@ import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
 import { Lucia } from "lucia";
 import { db } from "./sqlite";
 import { GitHub, Google } from "arctic";
+import { prod } from "./const";
 
 type DatabaseUserAttributes = {
     id: string;
@@ -35,12 +36,22 @@ export const lucia = new Lucia(adapter, {
 });
 
 export const github = new GitHub(
-    import.meta.env.GITHUB_CLIENT_ID,
-    import.meta.env.GITHUB_CLIENT_SECRET,
+    prod
+        ? import.meta.env.GITHUB_CLIENT_ID
+        : import.meta.env.TEST_GITHUB_CLIENT_ID,
+    prod
+        ? import.meta.env.GITHUB_CLIENT_SECRET
+        : import.meta.env.TEST_GITHUB_CLIENT_SECRET,
 );
 
 export const google = new Google(
-    import.meta.env.GOOGLE_CLIENT_ID,
-    import.meta.env.GOOGLE_CLIENT_SECRET,
-    import.meta.env.GOOGLE_OAUTH_REDIRECT_URL,
+    prod
+        ? import.meta.env.GOOGLE_CLIENT_ID
+        : import.meta.env.TEST_GOOGLE_CLIENT_ID,
+    prod
+        ? import.meta.env.GOOGLE_CLIENT_SECRET
+        : import.meta.env.TEST_GOOGLE_CLIENT_SECRET,
+    prod
+        ? import.meta.env.GOOGLE_OAUTH_REDIRECT_URL
+        : import.meta.env.TEST_GOOGLE_OAUTH_REDIRECT_URL,
 );
