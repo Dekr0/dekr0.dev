@@ -3,6 +3,9 @@ import * as cookie from "cookie";
 import type { User } from "src/types/User";
 import getLogger from "./logger";
 
+const MAXAGE = 60 * 10;
+const JWTEXPIRATION = "20 secs";
+
 function singlePRVK(): () => Promise<jose.KeyLike | Uint8Array> {
     let privateKey: jose.KeyLike | Uint8Array | undefined;
 
@@ -36,16 +39,17 @@ export async function sign(user: User) {
     const privateKey = await getPrivateKey();
 
     const signer = new jose.SignJWT(payload)
-        .setExpirationTime("20 secs")
+        .setExpirationTime(JWTEXPIRATION)
         .setProtectedHeader({ alg: alg });
 
     const jwt = await signer.sign(privateKey);
 
     const jwtCookie = cookie.serialize("jwt_token", jwt, {
+        sameSite: "strict",
         secure: true,
         httpOnly: true,
         path: "/guestbook",
-        maxAge: 60 * 10,
+        maxAge: MAXAGE,
     });
 
     return jwtCookie;
