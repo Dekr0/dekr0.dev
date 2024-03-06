@@ -1,78 +1,120 @@
-import type { APIContext, APIRoute } from "astro";
-import { sign } from "src/utils/jwt";
+import { google, lucia } from "src/auth";
+import type { APIContext } from "astro";
+import { db } from "src/sqlite";
+import { generateId } from "lucia";
+import { OAuth2RequestError } from "arctic";
 import getLogger from "src/utils/logger";
 
-type GoogleTokenAPIResponse = {
-    access_token: string;
-    expires_in: number;
-    token_type: string;
-    scope: string;
-    refresh_tokoen: string;
-};
-
-type GoogleUserInfo = {
-    id: string;
+type Profile = {
+    sub: string;
     name: string;
+    given_name: string;
+    family_name: string;
+    picture: string;
+    locale: string;
 };
 
-export const GET: APIRoute = async (context: APIContext) => {
-    let url = new URL(context.request.url);
-    let params = new URLSearchParams(url.search);
-    const code = params.get("code");
+const child = getLogger().child({
+    filename: "/api/auth/oauth/callback/google.ts",
+    function: "GET",
+});
 
-    if (!code) {
-        // Log error
-        return new Response("Authorization Failed", {
-            status: 500,
-            headers: {
-                Location: "/guestbook",
-            },
+const api = "https://openidconnect.googleapis.com/v1/userinfo";
+
+export async function GET(context: APIContext) {
+    const code = context.url.searchParams.get("code");
+    const state = context.url.searchParams.get("state");
+    const storeState = context.cookies.get("state")?.value;
+    const storeVerifier = context.cookies.get("code_verifier")?.value;
+
+    if (
+        !code ||
+        !state ||
+        !storeState ||
+        !storeVerifier ||
+        state !== storeState
+    ) {
+        child.info(`response code: ${code}`);
+        child.info(`response state: ${state}`);
+        child.info(`cookie state: ${storeState}`);
+        child.info(`cookie code verifier: ${storeVerifier}`);
+        const reason = JSON.stringify({
+            reason: "Encounter server side error during GitHub OAuth",
         });
+        return new Response(reason, { status: 400 });
     }
-
-    params = new URLSearchParams();
-    params.append("client_id", import.meta.env.GOOGLE_CLIENT_ID);
-    params.append("client_secret", import.meta.env.GOOGLE_CLIENT_SECRET);
-    params.append("code", code);
-    params.append("redirect_uri", import.meta.env.GOOGLE_OAUTH_REDIRECT_URL);
-    params.append("grant_type", "authorization_code");
-
-    url = new URL("https://oauth2.googleapis.com/token");
-    url.search = params.toString();
 
     try {
-        let res = await fetch(url.toString(), {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        const tokens = await google.validateAuthorizationCode(
+            code,
+            storeVerifier,
+        );
 
-        const data: GoogleTokenAPIResponse = await res.json();
-
-        res = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
-            headers: {
-                Authorization: `Bearer ${data.access_token}`,
-            },
+        const headers = { Authorization: `Bearer ${tokens.accessToken}` };
+        const response = await fetch(api, {
+            headers: headers,
         });
+        const profile: Profile = await response.json();
 
-        const user: GoogleUserInfo = await res.json();
-        const jwkCookie = await sign({ id: user.id, username: user.name });
+        const account = db
+            .prepare(
+                `SELECT user_id FROM oauth_account 
+                     WHERE provider_id = ? 
+                     AND provider_user_id = ?`,
+            )
+            .get("google", profile.sub) as { user_id: string };
+        if (account) {
+            // child.info(`Existing Google OAuth account: ${account.user_id}`);
+            const session = await lucia.createSession(account.user_id, {});
+            const sessionCookie = lucia.createSessionCookie(session.id);
+            context.cookies.set(
+                sessionCookie.name,
+                sessionCookie.value,
+                sessionCookie.attributes,
+            );
 
-        return new Response("Authenticated Successful", {
-            status: 302,
-            headers: {
-                "Set-Cookie": jwkCookie,
-                "Location": "/guestbook"
-            }
+            return context.redirect("/guestbook");
+        }
+
+        const userId = generateId(15);
+        // child.info(
+        //    `New GitHub OAuth account with associated local user id: ${userId}`,
+        //);
+        db.prepare(
+            `INSERT INTO user 
+                   (id,  username) 
+                   VALUES (?, ?)`,
+        ).run(userId, profile.name);
+
+        db.prepare(
+            `INSERT INTO oauth_account 
+                   (provider_id, provider_user_id, user_id) 
+                   VALUES (?, ?, ?)`,
+        ).run("google", profile.sub, userId);
+
+        const session = await lucia.createSession(userId, {});
+        const sessionCookie = lucia.createSessionCookie(session.id);
+        context.cookies.set(
+            sessionCookie.name,
+            sessionCookie.value,
+            sessionCookie.attributes,
+        );
+
+        return context.redirect("/guestbook");
+    } catch (e) {
+        if (e instanceof OAuth2RequestError) {
+            child.info(e.message);
+            child.info(e.description);
+            const reason = JSON.stringify({
+                reason: "Encounter server side error during GitHub OAuth",
+            });
+            return new Response(reason, { status: 400 });
+        }
+
+        child.info(e);
+        const reason = JSON.stringify({
+            reason: "Unkonw server side error during GitHub OAuth",
         });
-    } catch (err) {
-        getLogger().error(err);
-        return new Response("Authorization Failed", {
-            status: 500,
-            headers: {
-                Location: "/guestbook",
-            },
-        });
+        return new Response(reason, { status: 500 });
     }
-};
+}

@@ -7,22 +7,22 @@ const MAXAGE = 60 * 10;
 
 export async function POST(context: APIContext): Promise<Response> {
     const state = generateState();
-    const codeVerifier = generateCodeVerifier();
-    const url = await google.createAuthorizationURL(state, codeVerifier);
+    const verifier = generateCodeVerifier();
+    const url = await google.createAuthorizationURL(state, verifier, {
+        scopes: ["profile"],
+    });
 
     context.cookies.set("state", state, {
         httpOnly: true,
         maxAge: MAXAGE,
         path: "/",
-        sameSite: "strict",
         secure: import.meta.env.PROD,
     });
 
-    context.cookies.set("code_verifier", state, {
+    context.cookies.set("code_verifier", verifier, {
         httpOnly: true,
         maxAge: MAXAGE,
         path: "/",
-        sameSite: "strict",
         secure: import.meta.env.PROD,
     });
 

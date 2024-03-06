@@ -14,7 +14,7 @@ export async function POST(context: APIContext): Promise<Response> {
         secure: import.meta.env.PROD,
         httpOnly: true,
         maxAge: MAXAGE,
-        sameSite: "strict",
+        sameSite: "lax",
     });
 
     return context.redirect(url.toString());
