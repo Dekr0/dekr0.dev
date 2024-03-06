@@ -40,8 +40,7 @@ export class GuestbookApp {
                 }
                 case "DBChangeEvent": {
                     const e = generic as DBChangeEvent;
-                    console.log(e);
-                    // this.updateComments(e.Comment);
+                    this.updateComments(e.Comment);
                     break;
                 }
             }
