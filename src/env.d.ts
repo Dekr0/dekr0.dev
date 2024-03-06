@@ -5,3 +5,7 @@ declare namespace App {
 		user: import("lucia").User | null;
 	}
 }
+
+interface Window {
+    app: import("src/guestbook/Guestbook").GuestbookApp | null;
+}
