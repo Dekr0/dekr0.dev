@@ -1,6 +1,53 @@
 ---
+import getLogger from "src/utils/logger";
+import DOMPurify from "isomorphic-dompurify";
+
+const child = getLogger().child({ filename: "/components/CommentForm.astro" });
 const { author } = Astro.props;
+const errors = { comment: "" };
+if (Astro.request.method === "POST") {
+    try {
+        const data = await Astro.request.formData();
+        const comment = data.get("comment");
+        if (!comment || typeof comment !== "string" || comment.length < 2) {
+            errors.comment +=
+                "Please enter a valid comment (more than two characters)";
+        }
+        const hasErrors = Object.values(errors).some((msg) => msg);
+        if (!hasErrors) {
+            const params = new URLSearchParams();
+            params.set("author", author);
+            params.set("comment", DOMPurify.sanitize(comment as string));
+
+            const headers: HeadersInit = {
+                Accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            };
+            const init: RequestInit = {
+                body: params,
+                method: "POST",
+                headers: headers,
+            };
+
+            const res = await fetch(
+                "http://localhost:8000/comments/post",
+                init,
+            );
+            child.info(`status code: ${res.status}`);
+            if (res.status === 200) {
+                return Astro.redirect("/guestbook");
+            }
+
+            throw new Error(`Server return status code ${res.status}`);
+        }
+    } catch (err) {
+        if (err instanceof Error) {
+            child.error(err.message);
+        }
+    }
+}
 ---
+
 <div class="pl-2 pb-2">
     <span>Welcome {author}</span>
 </div>
@@ -8,6 +55,8 @@ const { author } = Astro.props;
     class="relative left-2 max-w-[500px]"
     id="sign-comment-form"
     method="post"
+    enctype="application/x-www-form-urlencoded"
+    data-astro-reload
 >
     <input
         name="comment"
@@ -21,6 +70,7 @@ const { author } = Astro.props;
         minlength="2"
         spellcheck="true"
     />
+    {errors.comment && <p>{errors.comment}</p>}
     <button
         class="absolute px-4 py-1 bottom-1 right-1 bg-rp-overlay
     rounded-lg hover:text-rp-iris"
@@ -29,7 +79,13 @@ const { author } = Astro.props;
         Sign
     </button>
 </form>
-<form class="relative" action="/api/auth/logout" id="logout-form" method="post">
+<form
+    class="relative"
+    action="/api/auth/logout"
+    id="logout-form"
+    method="post"
+    data-astro-reload
+>
     <button
         class="relative px-4 py-2 bottom-1 right-1 hover:text-rp-iris"
         type="submit"
