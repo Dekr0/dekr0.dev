@@ -31,6 +31,7 @@
     "@astrojs/ts-plugin": "^1.4.0",
     "@types/better-sqlite3": "^7.6.9",
     "@types/cookie": "^0.6.0",
+    "cypress": "^13.6.6",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0"
   }
