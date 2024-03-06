@@ -14,16 +14,18 @@ export type DBChangeEvent = Event & {
     Comment: _Comment;
 };
 
+const prod = import.meta.env.PUBLIC_PROD;
+const addr = prod ? import.meta.env.PUBLIC_BACKEND_ADDR : "localhost";
+const port = prod ? import.meta.env.PUBLIC_BACKEND_PORT : 8000;
+
 export class GuestbookApp {
     private ws: WebSocket;
     private viewCount: number;
 
     constructor() {
-        const addr = import.meta.env.PUBLIC_WS_BACKEND_ADDR;
-        const port = import.meta.env.PUBLIC_WS_BACKEND_PORT;
-
+        console.log("called");
         this.viewCount = 1;
-        this.ws = new WebSocket(`${addr}:${port}/ws`);
+        this.ws = new WebSocket(`ws://${addr}:${port}/ws`);
 
         this.ws.addEventListener("message", (event) => {
             const data = JSON.parse(event.data);
@@ -38,7 +40,8 @@ export class GuestbookApp {
                 }
                 case "DBChangeEvent": {
                     const e = generic as DBChangeEvent;
-                    this.updateComments(e.Comment);
+                    console.log(e);
+                    // this.updateComments(e.Comment);
                     break;
                 }
             }
@@ -94,7 +97,7 @@ export class GuestbookApp {
                 e.insertAdjacentElement("beforebegin", newCommentList);
                 return;
             } else if (comment.Timestamp > time) {
-                h = m; 
+                h = m;
             } else {
                 l = m + 1;
             }
