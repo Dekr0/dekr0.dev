@@ -12,8 +12,8 @@
       "@styles/*": [
         "src/styles/*"
       ],
-      "@structs/*": [
-        "src/structs/*"
+      "@T/*": [
+        "src/types/*"
       ]
     },
     "plugins": [
