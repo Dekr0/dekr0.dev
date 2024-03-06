@@ -1,46 +1,82 @@
+import type { _Comment } from "@T/Comment";
 import type { APIContext, APIRoute } from "astro";
-import { verify } from "src/utils/jwt";
+
+import DOMPurify from "isomorphic-dompurify";
+
+import { lucia } from "src/auth";
 import getLogger from "src/utils/logger";
 
-export const POST: APIRoute = async (context: APIContext) => {
-    let authorization: string | undefined;
-    if (!authorization) {
-        return new Response(
-            JSON.stringify({
-                message: "Attempt to post comment without authorized pass",
-            }),
-            {
-                status: 401,
-            },
-        );
-    }
-    
-    const splits = authorization.split(" ");
-    if (splits.length < 2 || splits.length !== 2) {
-        return new Response(
-            JSON.stringify({
-                message: "Attempt to post comment with invalid authorized pass",
-            }),
-            {
-                status: 401,
-            },
-        );
-    }
+const child = getLogger().child({ filename: "/pages/api/guestbook" });
 
-    const jwt = splits[1];
-    const user = await verify(jwt);
-    if (!user) {
-        return new Response(
-            JSON.stringify({ message: "Invalid authorized pass" }),
-            { status: 401 },
-        );
+export const GET: APIRoute = async (_: APIContext) => {
+    try {
+        const res = await fetch("http://localhost:8000/comments/get-all");
+        return new Response(await res.blob(), { status: 200 });
+    } catch (err) {
+        if (err instanceof Error) {
+            child.error(err.message);
+            return new Response(null, { status: 500 });
+        }
+        return new Response(null, { status: 500 });
     }
-    
-    getLogger().info(user);
-    const payload = await context.request.json();
-    getLogger().info(payload);
-
-    return new Response(JSON.stringify({ message: "success" }), {
-        status: 200,
-    });
 };
+
+export const POST: APIRoute = async (context: APIContext) => {
+    const sessionId = context.cookies.get(lucia.sessionCookieName)?.value;
+    if (!sessionId) {
+        child.info("Incoming request has no session cookie");
+        return new Response(null, { status: 400 });
+    }
+
+    // Should session validation be done by middleware.ts?
+    const { session, user } = await lucia.validateSession(sessionId);
+    if (session) {
+        const formData = await context.request.formData();
+        const comment = formData.get("comment");
+        if (!comment || typeof comment !== "string" || comment.length < 2) {
+            return new Response(null, { status: 400 });
+        }
+
+        const params = new URLSearchParams();
+        params.set("author", user.username);
+        params.set("comment", DOMPurify.sanitize(comment));
+
+        const headers: HeadersInit = {
+            Accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+        };
+        const init: RequestInit = {
+            body: params,
+            method: "POST",
+            headers: headers,
+        };
+
+        try {
+            const res = await fetch(
+                "http://localhost:8000/comments/post",
+                init,
+            );
+
+            if (res.status === 200) {
+                return new Response(null, { status: 200 });
+            }
+
+            throw new Error(`Server return status code ${res.status}`);
+        } catch (err) {
+            if (err instanceof Error) {
+                child.error(err);
+            }
+
+            return new Response(null, { status: 500 });
+        }
+    }
+
+    child.info("Incoming request with invalid session id");
+    return new Response(null, { status: 401 });
+};
+
+export async function getAllComment() {
+    const res = await fetch("http://localhost:8000/comments/get-all");
+    const comment: _Comment[] = await res.json();
+    return comment;
+}
