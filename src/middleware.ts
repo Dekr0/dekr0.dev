@@ -1,6 +1,7 @@
-import { lucia } from "./auth";
 import { verifyRequestOrigin } from "lucia";
 import { defineMiddleware } from "astro:middleware";
+
+import { lucia } from "./auth";
 import getLogger from "./utils/logger";
 
 const child = getLogger().child({
@@ -11,6 +12,7 @@ const child = getLogger().child({
 // Lucia Template
 export const onRequest = defineMiddleware(async (context, next) => {
     // child.info(`request method: ${context.request.method}`);
+
     if (context.request.method !== "GET") {
         const originHeader = context.request.headers.get("Origin");
         const hostHeader = context.request.headers.get("Host");

@@ -7,7 +7,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "proto": "protoc --proto_path=./src/pb/ --ts_proto_out=./src/pb/ --ts_proto_opt=esModuleInterop=true messager.proto"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.0",
@@ -22,6 +23,7 @@
     "jose": "^5.2.1",
     "lucia": "^3.0.1",
     "oslo": "^1.1.1",
+    "pg": "^8.11.3",
     "pino": "^8.18.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
@@ -31,8 +33,10 @@
     "@astrojs/ts-plugin": "^1.5.3",
     "@types/better-sqlite3": "^7.6.9",
     "@types/cookie": "^0.6.0",
+    "@types/pg": "^8.11.2",
     "cypress": "^13.6.6",
     "prettier": "^3.2.5",
-    "prettier-plugin-astro": "^0.13.0"
+    "prettier-plugin-astro": "^0.13.0",
+    "ts-proto": "^1.169.1"
   }
 }
