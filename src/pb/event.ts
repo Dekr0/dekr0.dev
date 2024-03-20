@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "messager";
+export const protobufPackage = "event";
 
 export enum ViewCountEventType {
   VIEWCOUNTEVENTTYPE_UNSPECIFIED = 0,

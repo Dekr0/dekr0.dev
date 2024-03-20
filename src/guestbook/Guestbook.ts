@@ -1,4 +1,4 @@
-import { Event, Comment, DBEventType } from "@P/messager";
+import { Event, Comment, DBEventType } from "@P/event";
 
 const prod = import.meta.env.PUBLIC_PROD;
 const addr = prod ? import.meta.env.PUBLIC_BACKEND_ADDR : "localhost";

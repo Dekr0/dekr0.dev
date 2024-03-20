@@ -1,6 +1,6 @@
 import * as jose from "jose";
 import * as cookie from "cookie";
-import type { User } from "src/types/User";
+// import type { User } from "src/types/User";
 import getLogger from "./logger";
 
 const MAXAGE = 60 * 10;
@@ -29,7 +29,7 @@ function singlePRVK(): () => Promise<jose.KeyLike | Uint8Array> {
 
 const getPrivateKey = singlePRVK();
 
-export async function sign(user: User) {
+export async function sign(user: any) {
     const payload = {
         sub: user.username,
         sub_id: user.id,
