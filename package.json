@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "proto": "protoc --proto_path=./src/pb/ --ts_proto_out=./src/pb/ --ts_proto_opt=esModuleInterop=true messager.proto"
+    "proto": "protoc --proto_path=./src/pb/ --ts_proto_out=./src/pb/ --ts_proto_opt=esModuleInterop=true event.proto log.proto"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.0",

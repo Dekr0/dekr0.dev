@@ -1,12 +1,18 @@
 import type { APIContext, APIRoute } from "astro";
 import type { QueryConfig } from "pg";
-import type { CommentQueryResult, _Comment } from "@T/Comment";
 
 import DOMPurify from "isomorphic-dompurify";
 
 import getClient from "src/postgres";
 import getLogger from "src/utils/logger";
 import { lucia } from "src/auth";
+
+export type CommentQueryResult = {
+    commentsid: number;
+    commentsauthor: string;
+    commentscontent: string;
+    commentstime: Date | number;
+}
 
 const baseLog = getLogger().child({ filename: "/pages/api/guestbook" });
 
