@@ -2,7 +2,7 @@ import { Event, Comment, DBEventType } from "@P/messager";
 
 const prod = import.meta.env.PUBLIC_PROD;
 const addr = prod ? import.meta.env.PUBLIC_BACKEND_ADDR : "localhost";
-const port = prod ? import.meta.env.PUBLIC_BACKEND_PORT : 8000;
+// const port = prod ? import.meta.env.PUBLIC_BACKEND_PORT : 8000;
 
 export class GuestbookApp {
     private ws: WebSocket | null;
@@ -28,7 +28,7 @@ export class GuestbookApp {
             }
         }
 
-        this.ws = new WebSocket(`ws://${addr}:${port}/ws`);
+        this.ws = new WebSocket(`wss://${addr}/ws`);
         this.ws.binaryType = "arraybuffer";
 
         this.ws.addEventListener("open", (_) => {
