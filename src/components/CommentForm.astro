@@ -1,20 +1,66 @@
-<form class="relative pt-8 max-w-[500px]">
+---
+import getLogger from "src/utils/logger";
+import { postComment } from "src/pages/api/guestbook";
+
+const child = getLogger().child({ filename: "/components/CommentForm.astro" });
+const { author } = Astro.props;
+const errors = { comment: "" };
+if (Astro.request.method === "POST") {
+    try {
+        const data = await Astro.request.formData();
+        const content = data.get("content");
+        if (!content || typeof content !== "string" || content.length < 2) {
+            errors.comment +=
+                "Please enter a valid comment (more than two characters)";
+        }
+        const hasErrors = Object.values(errors).some((msg) => msg);
+        if (!hasErrors) {
+            await postComment(author, content as string);
+        }
+    } catch (err) {
+        if (err instanceof Error) {
+            child.error(err.message);
+        }
+    }
+}
+---
+
+<div class="pl-2 pb-2">
+    <span>Welcome {author}</span>
+</div>
+<form
+    class="relative left-2 max-w-[500px]"
+    id="sign-comment-form"
+    method="post"
+    enctype="application/x-www-form-urlencoded"
+    data-astro-reload
+>
     <input
+        name="content"
+        id="content-field"
         aria-label="Your message"
-        class="message pl-4 py-2 pr-8 w-full bg-rp-surface rounded-lg
-        text-rp-text"
+        class="message pl-4 py-2 pr-8 w-full bg-rp-surface
+    rounded-lg text-rp-text"
         placeholder="Your message..."
         type="text"
+        required
+        minlength="2"
+        spellcheck="true"
     />
+    {errors.comment && <p>{errors.comment}</p>}
     <button
-        class="absolute px-4 py-1 bottom-1 right-1 bg-rp-overlay rounded-lg
-        hover:text-rp-iris"
-        type="submit">Sign</button
+        class="absolute px-4 py-1 bottom-1 right-1 bg-rp-overlay
+    rounded-lg hover:text-rp-iris"
+        type="submit"
     >
+        Sign
+    </button>
 </form>
-<form class="relative" action="/api/auth/logout" method="post">
+<form class="relative" action="/api/auth/logout" id="logout-form" method="post">
     <button
         class="relative px-4 py-2 bottom-1 right-1 hover:text-rp-iris"
-        type="submit">Sign out</button
+        type="submit"
     >
+        Sign out
+    </button>
 </form>

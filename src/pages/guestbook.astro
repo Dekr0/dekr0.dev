@@ -3,19 +3,17 @@ import Head from "@components/Head.astro";
 import Header from "@components/Header.astro";
 import Auth from "@components/Auth.astro";
 import CommentForm from "@components/CommentForm.astro";
-import { verify } from "src/utils/jwt";
-import getLogger from "src/utils/logger";
+import CommentSection from "@components/CommentSection.astro";
 
-let user: string | undefined;
-
-const jwtToken = Astro.cookies.get("jwt_token")?.value;
-if (jwtToken) {
-    user = await verify(jwtToken);
-    getLogger().info(user);
+let author: string | undefined;
+if (Astro.locals.user !== null) {
+    author = Astro.locals.user.username;
 }
 ---
+
 <html lang="en" transition:animate="fade">
     <Head title="Guestbook | Chengxuan Li" />
+    <script src="../guestbook/index.ts"></script>
     <body
         class="no-scrollbar scroll-smooth bg-rp-base text-rp-text antialiased"
     >
@@ -24,16 +22,18 @@ if (jwtToken) {
             <section id="#guestbook">
                 <div class="px-6 py-16 xs:py-8">
                     <h1
-                        class="text-xl uppercase tracking-[15px] text-rp-subtle 
+                        class="text-xl uppercase tracking-[15px] text-rp-subtle
                         md:tracking-[20px]"
                     >
                         Sign my guestbook
                     </h1>
                 </div>
-                { user ? <CommentForm /> : <Auth /> }
-                <comment-section></comment-section>
+                {author ? <CommentForm author={author} /> : <Auth />}
+                <div class="pl-4 text-sm">
+                    <span id="view-count">Number of Viewers: </span>
+                </div>
+                <CommentSection />
             </section>
         </main>
     </body>
-    <script src="../scripts/guestbook.ts"></script>
 </html>
