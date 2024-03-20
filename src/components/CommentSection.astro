@@ -1,13 +1,13 @@
 ---
 import { getAllComment } from "src/pages/api/guestbook";
-import type { _Comment } from "@T/Comment";
+import type { CommentQueryResult } from "@T/Comment";
 import getLogger from "src/utils/logger";
 
 const child = getLogger().child({
     filename: "/components/CommentSection.astro",
 });
 
-let comments: _Comment[] = [];
+let comments: CommentQueryResult[] = [];
 try {
     comments = await getAllComment();
 } catch (err) {
@@ -21,12 +21,12 @@ try {
     {
         comments.map((comment) => (
             <li
-                id={comment.Id.toString(10)}
-                data-time={comment.Timestamp.toString(10)}
+                id={comment.commentsid.toString(10)}
+                data-time={comment.commentstime.toString(10)}
                 class="w-full text-sm text-rp-text break-word"
             >
                 <span>
-                    {comment.Author}: {comment.Content}
+                    {comment.commentsauthor}: {comment.commentscontent}
                 </span>
             </li>
         ))

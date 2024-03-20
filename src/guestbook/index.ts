@@ -1,17 +1,17 @@
-import { app } from "./Guestbook";
+import app from "./Guestbook";
 
 async function handleOnSubmit(event: SubmitEvent) {
     event.preventDefault();
     event.stopPropagation();
 
-    const commentForm = event.target as HTMLInputElement
-    const commentField = commentForm.querySelector("#comment-field");
-    if (!commentField) return;
+    const commentForm = event.target as HTMLInputElement;
+    const contentField = commentForm.querySelector("#content-field");
+    if (!contentField) return;
 
-    const comment = (commentField as HTMLInputElement).value;
-    if (comment.length >= 2) {
+    const content = (contentField as HTMLInputElement).value;
+    if (content.length >= 2) {
         const params = new URLSearchParams();
-        params.set("comment", comment);
+        params.set("content", content);
 
         const headers: HeadersInit = {
             Accept: "application/json",
@@ -24,6 +24,8 @@ async function handleOnSubmit(event: SubmitEvent) {
         };
 
         await fetch("/api/guestbook", init);
+
+        (contentField as HTMLInputElement).value = "";
     }
 }
 
@@ -41,9 +43,24 @@ function render() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    window.app = app;
+    if (!window.app) {
+        window.app = app;
+    }
+    if (window.app.disconnected()) {
+        window.app.connect();
+    }
+});
+
+window.addEventListener("unload", () => {
+    window.app?.disconnect();
 });
 
 document.addEventListener("astro:page-load", () => {
+    if (!window.app) {
+        window.app = app;
+        window.app.connect();
+    } else if (window.app.disconnected()) {
+        window.app.connect();
+    }
     render();
 });

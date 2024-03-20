@@ -1,30 +1,33 @@
-import type { _Comment } from "@T/Comment";
 import type { APIContext, APIRoute } from "astro";
+import type { QueryConfig } from "pg";
+import type { CommentQueryResult, _Comment } from "@T/Comment";
 
 import DOMPurify from "isomorphic-dompurify";
 
-import { lucia } from "src/auth";
+import getClient from "src/postgres";
 import getLogger from "src/utils/logger";
+import { lucia } from "src/auth";
 
-const child = getLogger().child({ filename: "/pages/api/guestbook" });
+const baseLog = getLogger().child({ filename: "/pages/api/guestbook" });
 
 export const GET: APIRoute = async (_: APIContext) => {
+    const l = baseLog.child({ function: "GET" });
     try {
-        const res = await fetch("http://localhost:8000/comments/get-all");
-        return new Response(await res.blob(), { status: 200 });
+        const comments = await getAllComment();
+
+        return new Response(JSON.stringify(comments), { status: 200 });
     } catch (err) {
         if (err instanceof Error) {
-            child.error(err.message);
-            return new Response(null, { status: 500 });
+            l.error(err.message);
         }
-        return new Response(null, { status: 500 });
+        return new Response("Internal Server Error", { status: 500 });
     }
 };
 
 export const POST: APIRoute = async (context: APIContext) => {
     const sessionId = context.cookies.get(lucia.sessionCookieName)?.value;
     if (!sessionId) {
-        child.info("Incoming request has no session cookie");
+        baseLog.info("Incoming request has no session cookie");
         return new Response(null, { status: 400 });
     }
 
@@ -32,12 +35,12 @@ export const POST: APIRoute = async (context: APIContext) => {
     const { session, user } = await lucia.validateSession(sessionId);
     if (session) {
         const formData = await context.request.formData();
-        const comment = formData.get("comment");
-        if (!comment || typeof comment !== "string" || comment.length < 2) {
+        const content = formData.get("content");
+        if (!content || typeof content !== "string" || content.length < 2) {
             return new Response(null, { status: 400 });
         }
 
-        const params = new URLSearchParams();
+        /*const params = new URLSearchParams();
         params.set("author", user.username);
         params.set("comment", DOMPurify.sanitize(comment));
 
@@ -49,34 +52,67 @@ export const POST: APIRoute = async (context: APIContext) => {
             body: params,
             method: "POST",
             headers: headers,
-        };
+        };*/
 
         try {
-            const res = await fetch(
-                "http://localhost:8000/comments/post",
-                init,
-            );
+            const comment = await postComment(user.username, content);
 
-            if (res.status === 200) {
-                return new Response(null, { status: 200 });
-            }
-
-            throw new Error(`Server return status code ${res.status}`);
+            return new Response(JSON.stringify(comment), { status: 200 });
         } catch (err) {
             if (err instanceof Error) {
-                child.error(err);
+                baseLog.error(err);
             }
 
-            return new Response(null, { status: 500 });
+            return new Response("Interal Server Error", { status: 500 });
         }
     }
 
-    child.info("Incoming request with invalid session id");
+    baseLog.info("Incoming request with invalid session id");
     return new Response(null, { status: 401 });
 };
 
 export async function getAllComment() {
-    const res = await fetch("http://localhost:8000/comments/get-all");
-    const comment: _Comment[] = await res.json();
-    return comment;
+    const client = await getClient();
+    if (!client) {
+        throw new Error(
+            "Failed to get all comments. Reason: DB Connection is not established",
+        );
+    }
+
+    const query: QueryConfig = {
+        text: "SELECT * FROM comments ORDER BY commentstime desc",
+    };
+    const res = await client.query<CommentQueryResult>(query);
+    for (const row of res.rows) {
+        row.commentstime = (row.commentstime as Date).getTime();
+    }
+
+    return res.rows;
+}
+
+export async function postComment(author: string, content: string) {
+    const client = await getClient();
+
+    if (!client) {
+        throw new Error(
+            "Failed to post comment. Reason: DB Connection is not established",
+        );
+    }
+
+    let query: QueryConfig = {
+        text: `INSERT INTO comments (
+            commentsid,
+            commentsauthor,
+            commentscontent,
+            commentstime
+        ) VALUES (DEFAULT, $1, $2, now()) RETURNING *`,
+        values: [DOMPurify.sanitize(author), DOMPurify.sanitize(content)],
+    };
+
+    let res = await client.query<CommentQueryResult>(query);
+    if (res.rows.length === 0) {
+        throw new Error(
+            "Failed to post comment. Reason: DB insertion did not return the inserted row",
+        );
+    }
 }

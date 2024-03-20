@@ -1,54 +1,86 @@
-import type { _Comment } from "@T/Comment";
-
-type Event = {
-    Type: string;
-};
-
-export type ViewCountEvent = Event & {
-    ViewCountEventType: string;
-    ViewCount: number;
-};
-
-export type DBChangeEvent = Event & {
-    DBEventType: string;
-    Comment: _Comment;
-};
+import { Event, Comment, DBEventType } from "@P/messager";
 
 const prod = import.meta.env.PUBLIC_PROD;
 const addr = prod ? import.meta.env.PUBLIC_BACKEND_ADDR : "localhost";
 const port = prod ? import.meta.env.PUBLIC_BACKEND_PORT : 8000;
 
 export class GuestbookApp {
-    private ws: WebSocket;
+    private ws: WebSocket | null;
     private viewCount: number;
 
     constructor() {
-        console.log("called");
         this.viewCount = 1;
+        this.ws = null;
+        window.addEventListener("beforeunload", (_) => {
+            this.disconnect();
+        });
+    }
+
+    connect() {
+        if (this.ws) {
+            switch (this.ws.readyState) {
+                case WebSocket.CONNECTING:
+                case WebSocket.OPEN:
+                    return;
+                default:
+                    this.ws = null;
+                    break;
+            }
+        }
+
         this.ws = new WebSocket(`ws://${addr}:${port}/ws`);
+        this.ws.binaryType = "arraybuffer";
+
+        this.ws.addEventListener("open", (_) => {
+            console.log("Realtime started");
+        });
 
         this.ws.addEventListener("message", (event) => {
-            const data = JSON.parse(event.data);
-            if (!data.Type) return;
+            const data = event.data;
 
-            const generic = data as Event;
-            switch (generic.Type) {
-                case "ViewCountEvent": {
-                    const e = generic as ViewCountEvent;
-                    this.setViewCount(e.ViewCount as number);
-                    break;
+            if (data === null || !data || !(data instanceof ArrayBuffer)) {
+                console.error("Invalid Valid Data");
+            }
+
+            const ev = Event.decode(new Uint8Array(data));
+
+            if (ev.dbChangeEvent && ev.dbChangeEvent.comment) {
+                console.log(ev.dbChangeEvent);
+                switch (ev.dbChangeEvent.dbEventType) {
+                    case DBEventType.DBEVENTTYPE_INSERT:
+                        this.newComment(ev.dbChangeEvent.comment);
+                        break;
+                    case DBEventType.DBEVENTTYPE_DELETE:
+                        this.deleteComment(ev.dbChangeEvent.comment);
+                    case DBEventType.DBEVENTTYPE_UPDATE:
+                        this.updateComment(ev.dbChangeEvent.comment);
+                    default:
+                        break;
                 }
-                case "DBChangeEvent": {
-                    const e = generic as DBChangeEvent;
-                    this.updateComments(e.Comment);
-                    break;
-                }
+            } else if (ev.viewCountEvent) {
+                this.setViewCount(ev.viewCountEvent.viewCount);
             }
         });
 
-        window.addEventListener("beforeunload", (_) => {
-            this.ws.close();
+        this.ws.addEventListener("close", (_) => {
+            console.log("Realtime stopped");
         });
+
+        this.ws.addEventListener("error", (_) => {
+            console.log("Occur in realtime");
+        })
+    }
+
+    disconnect() {
+        if (this.ws !== null) {
+            console.log("Realtime stopping");
+            this.ws.close();
+            this.ws = null;
+        }
+    }
+
+    disconnected() {
+        return !this.ws;
     }
 
     setViewCount(viewCount: number) {
@@ -62,17 +94,20 @@ export class GuestbookApp {
         return this.viewCount;
     }
 
-    updateComments(comment: _Comment) {
+    newComment(comment: Comment) {
         const commentSection = document.getElementById("comment-section");
         if (!commentSection) return;
         const commentLists = commentSection.children;
 
         const newCommentList = document.createElement("li");
         const commentSpan = document.createElement("span");
-        newCommentList.id = comment.Id.toString(10);
-        newCommentList.dataset.time = comment.Timestamp.toString(10);
+
+        newCommentList.id = comment.id.toString(10);
+        newCommentList.dataset.time = comment.time.toString(10);
+        commentSpan.textContent = `${comment.author}: ${comment.content}`;
+
         newCommentList.className = "w-full text-sm text-rp-text break-word";
-        commentSpan.textContent = `${comment.Author}: ${comment.Content}`;
+
         newCommentList.append(commentSpan);
 
         if (commentLists.length === 0) {
@@ -92,10 +127,10 @@ export class GuestbookApp {
                 return;
             }
             const time = Number.parseInt(e.dataset.time as string);
-            if (time == comment.Timestamp) {
+            if (time == comment.time) {
                 e.insertAdjacentElement("beforebegin", newCommentList);
                 return;
-            } else if (comment.Timestamp > time) {
+            } else if (comment.time > time) {
                 h = m;
             } else {
                 l = m + 1;
@@ -107,6 +142,31 @@ export class GuestbookApp {
         }
         commentLists[l].insertAdjacentElement("beforebegin", newCommentList);
     }
+
+    deleteComment(comment: Comment) {
+        const commentSection = document.getElementById("comment-section");
+        if (!commentSection) return;
+        const commentLists = commentSection.children;
+        for (const list of commentLists) {
+            if (list.id === comment.id.toString(10)) {
+                commentSection.removeChild(list);
+            }
+        } 
+    }
+
+    updateComment(comment: Comment) {
+        const commentSection = document.getElementById("comment-section");
+        if (!commentSection) return;
+        const commentLists = commentSection.children;
+        for (const list of commentLists) {
+            if (list.id === comment.id.toString(10)) {
+                (list as HTMLElement).dataset.time = comment.time.toString(10);
+                list.textContent = `${comment.author}: ${comment.content}`;
+            }
+        } 
+    }
 }
 
-export const app = new GuestbookApp();
+const app = new GuestbookApp();
+
+export default app;

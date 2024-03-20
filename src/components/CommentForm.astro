@@ -1,6 +1,6 @@
 ---
 import getLogger from "src/utils/logger";
-import DOMPurify from "isomorphic-dompurify";
+import { postComment } from "src/pages/api/guestbook";
 
 const child = getLogger().child({ filename: "/components/CommentForm.astro" });
 const { author } = Astro.props;
@@ -8,37 +8,14 @@ const errors = { comment: "" };
 if (Astro.request.method === "POST") {
     try {
         const data = await Astro.request.formData();
-        const comment = data.get("comment");
-        if (!comment || typeof comment !== "string" || comment.length < 2) {
+        const content = data.get("content");
+        if (!content || typeof content !== "string" || content.length < 2) {
             errors.comment +=
                 "Please enter a valid comment (more than two characters)";
         }
         const hasErrors = Object.values(errors).some((msg) => msg);
         if (!hasErrors) {
-            const params = new URLSearchParams();
-            params.set("author", author);
-            params.set("comment", DOMPurify.sanitize(comment as string));
-
-            const headers: HeadersInit = {
-                Accept: "application/json",
-                "Content-Type": "application/x-www-form-urlencoded",
-            };
-            const init: RequestInit = {
-                body: params,
-                method: "POST",
-                headers: headers,
-            };
-
-            const res = await fetch(
-                "http://localhost:8000/comments/post",
-                init,
-            );
-            child.info(`status code: ${res.status}`);
-            if (res.status === 200) {
-                return Astro.redirect("/guestbook");
-            }
-
-            throw new Error(`Server return status code ${res.status}`);
+            await postComment(author, content as string);
         }
     } catch (err) {
         if (err instanceof Error) {
@@ -59,8 +36,8 @@ if (Astro.request.method === "POST") {
     data-astro-reload
 >
     <input
-        name="comment"
-        id="comment-field"
+        name="content"
+        id="content-field"
         aria-label="Your message"
         class="message pl-4 py-2 pr-8 w-full bg-rp-surface
     rounded-lg text-rp-text"
@@ -79,13 +56,7 @@ if (Astro.request.method === "POST") {
         Sign
     </button>
 </form>
-<form
-    class="relative"
-    action="/api/auth/logout"
-    id="logout-form"
-    method="post"
-    data-astro-reload
->
+<form class="relative" action="/api/auth/logout" id="logout-form" method="post">
     <button
         class="relative px-4 py-2 bottom-1 right-1 hover:text-rp-iris"
         type="submit"
