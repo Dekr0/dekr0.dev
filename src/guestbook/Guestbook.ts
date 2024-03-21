@@ -39,13 +39,12 @@ export class GuestbookApp {
             const data = event.data;
 
             if (data === null || !data || !(data instanceof ArrayBuffer)) {
-                console.error("Invalid Valid Data");
+                console.error("Invalid Data");
             }
 
             const ev = Event.decode(new Uint8Array(data));
 
             if (ev.dbChangeEvent && ev.dbChangeEvent.comment) {
-                console.log(ev.dbChangeEvent);
                 switch (ev.dbChangeEvent.dbEventType) {
                     case DBEventType.DBEVENTTYPE_INSERT:
                         this.newComment(ev.dbChangeEvent.comment);
