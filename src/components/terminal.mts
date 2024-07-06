@@ -1,3 +1,4 @@
+import { commands } from "../commands.mts";
 import $ from "../query.mts";
 import RingBuffer from "../queue.mts";
 
@@ -13,7 +14,6 @@ const caretchange = new Event("caret");
 
 const history: string[] = [];
 
-const commands = ["about", "experience", "man", "projects"];
 const mods = ["Alt", "Control", "Meta", "Shift"];
 const modKeyBuffer = new RingBuffer(mods.length);
 
@@ -38,43 +38,43 @@ function render() {
         main.appendChild(prompt);
         stdin.focus();
     }
-    function onMouseUp(e: Event) {
+    function focus(e: Event) {
         if (!e.target) {
             throw new Error(`${e.type} event fired with a null target`);
         }
         stdin.focus();
     }
     main.addEventListener(clear.type, onClear);
-    main.addEventListener("mouseup", onMouseUp);
+    main.addEventListener("mouseup", focus);
+    main.addEventListener("touchend", focus);
 
 
     /** stdin Element */
     modKeyBuffer.flush();
 
     function onKeyDown(e: KeyboardEvent) {
-        e.preventDefault();
         if (!e.target) {
             throw new Error(`${e.type} event fired with a null target`);
         }
 
         if (mods.includes(e.key)) return modKeyBuffer.push(e.key);
 
+        const t = e.target as HTMLInputElement;
+
         if (!modKeyBuffer.isEmpty()) {
             const prefix = modKeyBuffer.flush();
             const shortcut = [...prefix, e.key].join("-");
             switch (shortcut) {
                 case "Control-l": {
+                    e.preventDefault();
                     main.dispatchEvent(clear);
                     return;
                 }
                 default: {
                     if (shortcut.startsWith("Shift") && 
                         e.key.length === 1 && 
-                        isSymbol(e.key.charCodeAt(0))) {
-                        cmd.splice(caretPos.caret, 0, e.key);
-                        caretPos.caret += 1;
-                        return;
-                    }
+                        isSymbol(e.key.charCodeAt(0))) break;
+                    e.preventDefault();
                     return;
                 }
             }
@@ -93,28 +93,25 @@ function render() {
                 break;
             }
             case "ArrowUp": {
+                e.preventDefault();
                 if (historyIndex > 0) {
                     historyIndex -= 1;
                     cmd = history[historyIndex].split("");
                     caretPos.caret = cmd.length;
+                    t.value = cmd.join("");
+                    t.selectionEnd = caretPos.caret;
                 }
                 break;
             }
             case "ArrowDown": {
+                e.preventDefault();
                 if (historyIndex < history.length - 1) {
                     historyIndex += 1;
                     cmd = history[historyIndex].split("");
                     caretPos.caret = cmd.length;
+                    t.value = cmd.join("");
+                    t.selectionEnd = caretPos.caret;
                 }
-                break;
-            }
-            case "Backspace": {
-                caretPos.caret > 0 && 
-                    cmd.length > 0 && 
-                    cmd.splice(caretPos.caret - 1, 1);
-                caretPos.caret = caretPos.caret === 0 ? 
-                    0 : 
-                    caretPos.caret - 1;
                 break;
             }
             case "Enter": {
@@ -122,6 +119,7 @@ function render() {
                 break;
             }
             case "Tab": {
+                e.preventDefault();
                 const search = cmd.join("");
                 const results = commands
                     .filter((command) => command.startsWith(search));
@@ -130,21 +128,29 @@ function render() {
                 if (results.length === 1) {
                     cmd = results[0].split("");
                     caretPos.caret = cmd.length;
+                    t.value = cmd.join("");
+                    t.selectionEnd = caretPos.caret;
                 } else {
 
                 }
                 break;
             }
             default: {
-                if (e.key.length === 1 && isSymbol(e.key.charCodeAt(0))) {
-                    cmd.splice(caretPos.caret, 0, e.key);
-                    caretPos.caret += 1;
-                    break;
-                }
+                break;
             }
         }
     }
+    function onInput(e: Event) {
+        if (!e.target) {
+            throw new Error(`${e.type} event fired with a null target`);
+        }
+        console.log("Fire");
+        const t = e.target as HTMLInputElement;
+        cmd = t.value.split("");
+        caretPos.caret = t.selectionEnd!;
+    }
     stdin.addEventListener("keydown", onKeyDown);
+    stdin.addEventListener("input", onInput);
 
 
     /** stdin Buffer */
@@ -185,7 +191,8 @@ function render() {
         historyIndex = history.length;
 
         e.target.removeEventListener(clear.type, onClear);
-        e.target.removeEventListener("mouseup", onMouseUp);
+        e.target.removeEventListener("mouseup", focus);
+        e.target.removeEventListener("touchend", focus);
 
         (prompt as HTMLDivElement).id = "";
         
@@ -194,6 +201,7 @@ function render() {
         stdin.disabled = true;
         stdin.blur();
         stdin.removeEventListener("keydown", onKeyDown);
+        stdin.removeEventListener("input", onInput);
 
         stdout.id = "";
         stdout.innerHTML = stdout.innerText;
