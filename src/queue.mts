@@ -1,34 +1,16 @@
-export default class ModKeyBuffer {
+export default class RingBuffer {
     private buffer: string[]
     private head  : number
     private tail  : number
     private full  : boolean
     private max   : number
 
-    private static readonly mods = ["Alt", "Control", "Meta", "Shift"];
-    private static readonly browserBuiltin = [
-        "Control-a",
-        "Control-z"
-    ]
-
-    constructor() {
+    constructor(max: number) {
         this.buffer = new Array<string>(0);
         this.max    = 4;
         this.full   = false;
         this.head   = 0;
         this.tail   = 0;
-
-        /* setInterval(() => {
-            console.log(`[${this.flush()}]`);
-        }, 2049); */
-    }
-
-    static isModKey(key: string) {
-        return this.mods.includes(key);
-    }
-
-    static isBrowserBuiltin(seq: string) {
-        return this.browserBuiltin.includes(seq);
     }
 
     flush(): string[] {
