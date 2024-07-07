@@ -25,6 +25,11 @@ export default {
                     "yellow-500": "#B58900",
                     "yellow-700": "#664D00",
                     "yellow-900": "#332700",
+                    "cyna-100": "#B9FFFA",
+                    "cyna-300": "#29EEDF",
+                    "cyna-500": "#2AA198",
+                    "cyna-700": "#1A6265",
+                    "cyna-900": "#103B3D"
                 }
             }
         },
