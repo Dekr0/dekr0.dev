@@ -1,26 +1,37 @@
-export default class RingBuffer {
+export default class ModRingBuffer {
     private buffer: string[]
     private head  : number
     private tail  : number
     private full  : boolean
     private max   : number
+    private empty_flag : string;
 
-    constructor(max: number) {
+    private static mods = ["Alt", "Control", "Meta", "Shift"];
+
+    constructor(
+        max: number = ModRingBuffer.mods.length,
+        empty_flag: string = "empty"
+    ) {
         this.buffer = new Array<string>(0);
-        this.max    = 4;
+        this.max    = max;
         this.full   = false;
         this.head   = 0;
         this.tail   = 0;
+        this.empty_flag = empty_flag;
+    }
+
+    static isMod(key: string) {
+        return ModRingBuffer.mods.includes(key);
     }
 
     flush(): string[] {
         const buffer: string[] = [];
         while (!this.isEmpty()) {
-            const key = this.pop();
-            if (!key) {
+            const mod = this.pop();
+            if (!mod) {
                 throw new Error("An undefined item was popped after passing empty check");
             }
-            buffer.push(key);
+            buffer.push(mod);
         }
         return buffer;
     }
@@ -36,20 +47,34 @@ export default class RingBuffer {
     pop(): string | undefined {
         if (this.isEmpty()) return undefined;
 
-        const data = this.buffer[this.tail];
+        const mod = this.buffer[this.tail];
 
-        this.buffer[this.tail] = "";
+        this.buffer[this.tail] = this.empty_flag;
 
         this.retreat();
 
-        return data;
+        return mod;
     }
 
     push(key: string) {
+        if (this.buffer.includes(key)) {
+            throw new Error(`Duplicate mod ${key} was pushed into input buffer`);
+        }
         this.buffer[this.head] = key;
         this.advance();
     }
 
+    toArray(): string[] {
+        if (this.isEmpty()) return [];
+
+        const buffer: string[] = [];
+        let tail = this.tail;
+        while (tail !== this.head) {
+            buffer.push(this.buffer[tail]);
+            tail = ++tail === this.max ? 0 : tail;
+        }
+        return buffer;
+    }
 
     toString(): string {
         return `[${this.buffer}], head = ${this.head}, tail = ${this.tail}`;
