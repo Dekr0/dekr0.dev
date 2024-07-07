@@ -3,20 +3,21 @@ import Layout from '../layouts/Layout.astro';
 ---
 <Layout title="">
     <main class="flex flex-col gap-2 w-6/12 mx-auto my-4 h-screen">
-        <p class="text-solar-base-1 text-3xl">type 'man' for more usages</p>
+        <p class="text-solar-base-1 text-xl">type 'man' for more usages</p>
     </main>
 </Layout>
 
 <template id="prompt-template">
-    <div id="prompt" class="flex gap-2 items-center text-3xl">
-        <label for="stdin" class="flex gap-0.5">
+    <div id="prompt" class="flex gap-2 items-center text-xl">
+        <label for="stdin" class="flex gap-1 items-center">
             <i class="text-solar-blue-500 nf-fa-bolt"></i>
             <i class="text-solar-yellow-500 nf-fae-pulse"></i>
+            <span id="runtime" class="text-solar-cyna-500 ml-2 pb-1"></span>
         </label>
         <input autofocus autocomplete="off" id="stdin" name="stdin" type="text"
-         class="bg-solar-base-04 text-solar-base-1 focus:outline-none pb-2"
+         class="absolute right-full bg-solar-base-04 text-solar-base-1 focus:outline-none pb-2"
         >
-        <span id="stdout" class="whitespace-pre text-solar-base-1"><span class="whitespace-pre text-solar-base-04 bg-solar-base-3 animate-pulse" id="caret">&nbsp;</span></span>
+        <span id="stdout" class="whitespace-pre text-solar-base-1 font-mono"><span class="whitespace-pre text-solar-base-04 bg-solar-base-3 animate-pulse font-mono" id="caret">&nbsp;</span></span>
     </div>
 </template>
 
