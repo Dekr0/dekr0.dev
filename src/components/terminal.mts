@@ -1,6 +1,6 @@
-import { commands } from "../commands.mts";
+import commands from "../commands.mts";
 import $ from "../query.mts";
-import RingBuffer from "../queue.mts";
+import ModRingBuffer from "../queue.mts";
 
 if (!("content" in document.createElement("template"))) {
     // Error handling
@@ -13,22 +13,37 @@ const enter = new Event("enter");
 const caretchange = new Event("caret");
 
 const history: string[] = [];
+const commandsK = Array.from(commands.keys());
 
-const mods = ["Alt", "Control", "Meta", "Shift"];
-const modKeyBuffer = new RingBuffer(mods.length);
+const modRingBuffer = new ModRingBuffer();
 
 function isSymbol(charCode: number) {
     return charCode >= 32 && charCode <= 126;
 }
 
-function render() {
+function render(runtime: number = 0) {
     main.appendChild(promptTemplate.content.cloneNode(true));
 
     const prompt = $.id(document, "prompt");
+    const runtimeLabel = $.id(document, "runtime");
+    runtimeLabel.innerHTML = `${runtime} ms`;
     const caret = $.id(document, "caret");
     const stdin = $.id(document, "stdin") as HTMLInputElement;
     const stdout = $.id(document, "stdout");
-    
+
+    let start: number;
+    let stdinBuffer = "";
+    let historyIndex = history.length;
+    const caretPos = new Proxy({ caret: 0 }, {
+        set: (target, prop, newValue, _) => {
+            if (prop !== "caret" || typeof newValue !== "number") return false;
+            target.caret = newValue;
+            stdout.dispatchEvent(caretchange);
+            return true;
+        }
+    });
+
+
     /** Main */
     function onClear(e: Event) {
         if (!e.target) {
@@ -50,19 +65,19 @@ function render() {
 
 
     /** stdin Element */
-    modKeyBuffer.flush();
+    modRingBuffer.flush();
 
     function onKeyDown(e: KeyboardEvent) {
         if (!e.target) {
             throw new Error(`${e.type} event fired with a null target`);
         }
 
-        if (mods.includes(e.key)) return modKeyBuffer.push(e.key);
+        if (ModRingBuffer.isMod(e.key)) return modRingBuffer.push(e.key);
 
         const t = e.target as HTMLInputElement;
 
-        if (!modKeyBuffer.isEmpty()) {
-            const prefix = modKeyBuffer.flush();
+        if (!modRingBuffer.isEmpty()) {
+            const prefix = modRingBuffer.toArray();
             const shortcut = [...prefix, e.key].join("-");
             switch (shortcut) {
                 case "Control-l": {
@@ -70,65 +85,93 @@ function render() {
                     main.dispatchEvent(clear);
                     return;
                 }
-                default: {
-                    if (shortcut.startsWith("Shift") && 
-                        e.key.length === 1 && 
-                        isSymbol(e.key.charCodeAt(0))) break;
+                case "Meta-p": {
                     e.preventDefault();
-                    return;
+                    if (historyIndex <= 0) break;
+
+                    historyIndex -= 1;
+                    stdinBuffer = history[historyIndex];
+                    caretPos.caret = stdinBuffer.length;
+
+                    t.value = stdinBuffer;
+                    t.selectionEnd = caretPos.caret;
+                    break;
+                }
+                case "Meta-n": {
+                    e.preventDefault();
+                    if (historyIndex >= history.length - 1) break;
+
+                    historyIndex += 1;
+                    stdinBuffer = history[historyIndex];
+
+                    caretPos.caret = stdinBuffer.length;
+                    t.value = stdinBuffer;
+                    t.selectionEnd = caretPos.caret;
+                    break;
+                }
+                default: {
+                    const shiftUpper = shortcut.startsWith("Shift") &&
+                        e.key.length === 1 &&
+                        isSymbol(e.key.charCodeAt(0));
+
+                    if (shiftUpper) break;
+
+                    e.preventDefault();
+                    break;
                 }
             }
         }
         switch (e.key) {
             case "ArrowLeft": {
-                if (caretPos.caret > 0) {
-                    caretPos.caret -= 1;
-                }
+                if (caretPos.caret <= 0) break;
+                caretPos.caret -= 1;
                 break;
             }
             case "ArrowRight": {
-                if (caretPos.caret < cmd.length) {
-                    caretPos.caret += 1;
-                }
+                if (caretPos.caret >= stdinBuffer.length) break;
+                caretPos.caret += 1;
                 break;
             }
             case "ArrowUp": {
                 e.preventDefault();
-                if (historyIndex > 0) {
-                    historyIndex -= 1;
-                    cmd = history[historyIndex].split("");
-                    caretPos.caret = cmd.length;
-                    t.value = cmd.join("");
-                    t.selectionEnd = caretPos.caret;
-                }
+                if (historyIndex <= 0) break;
+
+                historyIndex -= 1;
+                stdinBuffer = history[historyIndex];
+                caretPos.caret = stdinBuffer.length;
+
+                t.value = stdinBuffer;
+                t.selectionEnd = caretPos.caret;
                 break;
             }
             case "ArrowDown": {
                 e.preventDefault();
-                if (historyIndex < history.length - 1) {
-                    historyIndex += 1;
-                    cmd = history[historyIndex].split("");
-                    caretPos.caret = cmd.length;
-                    t.value = cmd.join("");
-                    t.selectionEnd = caretPos.caret;
-                }
+                if (historyIndex >= history.length - 1) break;
+
+                historyIndex += 1;
+                stdinBuffer = history[historyIndex];
+
+                caretPos.caret = stdinBuffer.length;
+                t.value = stdinBuffer;
+                t.selectionEnd = caretPos.caret;
                 break;
             }
             case "Enter": {
-                main.dispatchEvent(enter);
-                break;
+                e.preventDefault();
+                start = Date.now();
+                return main.dispatchEvent(enter);
             }
             case "Tab": {
                 e.preventDefault();
-                const search = cmd.join("");
-                const results = commands
+                const search = stdinBuffer;
+                const results = commandsK
                     .filter((command) => command.startsWith(search));
                 if (results.length === 0) break;
 
                 if (results.length === 1) {
-                    cmd = results[0].split("");
-                    caretPos.caret = cmd.length;
-                    t.value = cmd.join("");
+                    stdinBuffer = results[0];
+                    caretPos.caret = stdinBuffer.length;
+                    t.value = stdinBuffer;
                     t.selectionEnd = caretPos.caret;
                 } else {
 
@@ -144,26 +187,18 @@ function render() {
         if (!e.target) {
             throw new Error(`${e.type} event fired with a null target`);
         }
-        console.log("Fire");
         const t = e.target as HTMLInputElement;
-        cmd = t.value.split("");
-        caretPos.caret = t.selectionEnd!;
+        stdinBuffer = t.value;
+        caretPos.caret = t.selectionEnd || 0;
+    }
+    function onKeyUp(e: KeyboardEvent) {
+        if (modRingBuffer.isEmpty()) return;
+        if (!ModRingBuffer.isMod(e.key)) return;
+        modRingBuffer.flush();
     }
     stdin.addEventListener("keydown", onKeyDown);
     stdin.addEventListener("input", onInput);
-
-
-    /** stdin Buffer */
-    let cmd = new Array<string>();
-    let historyIndex = history.length;
-    const caretPos = new Proxy({ caret: 0 }, {
-        set: (target, prop, newValue, _) => {
-            if (prop !== "caret" || typeof newValue !== "number") return false;
-            target.caret = newValue;
-            stdout.dispatchEvent(caretchange);
-            return true;
-        }
-    });
+    stdin.addEventListener("keyup", onKeyUp);
 
 
     /** stdout Element */
@@ -173,10 +208,10 @@ function render() {
         }
         const t = e.target as HTMLSpanElement;
         t.innerHTML = "";
-        caret.innerText = cmd[caretPos.caret] || " ";
+        caret.innerText = stdinBuffer[caretPos.caret] || " ";
         t.appendChild(caret);
-        t.insertAdjacentText("afterbegin", cmd.slice(0, caretPos.caret).join(""));
-        t.insertAdjacentText("beforeend", cmd.slice(caretPos.caret + 1).join(""));
+        t.insertAdjacentText("afterbegin", stdinBuffer.slice(0, caretPos.caret));
+        t.insertAdjacentText("beforeend", stdinBuffer.slice(caretPos.caret + 1));
     }
     stdout.addEventListener(caretchange.type, onCaret);
 
@@ -187,7 +222,19 @@ function render() {
             throw new Error(`${e.type} event fired with a null target`);
         }
 
-        history.push(stdout.innerText.trim());
+        if (commands.has(stdinBuffer)) {
+
+        }
+
+        const [cmd, ...args] = stdinBuffer.split(" ");
+
+        if (!commands.has(cmd)) {
+            console.error(`command not found: ${cmd}`);
+        } else {
+            console.log(commands.get(cmd)?.call(args));
+        }
+        
+        stdinBuffer.length > 0 && history.push(stdinBuffer);
         historyIndex = history.length;
 
         e.target.removeEventListener(clear.type, onClear);
@@ -195,6 +242,8 @@ function render() {
         e.target.removeEventListener("touchend", focus);
 
         (prompt as HTMLDivElement).id = "";
+
+        runtimeLabel.id = "";
         
         stdin.id = "";
         stdin.value = "";
@@ -202,11 +251,12 @@ function render() {
         stdin.blur();
         stdin.removeEventListener("keydown", onKeyDown);
         stdin.removeEventListener("input", onInput);
+        stdin.removeEventListener("keydown", onKeyDown);
 
         stdout.id = "";
         stdout.innerHTML = stdout.innerText;
         stdout.removeEventListener(caretchange.type, onCaret);
-        render();
+        render(Date.now() - start);
     }, { once: true });
 
     stdin.focus();
