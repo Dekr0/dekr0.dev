@@ -1,0 +1,51 @@
+---
+import Layout from '../layouts/Layout.astro';
+import quotes from '../scripts/quote.mts';
+import commandList from '../shared/commandList.mts';
+
+const quote = quotes();
+---
+<Layout title="">
+<main class="flex flex-col gap-2 w-5/6 sm:w-6/12 mx-auto py-4 h-screen selection:bg-solar-base-1 selection:text-solar-base-04">
+        <p class="text-solar-base-1 lg:text-xl">type 'help' for a list of commands</p>
+        <p class="italic text-solar-base-1 lg:text-xl">"{quote}"</p>
+    </main>
+</Layout>
+
+<template id="prompt-template">
+    <div id="prompt" class="flex flex-wrap gap-2 items-center lg:text-xl">
+        <div class="basis-full">
+            <i class="text-solar-blue-500 nf-fa-bolt"></i>
+            <span id="runtime" class="text-solar-cyna-500 ml-2 pb-1"></span>
+        </div>
+        <i class="text-solar-yellow-500 nf-fae-pulse"></i>
+        <input autofocus autocomplete="off" id="stdin" name="stdin" type="text"
+         class="absolute right-full bg-solar-base-04 text-solar-base-1 focus:outline-none pb-2"
+        >
+        <span id="stdout" class="whitespace-pre text-solar-base-1 font-mono"><span class="whitespace-pre text-solar-base-04 bg-solar-base-3 animate-pulse font-mono" id="caret">&nbsp;</span></span>
+    </div>
+</template>
+
+<template id="help-template">
+    <div>
+        <p class="text-solar-base-1">Here are a list of commands.</p>
+        <ul class="flex flex-col items-start gap-1">
+            {commandList.map(command => (
+            <li class="flex items-center w-full text-sm lg:text-xl">
+                <span class="text-solar-yellow-300 basis-1/4 lg:basis-1/3">{command[0]}</span>
+                <span class="text-solar-base-1">{command[1]}</span>
+                {command[2] && (<span></span>)}
+            </li>
+            ))}
+        </ul>
+    </div>
+</template>
+
+<template id="about-template">
+</template>
+
+<template id="quote-template">
+    <p class="italic"></p>
+</template>
+
+<script src="../scripts/terminal.mts"></script>

@@ -1,42 +1,6 @@
 import { batch, createMemo, createSignal, type JSXElement } from "solid-js";
 import ModRingBuffer from "../queue.mts";
-import quotes from "../scripts/quote.mts";
 import { createStore } from "solid-js/store";
-
-
-function Echo(buffer: string) {
-    return <p class="text-solar-base-1 lg:text-lg font-mono">{buffer}</p>
-}
-
-function HistoryPrompt(buffer: string, runtime: string, error: string) {
-    return (
-        <div class="flex flex-wrap gap-2 items-center lg:text-lg">
-            <div class="basis-full gap-2 items-center">
-                <i class="text-[#0f8493] nf-fa-bolt pt-0.5"></i>
-                <span class="text-[#4d8206] pl-[18px] pr-[22px] font-mono pt-1">{runtime} s</span>
-                {error && <i class="text-[#d11141] nf-fa-warning"></i>}
-                {error && <span class="text-[#d11141] px-3 font-mono pt-1">{error}</span>}
-            </div>
-            <i class="text-solar-yellow-500 nf-fae-pulse"></i>
-            <span class="whitespace-pre text-solar-base-1 font-mono">{buffer}</span>
-        </div>
-    );
-}
-
-function NotFound(cmd: string) {
-    return <p class="text-solar-base-1 text-sm sm:text-base lg:text-lg font-mono">
-                command not found: 
-                <span class="text-solar-yellow-500 font-mono">{cmd}</span>
-            </p>
-}
-
-function Quote() {
-    return <p class="italic text-solar-base-1 text-sm sm:text-base lg:text-lg">"{quotes()}"</p>
-}
-
-function Welcome() {
-    return <p class="text-solar-base-1 lg:text-lg font-mono">type 'help' for a list of commands</p>
-}
 
 export default function Terminal() {
     console.log("Render Terminal");
@@ -217,7 +181,6 @@ export default function Terminal() {
         if (!ev.target) {
             throw new Error(`${ev.type} event fired with a null target`);
         }
-        const t = ev.target as HTMLInputElement;
         if (modRingBuffer.isEmpty()) return;
         if (!ModRingBuffer.isMod(ev.key)) return;
         modRingBuffer.flush();
@@ -227,13 +190,20 @@ export default function Terminal() {
         if (!ev.target) {
             throw new Error(`${ev.type} event fired with a null target`);
         }
-        const t = ev.target as HTMLElement;
+        stdin.focus();
+    }
+
+    function onTouchEnd(ev: Event) {
+        if (!ev.target) {
+            throw new Error(`${ev.type} event fired with a null target`);
+        }
         stdin.focus();
     }
 
     return (
         <main 
          onMouseUp={onMouseUp}
+         onTouchEnd={onTouchEnd}
          class="flex flex-col gap-2 w-5/6 mx-auto py-4 h-screen selection:bg-solar-base-1 selection:text-solar-base-04">
             {historyOut()}
             <div class="flex flex-wrap gap-2 items-center lg:text-lg">
