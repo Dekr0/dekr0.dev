@@ -1,11 +1,13 @@
+import { helpTemplate } from "../scripts/template.mts";
+
 const commands = new Map<string, Function>();
 
 function about() {
-    return offline("about");
+    return man("about");
 }
 
 function contacts() {
-    return offline("contacts");
+    return man("contacts");
 }
 
 function offline(cmd: string) {
@@ -13,15 +15,20 @@ function offline(cmd: string) {
 }
 
 function experience() {
-    return offline("experience");
+    return man("experience");
 }
 
-function man() {
-    return offline("man");
+function help() {
+    const root = helpTemplate.content.cloneNode(true) as DocumentFragment;
+    return root;
+}
+
+function man(args: string) {
+
 }
 
 function projects() {
-    return offline("projects");
+    return man("projects");
 }
 
 function sleep(t: number, callback: Function) {
@@ -29,10 +36,13 @@ function sleep(t: number, callback: Function) {
 }
 
 commands.set(about.name, about);
-commands.set(contacts.name, contacts);
+
 commands.set(experience.name, experience);
+
+commands.set(help.name, help);
+
 commands.set(man.name, man);
+
 commands.set(projects.name, projects);
-commands.set(sleep.name, sleep);
 
 export default commands;

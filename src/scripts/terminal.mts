@@ -1,19 +1,19 @@
-import commands from "../commands.mts";
-import $ from "../query.mts";
+import commands from "../shared/commands.mts";
+import commandList from "../shared/commandList.mts";
+import $ from "./query.mts";
 import ModRingBuffer from "../queue.mts";
+import { promptTemplate } from "./template.mts";
 
 if (!("content" in document.createElement("template"))) {
     // Error handling
 }
 const main = $.q(document, "main");
-const promptTemplate = $.id(document, "prompt-template") as HTMLTemplateElement;
 
 const clear = new Event("clear");
 const enter = new Event("enter");
 const caretchange = new Event("caret");
 
 const history: string[] = [];
-const commandsK = Array.from(commands.keys());
 
 const modRingBuffer = new ModRingBuffer();
 
@@ -22,14 +22,13 @@ function isSymbol(charCode: number) {
 }
 
 function render(runtime: number = 0) {
-    main.appendChild(promptTemplate.content.cloneNode(true));
-
-    const prompt = $.id(document, "prompt");
-    const runtimeLabel = $.id(document, "runtime");
-    runtimeLabel.innerHTML = `${runtime} ms`;
-    const caret = $.id(document, "caret");
-    const stdin = $.id(document, "stdin") as HTMLInputElement;
-    const stdout = $.id(document, "stdout");
+    const root = promptTemplate.content.cloneNode(true) as DocumentFragment;
+    const prompt = $.id(root, "prompt");
+    const runtimeLabel = $.id(root, "runtime");
+    runtimeLabel.innerHTML = `${runtime / 1000} s`;
+    const caret = $.id(root, "caret");
+    const stdin = $.id(root, "stdin") as HTMLInputElement;
+    const stdout = $.id(root, "stdout");
 
     let start: number;
     let stdinBuffer = "";
@@ -164,12 +163,12 @@ function render(runtime: number = 0) {
             case "Tab": {
                 e.preventDefault();
                 const search = stdinBuffer;
-                const results = commandsK
-                    .filter((command) => command.startsWith(search));
+                const results = commandList
+                    .filter((command) => command[0].startsWith(search));
                 if (results.length === 0) break;
 
                 if (results.length === 1) {
-                    stdinBuffer = results[0];
+                    stdinBuffer = results[0][0];
                     caretPos.caret = stdinBuffer.length;
                     t.value = stdinBuffer;
                     t.selectionEnd = caretPos.caret;
@@ -222,16 +221,12 @@ function render(runtime: number = 0) {
             throw new Error(`${e.type} event fired with a null target`);
         }
 
-        if (commands.has(stdinBuffer)) {
-
-        }
-
         const [cmd, ...args] = stdinBuffer.split(" ");
 
         if (!commands.has(cmd)) {
             console.error(`command not found: ${cmd}`);
         } else {
-            console.log(commands.get(cmd)?.call(args));
+            main.appendChild(commands.get(cmd)?.call(args));
         }
         
         stdinBuffer.length > 0 && history.push(stdinBuffer);
@@ -258,6 +253,8 @@ function render(runtime: number = 0) {
         stdout.removeEventListener(caretchange.type, onCaret);
         render(Date.now() - start);
     }, { once: true });
+
+    main.appendChild(root);
 
     stdin.focus();
 }

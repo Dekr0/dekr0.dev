@@ -8,6 +8,8 @@ export default class ModRingBuffer {
 
     private static mods = ["Alt", "Control", "Meta", "Shift"];
 
+    private static browsers = ["Control,z"];
+
     constructor(
         max: number = ModRingBuffer.mods.length,
         empty_flag: string = "empty"
@@ -22,6 +24,10 @@ export default class ModRingBuffer {
 
     static isMod(key: string) {
         return ModRingBuffer.mods.includes(key);
+    }
+
+    static isBrowser(shortcut: string) {
+        return ModRingBuffer.browsers.includes(shortcut);
     }
 
     flush(): string[] {
@@ -57,9 +63,6 @@ export default class ModRingBuffer {
     }
 
     push(key: string) {
-        if (this.buffer.includes(key)) {
-            throw new Error(`Duplicate mod ${key} was pushed into input buffer`);
-        }
         this.buffer[this.head] = key;
         this.advance();
     }
