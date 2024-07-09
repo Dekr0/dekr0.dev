@@ -1,9 +1,16 @@
-import { batch, createMemo, createSignal, type JSXElement } from "solid-js";
-import ModRingBuffer from "../queue.mts";
+import { batch, createMemo, createSignal, For, Show, type JSXElement } from "solid-js";
 import { createStore } from "solid-js/store";
 
+import ModRingBuffer from "../queue.mts";
+
+import HistoryPrompt from "./HistoryPrompt";
+import commands, { About, Cd, Echo, Ls, NotFound, Quote, Welcome } from "./Commands";
+import { bolt, pulse, warning } from "../icon.mts";
+
+const debug = (...msg: any[]) => import.meta.env.DEV && console.log(...msg);
+
 export default function Terminal() {
-    console.log("Render Terminal");
+    debug("Render Terminal");
 
     let stdin: HTMLInputElement;
 
@@ -11,8 +18,10 @@ export default function Terminal() {
     const [buffer, setBuffer] = createSignal("");
     const [error, setError] = createSignal("");
     const [caret, setCaret] = createSignal(0);
+    const [suggest, setSuggest] = createSignal<string[]>([]);
+    const [showSuggest, setShowSuggest] = createSignal(true);
     const [caretBuffer, setCaretBuffer] = createSignal(" ");
-    const [historyOut, setHistoryOut] = createSignal<JSXElement[]>([Welcome(), Quote()]); // Escape Hatch?
+    const [historyOut, setHistoryOut] = createSignal<JSXElement[]>([Welcome(), Quote().c]); // Escape Hatch?
     const [history, setHistory] = createStore({
         i: 0,
         history: new Array<string>()
@@ -24,13 +33,13 @@ export default function Terminal() {
     /** Use createMemo instead */
 
     createMemo(() => {
-        console.log("Update caret buffer");
+        debug("Update caret buffer");
         setCaretBuffer(buffer().at(caret()) || " ");
     });
 
     // Escape Hatch / Breaking Solid Rule?
     createMemo(() => {
-        console.log("Update shortcut");
+        debug(`Update shortcut ${shortcut()}`);
         switch (shortcut()) {
             case "Control,l":
                 setHistoryOut([]);
@@ -41,7 +50,7 @@ export default function Terminal() {
     });
 
     createMemo(() => {
-        console.log("Update buffer due to history lookup");
+        // debug("Update buffer due to history lookup");
         if (history.history.length === 0) return;
 
         if (history.i < 0 || history.i >= history.history.length) return;
@@ -55,7 +64,11 @@ export default function Terminal() {
 
         setBuffer(lookup);
         setCaret(lookup.length);
-    })
+    });
+
+    createMemo(() => {
+        suggest().length <= 1 || setShowSuggest(false);
+    });
 
     // Escape Hatch / Breaking Solid Rule?
     function onEnter(start: number) {
@@ -64,14 +77,34 @@ export default function Terminal() {
         let nextError = error();
         if (cmd) {
             switch (cmd) {
+                case "about": {
+                    const {c, e} = About();
+                    result = c;
+                    nextError = e;
+                    break;
+                }
+                case "cd": {
+                    const {c, e} = Cd();
+                    result = c;
+                    nextError = e;
+                    break;
+                }
                 case "echo": {
-                    result = Echo(args.join(" "));
-                    nextError = "";
+                    const {c, e} = Echo(args.join(" "));
+                    result = c;
+                    nextError = e;
+                    break;
+                }
+                case "ls": {
+                    const {c, e} = Ls();
+                    result = c;
+                    nextError = e;
                     break;
                 }
                 default: {
-                    result = NotFound(cmd);
-                    nextError = "NOTFOUND";
+                    const {c, e} = NotFound(cmd);
+                    result = c;
+                    nextError = e;
                     break;
                 }
             }
@@ -101,9 +134,10 @@ export default function Terminal() {
                 }
             });
             setHistory("i", (_) => history.history.length);
-
+            
             setBuffer("");
             setCaret(0);
+            setSuggest([]);
             setRuntime((Date.now() - start) / 1000);
         });
     }
@@ -115,11 +149,23 @@ export default function Terminal() {
             throw new Error(`${ev.type} event fired with a null target`);
         }
         const t = ev.target as HTMLInputElement;
+
+        debug(`Key down: ${ev.key}`);
+
         if (ModRingBuffer.isMod(ev.key)) {
             ev.preventDefault();
             modRingBuffer.push(ev.key);
             return;
         }
+
+        if (suggest().length > 1 && !showSuggest()) {
+            if (ev.key === "Tab" || ev.key === "y") {
+                ev.preventDefault();
+                return setShowSuggest(true);
+            }
+            setSuggest([]);
+        }
+
         if (!modRingBuffer.isEmpty()) {
             const shortcut = [modRingBuffer.toArray(), ev.key].join();
             const upper = shortcut.startsWith("Shift") &&
@@ -129,8 +175,10 @@ export default function Terminal() {
 
             ev.preventDefault();
 
-            setShortCut(shortcut);
+            return setShortCut(shortcut);
         }
+
+
         switch (ev.key) {
             case "ArrowLeft": {
                 caret() > 0 && setCaret(caret() - 1);
@@ -143,7 +191,6 @@ export default function Terminal() {
             case "ArrowUp": {
                 ev.preventDefault();
                 setHistory("i", (ci) => {
-                    console.log("Lookup", ci);
                     return ci > 0 ? ci - 1 : 0;
                 });
                 break;
@@ -151,9 +198,25 @@ export default function Terminal() {
             case "ArrowDown": {
                 ev.preventDefault();
                 setHistory("i", (ci) => {
-                    console.log("Look forward", ci);
+                    debug("Look forward", ci);
                     return ci < history.history.length ? ci + 1 : ci;
                 })
+                break;
+            }
+            case "Tab": {
+                ev.preventDefault();
+                const matches = commands.filter((command) => {
+                    return command.startsWith(buffer());
+                });
+                if (matches.length === 1) {
+                    // Escape hatch, sync back to input element
+                    t.value = matches[0];
+                    t.selectionEnd = t.value.length;
+                    setBuffer(t.value);
+                    setCaret(t.value.length);
+                } else {
+                    setSuggest(matches);
+                }
                 break;
             }
             case "Enter": {
@@ -168,6 +231,7 @@ export default function Terminal() {
         }
     }
 
+
     function onInput(ev: Event) {
         if (!ev.target) {
             throw new Error(`${ev.type} event fired with a null target`);
@@ -177,12 +241,16 @@ export default function Terminal() {
         setCaret(t.selectionEnd || 0);
     }
 
+
     function onKeyUp(ev: KeyboardEvent) {
         if (!ev.target) {
             throw new Error(`${ev.type} event fired with a null target`);
         }
         if (modRingBuffer.isEmpty()) return;
         if (!ModRingBuffer.isMod(ev.key)) return;
+
+        debug(`Key up ${ev.key}`);
+
         modRingBuffer.flush();
     }
     
@@ -200,6 +268,7 @@ export default function Terminal() {
         stdin.focus();
     }
 
+
     return (
         <main 
          onMouseUp={onMouseUp}
@@ -208,12 +277,14 @@ export default function Terminal() {
             {historyOut()}
             <div class="flex flex-wrap gap-2 items-center lg:text-lg">
                 <div class="flex gap-2 basis-full items-center">
-                    <i class="text-[#0f8493] nf-fa-bolt pt-0.5"></i>
+                    <i class="text-[#0f8493]">{bolt}</i>
                     <span class="text-[#4d8206] px-3 font-mono pt-1">{runtime()} s</span>
-                    {error() && <i class="text-[#d11141] nf-fa-warning"></i>}
-                    {error() && <span class="text-[#d11141] font-mono pt-1 pl-1.5">{error()}</span>}
+                    <Show when={error()}>
+                        <i class="text-[#d11141]">{warning}</i>
+                        <span class="text-[#d11141] font-mono pt-1 pl-1.5">{error()}</span>
+                    </Show>
                 </div>
-                <i class="text-[#b89a17] nf-fae-pulse"></i>
+                <i class="text-[#b89a17]">{pulse}</i>
                 <input ref={(el) => { stdin = el }} autofocus autocomplete="off"
                  onKeyDown={onKeyDown}
                  onInput={onInput}
@@ -228,6 +299,16 @@ export default function Terminal() {
                      {buffer().slice(caret() + 1)}
                 </span>
             </div>
+            <Show when={suggest().length > 1 && !showSuggest()}>
+                <div class="text-solar-base-1 font-mono">Show all {suggest().length} possibilities? (Hit Tab or "y" to continue)</div>
+            </Show>
+            <Show when={suggest().length > 1 && showSuggest()}>
+                <div class="text-solar-base-1 font-mono grid grid-cols-2 lg:grid-cols-3">
+                    <For each={suggest()}>{(command) => 
+                        <span>{command}</span>
+                    }</For>
+                </div>
+            </Show> 
         </main>
     );
 }
