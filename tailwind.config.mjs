@@ -1,3 +1,6 @@
+import plugin from 'tailwindcss';
+import defaultTheme from 'tailwindcss/defaultTheme';
+
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
@@ -30,9 +33,16 @@ export default {
                     "cyna-500": "#2AA198",
                     "cyna-700": "#1A6265",
                     "cyna-900": "#103B3D"
+                },
+                markdown: {
+                    "h-1": "#4C4CCC",
+                    "h-2": "#008CCC"
                 }
-            }
+            },
         },
+        fontFamily: {
+            mono: ['codenew', ...defaultTheme.fontFamily.mono]
+        }
 	},
-	plugins: [],
+    plugins: []
 }
