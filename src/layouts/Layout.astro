@@ -16,7 +16,7 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body class="bg-gradient-to-br from-gray-950 to-solar-base-03 overflow-hidden">
+	<body class="bg-solar-base-04">
 		<slot />
 	</body>
 </html>
@@ -29,5 +29,19 @@ const { title } = Astro.props;
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+@font-face {
+    font-family: 'codenew-bold';
+    src: url('/fonts/CodeNewRomanNerdFontMono-Bold.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'codenew-italic';
+    src: url('/fonts/CodeNewRomanNerdFontMono-Italic.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 </style>
