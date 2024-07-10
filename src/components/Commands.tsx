@@ -19,7 +19,7 @@ export function Cd(args?: string): Result {
 
 export function Echo(buffer: string): Result {
     return {
-        c: <p class="text-solar-base-1 lg:text-lg font-mono">{buffer}</p>,
+        c: <p>{buffer}</p>,
         e: ""
     }
 }
@@ -27,8 +27,8 @@ export function Echo(buffer: string): Result {
 export function CoreDumpCtl(): Result {
     return {
         c: (
-        <section id="bugs" class="flex flex-col text-solar-base-1">
-           <p>Avoid using "Control" and "Tab" at the same time when trigger command suggestions. If input is not responding, press "Control", "Alt", or other similar keys to resolve it</p> 
+        <section id="bugs" class="flex flex-col">
+            <p>Avoid using "Control" and "Tab" at the same time when trigger command suggestions. If input is not responding, press "Control", "Alt", or other similar keys to resolve it</p> 
         </section>
         ),
         e: ""
@@ -69,12 +69,8 @@ export function Quote(): Result {
 export function Welcome() {
     return (
         <section id="welcome">
-            <p class="text-solar-base-1 lg:text-lg font-mono">
-                type 'help' for a list of commands.
-            </p>
-            <p class="text-solar-base-1 lg:text-lg font-mono">
-                type 'coredumpctl' for a list of keyboard conflicts caused by Browser default shortcut.
-            </p>
+            <p>type 'help' for a list of commands.</p>
+            <p>type 'coredumpctl' for a list of keyboard conflicts caused by Browser default shortcut.</p>
         </section>
     )
 }
