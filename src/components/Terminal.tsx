@@ -6,6 +6,7 @@ import ModRingBuffer from "../queue.mts";
 import HistoryPrompt from "./HistoryPrompt";
 import commands, { About, Cd, Echo, Ls, NotFound, Quote, Welcome } from "./Commands";
 import { bolt, pulse, warning } from "../icon.mts";
+import Man from "./Man";
 
 const debug = (...msg: any[]) => import.meta.env.DEV && console.log(...msg);
 
@@ -72,9 +73,10 @@ export default function Terminal() {
 
     // Escape Hatch / Breaking Solid Rule?
     function onEnter(start: number) {
-        const [cmd, ...args] = buffer().split(" ");
+        const [cmd] = buffer().split(" ", 1);
         let result: JSXElement;
         let nextError = error();
+        debug(cmd);
         if (cmd) {
             switch (cmd) {
                 case "about": {
@@ -90,13 +92,19 @@ export default function Terminal() {
                     break;
                 }
                 case "echo": {
-                    const {c, e} = Echo(args.join(" "));
+                    const {c, e} = Echo(buffer().slice(cmd.length + 1));
                     result = c;
                     nextError = e;
                     break;
                 }
                 case "ls": {
                     const {c, e} = Ls();
+                    result = c;
+                    nextError = e;
+                    break;
+                }
+                case "man": {
+                    const {c, e} = Man(buffer().slice(cmd.length + 1));
                     result = c;
                     nextError = e;
                     break;
@@ -268,47 +276,60 @@ export default function Terminal() {
         stdin.focus();
     }
 
-
     return (
         <main 
          onMouseUp={onMouseUp}
          onTouchEnd={onTouchEnd}
-         class="flex flex-col gap-2 w-5/6 mx-auto py-4 h-screen selection:bg-solar-base-1 selection:text-solar-base-04">
-            {historyOut()}
-            <div class="flex flex-wrap gap-2 items-center lg:text-lg">
-                <div class="flex gap-2 basis-full items-center">
-                    <i class="text-[#0f8493]">{bolt}</i>
-                    <span class="text-[#4d8206] px-3 font-mono pt-1">{runtime()} s</span>
-                    <Show when={error()}>
-                        <i class="text-[#d11141]">{warning}</i>
-                        <span class="text-[#d11141] font-mono pt-1 pl-1.5">{error()}</span>
-                    </Show>
-                </div>
-                <i class="text-[#b89a17]">{pulse}</i>
-                <input ref={(el) => { stdin = el }} autofocus autocomplete="off"
-                 onKeyDown={onKeyDown}
-                 onInput={onInput}
-                 onKeyUp={onKeyUp}
-                 class="absolute right-full bg-solar-base-04 text-solar-base-1 focus:outline-none pb-2" />
-                 <span class="whitespace-pre text-solar-base-1 font-mono">
-                    {buffer().slice(0, caret())}
-                    <span 
-                     class="whitespace-pre text-solar-base-04 bg-solar-base-3 animate-pulse font-mono">
-                     {caretBuffer()}
-                     </span>
-                     {buffer().slice(caret() + 1)}
-                </span>
-            </div>
-            <Show when={suggest().length > 1 && !showSuggest()}>
-                <div class="text-solar-base-1 font-mono">Show all {suggest().length} possibilities? (Hit Tab or "y" to continue)</div>
-            </Show>
-            <Show when={suggest().length > 1 && showSuggest()}>
-                <div class="text-solar-base-1 font-mono grid grid-cols-2 lg:grid-cols-3">
-                    <For each={suggest()}>{(command) => 
-                        <span>{command}</span>
-                    }</For>
-                </div>
-            </Show> 
+         class="flex flex-col gap-2 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto py-4 h-screen text-solar-base-1 md:text-lg font-mono selection:bg-solar-base-1 selection:text-solar-base-04">
+            <section id="history-prompt">
+                {historyOut()}
+            </section>
+            <section id="prompt">
+                <form
+                 onSubmit={(ev) => ev.preventDefault()}
+                 class="flex flex-wrap gap-2 items-center">
+                    <label for="stdin" id="prompt-status"
+                     class="flex gap-2 basis-full items-center">
+                        <span class="text-solar-yellow-300">{bolt}</span>
+                        <span class="text-solar-green-700 px-3">{runtime()} s</span>
+                        <Show when={error()}>
+                            <span class="text-solar-red-300 text-2xl">{warning}</span>
+                            <span class="text-solar-red-300 pl-1.5">{error()}</span>
+                        </Show>
+                    </label>
+                    <label for="stdin" id="prompt-cursor">
+                        <span class="text-solar-yellow-500 text-2xl">{pulse}</span>
+                    </label>
+                    <input id="stdin" ref={(el) => { stdin = el }} autofocus autocomplete="off"
+                     onKeyDown={onKeyDown}
+                     onInput={onInput}
+                     onKeyUp={onKeyUp}
+                     class="absolute right-full bg-solar-base-04 focus:outline-none pb-2" />
+                    <label for="stdin" id="prompt-caret">
+                        <span 
+                         class="whitespace-pre">
+                            {buffer().slice(0, caret())}
+                            <span 
+                             class="text-solar-base-04 bg-solar-base-3 animate-pulse">
+                                {caretBuffer()}
+                            </span>
+                            {buffer().slice(caret() + 1)}
+                        </span>
+                    </label>
+                </form>
+            </section>
+            <section id="command-suggestion">
+                <Show when={suggest().length > 1 && !showSuggest()}>
+                    <div>Show all {suggest().length} possibilities? (Hit Tab or "y" to continue)</div>
+                </Show>
+                <Show when={suggest().length > 1 && showSuggest()}>
+                    <div class="grid grid-cols-2 lg:grid-cols-3">
+                        <For each={suggest()}>{(command) => 
+                            <span>{command}</span>
+                        }</For>
+                    </div>
+                </Show> 
+            </section>
         </main>
     );
 }
