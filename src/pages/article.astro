@@ -11,7 +11,7 @@ let line = 0;
 ---
 <Layout title="Article">
     <Zen>
-        <p class="pt-2 text-solar-green-500 italic font-normal text-justify text-sm">"{quotes()}"</p>
+        <p class="pt-2 text-solar-green-500 italic font-mono text-justify text-base">"{quotes()}"</p>
         <section id="article" class="flex flex-col gap-4 text-justify hide">
             <Line line={line++}>
                 <HistoryPrompt buffer="man article"/>
