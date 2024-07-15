@@ -4,7 +4,7 @@ import { createStore } from "solid-js/store";
 import ModRingBuffer from "../queue.mts";
 
 import HistoryPrompt from "./HistoryPrompt";
-import commands, { About, Cd, Echo, Ls, NotFound, Quote, Welcome } from "./Commands";
+import commands, { About, Echo, NotFound, Help, Quote, Welcome, Experience, Project, CoreDumpCtl, Article, Social } from "./Commands";
 import { bolt, pulse, warning } from "../icon.mts";
 import Man from "./Man";
 
@@ -85,10 +85,20 @@ export default function Terminal() {
                     nextError = e;
                     break;
                 }
-                case "cd": {
-                    const {c, e} = Cd();
+                case "article": {
+                    const {c, e} = Article();
                     result = c;
                     nextError = e;
+                    break;
+                }
+                case "coredumpctl": {
+                    const {c, e} = CoreDumpCtl();
+                    result = c;
+                    nextError = e;
+                    break;
+                }
+                case "clear": {
+                    nextError = "";
                     break;
                 }
                 case "echo": {
@@ -97,8 +107,30 @@ export default function Terminal() {
                     nextError = e;
                     break;
                 }
-                case "ls": {
-                    const {c, e} = Ls();
+                case "experience": {
+                    const {c, e} = Experience();
+                    result = c;
+                    nextError = e;
+                    break;
+                }
+                case "help": {
+                    const {c, e} = Help();
+                    result = c;
+                    nextError = e;
+                    break;
+                }
+                case "project": {
+                    const {c, e} = Project();
+                    result = c;
+                    nextError = e;
+                    break;
+                }
+                case "static": {
+                    window.location.href = "/";
+                    break;
+                }
+                case "social": {
+                    const {c, e} = Social();
                     result = c;
                     nextError = e;
                     break;
@@ -119,11 +151,20 @@ export default function Terminal() {
         }
         // Hold on, what am I doing here?
         batch(() => {
-            setHistoryOut([
-                ...historyOut(),
-                HistoryPrompt(buffer(), (runtime()).toPrecision(), error()),
-                result
-            ]);
+            if (cmd === "clear") {
+                setHistoryOut([]);
+            } else if (cmd) {
+                setHistoryOut([
+                    ...historyOut(),
+                    HistoryPrompt(buffer(), (runtime()).toPrecision(), error()),
+                    result
+                ]);
+            } else {
+                setHistoryOut([
+                    ...historyOut(),
+                    HistoryPrompt(buffer(), (runtime()).toPrecision(), error()),
+                ]);
+            }
             setError(nextError);
 
             cmd && setHistory("history", (currentHistory) => {
@@ -280,9 +321,16 @@ export default function Terminal() {
         <main 
          onMouseUp={onMouseUp}
          onTouchEnd={onTouchEnd}
-         class="flex flex-col gap-2 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto py-4 h-screen text-solar-base-1 md:text-lg font-mono selection:bg-solar-base-1 selection:text-solar-base-04">
-            <section id="history-prompt">
-                {historyOut()}
+         class="flex flex-col gap-2 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto py-4 h-screen text-solar-base-1 text-sm xs:text-base md:text-lg font-mono selection:bg-solar-base-1 selection:text-solar-base-04">
+            <section id="history-prompt" class="flex flex-col gap-2">
+                {historyOut().map((e, i) => {
+                    return (
+                    <div tabindex="0"
+                     class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2">
+                        <span class="text-solar-yellow-700 text-center self-start">{i}</span>
+                        {e}
+                    </div>)
+                })}
             </section>
             <section id="prompt">
                 <form
