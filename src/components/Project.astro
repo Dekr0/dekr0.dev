@@ -1,0 +1,18 @@
+---
+import { safety } from "../icon.mjs";
+import Line from "../components/Line.astro";
+import HistoryPrompt from "./HistoryPrompt.astro";
+
+let line = 0;
+---
+<section id="project" class="flex flex-col gap-4">
+    <Line line={line++}>
+        <HistoryPrompt buffer="man about"/>
+    </Line>
+    <Line line={line++}>
+        <h2 class="text-solar-blue-300 font-bold w-fit">## Project</h2>
+    </Line>
+    <Line line={line++}>
+        <p>This section is still under construction <span class="text-solar-yellow-300">{safety} {`\uea6c`}</span> ...</p>
+    </Line>
+</section>
