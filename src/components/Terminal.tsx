@@ -321,8 +321,8 @@ export default function Terminal() {
         <main 
          onMouseUp={onMouseUp}
          onTouchEnd={onTouchEnd}
-         class="flex flex-col gap-2 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto py-4 h-screen text-solar-base-1 text-sm xs:text-base md:text-lg font-mono selection:bg-solar-base-1 selection:text-solar-base-04">
-            <section id="history-prompt" class="flex flex-col gap-2">
+         class="flex flex-col gap-2 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto mb-4 py-4 h-screen text-solar-base-1 text-sm xs:text-base md:text-lg font-mono selection:bg-solar-base-1 selection:text-solar-base-04">
+            <section id="history-prompt" class="flex flex-col gap-2 overflow-hidden">
                 {historyOut().map((e, i) => {
                     return (
                     <div tabindex="0"
