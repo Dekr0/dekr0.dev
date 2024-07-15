@@ -1,14 +1,29 @@
 ---
-import Content from "../components/Project.astro";
+import Line from "../components/Line.astro";
 import Header from "../components/Header.astro";
+import HistoryPrompt from "../components/HistoryPrompt.astro";
 import Layout from "../layouts/Layout.astro";
 import Zen from "../components/Zen.astro";
-import Quote from "../components/Quote.astro";
+
+import { safety } from "../icon.mjs";
+import quotes from "../quote.mts"
+
+let line = 0;
 ---
 <Layout title="Project">
     <Zen>
-        <Quote />
-        <Content />
+        <p class="pt-2 text-solar-green-500 italic font-normal text-justify text-sm">"{quotes()}"</p>
+        <section id="project" class="flex flex-col gap-4">
+            <Line line={line++}>
+                <HistoryPrompt buffer="man about"/>
+            </Line>
+            <Line line={line++}>
+                <h2 class="text-solar-blue-300 font-bold w-fit">## Project</h2>
+            </Line>
+            <Line line={line++}>
+                <p>This section is still under construction <span class="text-solar-yellow-300">{safety} {`\uea6c`}</span> ...</p>
+            </Line>
+        </section>
     </Zen>
     <Header title="project"/>
 </Layout>

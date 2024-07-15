@@ -1,14 +1,30 @@
 ---
-import Content from "../components/Experience.astro";
 import Header from "../components/Header.astro";
+import HistoryPrompt from "../components/HistoryPrompt.astro";
 import Layout from "../layouts/Layout.astro";
+import Line from "../components/Line.astro";
 import Zen from "../components/Zen.astro";
-import Quote from "../components/Quote.astro";
+
+import quotes from "../quote.mts"
+
+let line = 0;
 ---
 <Layout title="Experience">
     <Zen>
-        <Quote />
-        <Content />
+        <p class="pt-2 text-solar-green-500 italic font-normal text-justify text-sm">"{quotes()}"</p>
+        <section id="experience" class="flex flex-col gap-4">
+            <Line line={line++}>
+                <HistoryPrompt buffer="man experience"/>
+            </Line>
+            <Line line={line++}>
+                <h2 class="text-solar-blue-300 font-bold w-fit">## Experience</h2>
+            </Line>
+            <ul class="flex gap-4">
+                <Line line={line++}>
+                    <li>University of Alberta - Bachelor of Science In Computer Engineering</li>
+                </Line>
+            </ul>
+        </section>
     </Zen>
     <Header title="experience"/>
 </Layout>
