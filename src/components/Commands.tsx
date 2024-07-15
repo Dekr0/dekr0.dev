@@ -13,8 +13,20 @@ export function About(): Result {
     return Man("about");
 }
 
-export function Cd(args?: string): Result {
-    return UnderConstruction("cd");
+export function Article(): Result {
+    return Man("article");
+}
+
+export function CoreDumpCtl(): Result {
+    return {
+        c: (
+        <section id="bugs">
+            <p>Here are some known bugs in the system.</p>
+            <p class="text-justify">Avoid using "Control" and "Tab" at the same time when trigger command suggestions. If input is not responding, press "Control", "Alt", or other similar keys to resolve it</p> 
+        </section>
+        ),
+        e: ""
+    };
 }
 
 export function Echo(buffer: string): Result {
@@ -24,27 +36,34 @@ export function Echo(buffer: string): Result {
     }
 }
 
-export function CoreDumpCtl(): Result {
+export function Experience(): Result {
+    return Man("experience");
+}
+
+
+export function Help(): Result {
     return {
         c: (
-        <section id="bugs" class="flex flex-col">
-            <p>Avoid using "Control" and "Tab" at the same time when trigger command suggestions. If input is not responding, press "Control", "Alt", or other similar keys to resolve it</p> 
-        </section>
+            <section id="help">
+                <p>Commonly used shell's shortcut are emulated and available to use.</p>
+                <p>Here are a list of commands commonly used in the system.</p> 
+                <p>(alias to `man about`) about - About me</p>
+                <p>(alias to `man article`) article - My article</p>
+                <p>(alias to `man experience`) experience - My experience</p>
+                <p>(alias to `man project`) project - My project</p>
+                <p>(alias to `man social`) social - My social</p>
+                <p>clear - Clear the terminal screen</p>
+                <p>static - Switch static version of this portfolio site</p>
+                <p>coredumptctl - Show a lists of bugs in the system</p>
+                <p>echo - Display a line of text</p>
+                <p>perf - Show performance metric in the system</p>
+                <p>man - An interface to system reference manual</p>
+                <p>quote - Quote generator</p>
+                <p>Press Tab with an empty prompt to see all possible commands</p>
+            </section>
         ),
         e: ""
-    };
-}
-
-export function Free(args?: string): Result {
-    return UnderConstruction("free");
-}
-
-export function Ls(args?: string): Result {
-    return UnderConstruction("ls");
-}
-
-export function NeoFetch(args?: string) {
-    return UnderConstruction("neofetch");
+    }
 }
 
 export function NotFound(cmd: string): Result {
@@ -57,20 +76,31 @@ export function NotFound(cmd: string): Result {
     };
 }
 
+export function Project(): Result {
+    return Man("project");
+}
+
+export function Perf(args?: string): Result {
+    return UnderConstruction("");
+}
+
 export function Quote(): Result {
     return {
-        c: <p class="italic text-solar-base-1 text-sm sm:text-base lg:text-lg">
+        c: <p class="italic text-solar-green-500">
                "{quotes()}"
            </p>,
         e: ""
     };
 }
 
+export function Social(): Result {
+    return Man("social");
+}
+
 export function Welcome() {
     return (
         <section id="welcome">
-            <p>type 'help' for a list of commands.</p>
-            <p>type 'coredumpctl' for a list of keyboard conflicts caused by Browser default shortcut.</p>
+            <p>type <span class="text-solar-blue-500">'help'</span> for a list of commands.</p>
         </section>
     )
 }
@@ -86,14 +116,18 @@ function UnderConstruction(cmd: string): Result {
 
 const commands: string[] = [
     "about"      ,
-    "cd"         ,
+    "article"    ,
+    "clear"      ,
     "coredumpctl",
     "echo"       ,
-    "free"       ,
-    "ls"         ,
-    "neofetch"   ,
+    "experience" ,
+//    "free"       ,
+    "help"       ,
     "man"        ,
-    "quote"   
+//    "perf"       ,
+    "project"    ,
+//    "quote"      ,
+    "social"     
 ];
 
 export default commands;
