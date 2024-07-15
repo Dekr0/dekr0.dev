@@ -4,10 +4,10 @@ import defaultTheme from 'tailwindcss/defaultTheme';
 export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
-        screens: {
-            "xs": "400px",
-        },
         extend: {
+            screens: {
+                "xs": "400px"
+            },
             colors: {
                 solar: {
                     "base-00"    : "#657B83",
