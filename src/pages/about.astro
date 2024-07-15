@@ -1,0 +1,14 @@
+---
+import Content from "../components/About.astro";
+import Header from "../components/Header.astro";
+import Layout from "../layouts/Layout.astro";
+import Quote from "../components/Quote.astro";
+import Zen from "../components/Zen.astro";
+---
+<Layout title="About">
+    <Zen>
+        <Quote />
+        <Content />
+    </Zen>
+    <Header title="about" />
+</Layout>
