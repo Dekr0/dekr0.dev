@@ -1,81 +1,51 @@
 ---
+import HistoryPrompt from "../components/HistoryPrompt.astro";
+import Header from "../components/Header.astro";
 import Layout from "../layouts/Layout.astro";
+import Line from "../components/Line.astro";
+import Quote from "../components/Quote.astro";
+import Zen from "../components/Zen.astro";
+
+
+let line = 0;
 ---
-<Layout title="">
-<main class="flex flex-col gap-4 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto py-4 h-screen md:text-lg font-mono text-solar-base-1 selection:bg-solar-base-1 selection:text-solar-base-04">
-    <nav class="font-semibold w-full selection:bg-solar-base-03 selection:text-solar-base-3">
-        <ul class="flex text-solar-base-03">
-            <li class="px-2 bg-solar-base-3 hover:bg-solar-green-700"><a href="#about">Home</a></li>
-            <li class="px-2 bg-solar-base-3 hover:bg-solar-green-700"><a href="#experience">Experience</a></li>
-            <li class="px-2 bg-solar-base-3 hover:bg-solar-green-700"><a href="#project">Project</a></li>
-            <li class="px-2 bg-solar-base-3 hover:bg-solar-green-700"><a href="#social">Social</a></li>
-            <li class="px-2 bg-solar-base-3 hover:bg-solar-green-700"><a href="/ssh">ssh</a></li>
-        </ul>
-        <p class="pt-4">Want interactive terminal? <a class="underline underline-offset-4" href="/ssh"><span class="text-solar-green-500">ssh</span> derk0.de<span class="text-solar-base-04 bg-solar-base-3 animate-pulse">v</span><a/></p>
-    </nav>
-    <section id="about" class="flex flex-col gap-4 text-justify">
-        <div tabindex="0" class="flex gap-10 pl-2 items-center focus:border-solar-orange-500 focus:border-l-2">
-            <span class="text-solar-yellow-700 text-center self-start">0</span>
-            <h1 class="text-solar-blue-300 font-bold w-fit"># Hello</h1>
-        </div>
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">1</span>
-            <h2 class="text-solar-blue-300 font-bold w-fit">## My Name is Chason Li.</h2>
-        </div>
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">2</span>
-            <p>I'm a computer engineer at [unemployed] comfortable with both front-end & back-end development as well as embedded development to some degree.</p>
-        </div>
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">3</span>
-            <p>I'm passionate about building CLI based applications and developer tooling, and optimizing program performance in different levels. Making QOL extensions and plugins for applications and games I used and played in a daily biased is also my primary interest. This goes the same with tinkering embedded hardware & ICs.</p>
-        </div>
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">4</span>
-            <p>My works have a strong emphasis on <i>simplicity</i> and <i>performance</i>. I’m deeply care about implementation detail of my work to ensure they are <a href="https://www.computerenhance.com/p/table-of-contents" target="_blank" class="text-[#F7CD43] font-bold">blazingly fast</a> and <a href="https://suckless.org/philosophy/" target="_blank" class="text-[#1177AA] font-bold">suckless</a>.</p>
-        </div>
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">5</span>
-            <p>I’m currently based in Canada. If you happen to speak Chinese, my Chinese name is 李承轩 (lǐ chéng xuān)..</p>
-        </div>
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">6</span>
-            <p>You can message me via my <a class="bg-solar-base-3 text-solar-base-03 px-2 hover:bg-solar-green-700" href="#social">Social</a>.</p>
-        </div>
-    </section>
-    <section id="experience" class="flex flex-col gap-4">
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">7</span>
-            <h2 class="text-solar-blue-300 font-bold w-fit">## Experience</h2>
-        </div>
-        <ul class="flex gap-4">
-            <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-                <span class="text-solar-yellow-700 text-center self-start">8</span>
-                <li>University of Alberta - Bachelor of Science In Computer Engineering</li>
-            </div>
-        </ul>
-    </section>
-    <section id="experience" class="flex flex-col gap-4">
-        <div tabindex="0" class="flex gap-10 pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">9</span>
-            <h2 class="text-solar-blue-300 font-bold w-fit">## Project</h2>
-        </div>
-        <div tabindex="0" class="flex gap-8 focus:pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">10</span>
-            <p>This section is still under construction.</p>
-        </div>
-    </section>
-    <section id="social" class="flex flex-col gap-4">
-        <div tabindex="0" class="flex gap-8 focus:pl-2 focus:border-solar-orange-500 focus:border-l-2 items-center">
-            <span class="text-solar-yellow-700 text-center self-start">11</span>
-            <h2 class="text-solar-blue-300 font-bold w-fit">## Social</h2>
-        </div>
-        <ul class="">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-    </section>
-</main>
+<Layout title="Home">
+    <Zen>
+        <Quote />
+        <h2 class="text-solar-base-03 bg-solar-base-3 font-bold w-fit px-2">Dekr0</h2>
+        <Line line={line++}>
+            <HistoryPrompt buffer="man home" />
+        </Line>
+        <section id="home" class="flex flex-col gap-4">
+            <Line line={line++}>
+                <p>a computer engineer at <span class="px-1 bg-solar-blue-900 text-solar-red-700">[NULL]</span>, and a performance, simplicity, and suckless super fan.</p>
+            </Line>
+        </section>
+        <section id="social" class="flex flex-col gap-4">
+            <Line line={line++}>
+                <HistoryPrompt buffer="man social" />
+            </Line>
+            <Line line={line++}>
+                <h2 class="text-solar-blue-300 font-bold w-fit">## Social</h2>
+            </Line>
+            <ul class="flex flex-col gap-4 content-center text-solar-cyna-500">
+                <Line line={line++}>
+                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://discord.com/invite/un4hz3uZ" target="_blank"><span>{`\uf1ff`}</span> <span>Discord</span></a></li>
+                </Line>
+                <Line line={line++}>
+                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><span>{`\udb80\uddee`}</span> <span>Email - dekr0.dk@protonmail.com</span></li>
+                </Line>
+                <Line line={line++}>
+                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://github.com/Dekr0" target="_blank"><span>{`\ue708`}</span> <span>GitHub</span></a></li>
+                </Line>
+                <Line line={line++}>
+                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="linkedin.com/in/chengxuan-li" target="_blank"><span>{`\udb80\udf3b`}</span> <span>LinkedIn</span></a></li>
+                </Line>
+                <Line line={line++}>
+                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://twitter.com/notDeKr0" target="_blank"><span>{`\uf35e`}</span> <span>X</span></a></li>
+                </Line>
+            </ul>
+        </section>
+    </Zen>
+    <Header title="index"/>
 </Layout>
