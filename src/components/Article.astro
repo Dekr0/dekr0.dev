@@ -1,0 +1,14 @@
+---
+import HistoryPrompt from "./HistoryPrompt.astro";
+import Line from "../components/Line.astro";
+
+let line = 0;
+---
+<section id="article" class="flex flex-col gap-4 text-justify hide">
+    <Line line={line++}>
+        <HistoryPrompt buffer="man article"/>
+    </Line>
+    <Line line={line++}>
+        <p>I haven't written any article yet {`\udb83\udd12`}... </p>
+    </Line>
+</section>
