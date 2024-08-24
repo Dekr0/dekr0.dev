@@ -4,10 +4,9 @@ const _quotes = [
     "To Make Whole, Be Whole.",
     "What we can't change, We must endure.",
     "Keep clam and carry on.",
-    "Be present. The present moment is in stillness and timelessness."
-]
+    "Be present. The present moment is in stillness and timelessness.",
+];
 
 export default function quotes() {
     return _quotes[Math.floor(Math.random() * _quotes.length)];
 }
-

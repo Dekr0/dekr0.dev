@@ -1,10 +1,10 @@
 export default class ModRingBuffer {
-    private buffer: string[]
-    private head  : number
-    private tail  : number
-    private full  : boolean
-    private max   : number
-    private empty_flag : string;
+    private buffer: string[];
+    private head: number;
+    private tail: number;
+    private full: boolean;
+    private max: number;
+    private empty_flag: string;
 
     private static mods = ["Alt", "Control", "Meta", "Shift"];
 
@@ -12,13 +12,13 @@ export default class ModRingBuffer {
 
     constructor(
         max: number = ModRingBuffer.mods.length,
-        empty_flag: string = "empty"
+        empty_flag: string = "empty",
     ) {
         this.buffer = new Array<string>(0);
-        this.max    = max;
-        this.full   = false;
-        this.head   = 0;
-        this.tail   = 0;
+        this.max = max;
+        this.full = false;
+        this.head = 0;
+        this.tail = 0;
         this.empty_flag = empty_flag;
     }
 
@@ -35,7 +35,9 @@ export default class ModRingBuffer {
         while (!this.isEmpty()) {
             const mod = this.pop();
             if (!mod) {
-                throw new Error("An undefined item was popped after passing empty check");
+                throw new Error(
+                    "An undefined item was popped after passing empty check",
+                );
             }
             buffer.push(mod);
         }
@@ -96,4 +98,3 @@ export default class ModRingBuffer {
         this.tail = ++this.tail === this.max ? 0 : this.tail;
     }
 }
-
