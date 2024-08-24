@@ -1,10 +1,14 @@
 ---
 interface Props {
-    line: number
+    line: number;
 }
-const  { line } = Astro.props;
+const { line } = Astro.props;
 ---
-<div tabindex="0" class="flex gap-4 md:gap-8 lg:gap-10 sm:pl-2 items-center hover:border-solar-orange-500 hover:border-l-2">
+
+<div
+    tabindex="0"
+    class="flex gap-4 md:gap-8 lg:gap-10 sm:pl-2 items-center hover:border-solar-orange-500 hover:border-l-2"
+>
     <span class="text-solar-yellow-700 text-center self-start">{line}</span>
     <slot />
 </div>
