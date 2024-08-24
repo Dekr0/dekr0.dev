@@ -1,7 +1,11 @@
 import { Show } from "solid-js";
 import { bolt, pulse, warning } from "../icon.mts";
 
-export default function HistoryPrompt(buffer: string, runtime: string, error: string) {
+export default function HistoryPrompt(
+    buffer: string,
+    runtime: string,
+    error: string,
+) {
     return (
         <div class="flex flex-wrap gap-2 items-center">
             <div class="flex gap-2 basis-full items-center">
