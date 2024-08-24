@@ -5,42 +5,197 @@ function About() {
     return (
         <section id="about" class="pt-2 flex flex-col gap-2 text-justify">
             <h1 class="text-solar-blue-300 font-bold w-fit"># Hello</h1>
-            <h2 class="text-solar-blue-300 font-bold w-fit">## My Name is Chason Li.</h2>
-            <p>I'm a computer engineer at [unemployed] comfortable with both front-end & back-end development as well as embedded development to some degree.</p>
-            <p>I'm passionate about building CLI based applications and developer tooling, and optimizing program performance in different levels. Making QOL extensions and plugins for applications and games I used and played in a daily biased is also my primary interest. This goes the same with tinkering embedded hardware & ICs.</p>
-            <p>My works have a strong emphasis on <i>simplicity</i> and <i>performance</i>. I’m deeply care about implementation detail of my work to ensure they are <a href="https://www.computerenhance.com/p/table-of-contents" target="_blank" class="text-solar-yellow-500 hover:text-solar-yellow-300 font-bold animate-ease-in-out">blazingly fast {bolt}</a> and <a href="https://suckless.org/philosophy/" target="_blank" class="text-solar-blue-500 hover:text-solar-blue-300 font-bold animate-ease-in-out"><span class="text-2xl">{rocket}</span> suckless</a>.</p>
-            <p>I’m currently based in Canada. If you happen to speak Chinese, my Chinese name is 李承轩 (lǐ chéng xuān).</p>
-            <p>You can message me via my <a id="social-anchor" class="bg-solar-base-3 text-solar-base-03 px-2 hover:bg-solar-green-700 font-bold animate-ease-in-out">Social</a>.</p>
+            <h2 class="text-solar-blue-300 font-bold w-fit">
+                ## My Name is Chason Li.
+            </h2>
+            <p>
+                I'm a computer engineer at [unemployed] comfortable with
+                both front-end & back-end development as well as embedded
+                development to some degree.
+            </p>
+            <p>
+                My primary interests is currently focus on low level and system
+                programming, program performance and optimization,
+                programming language relative topics (compiler design,
+                programming paradigm), computer architectures, and game
+                engine. These are the areas I'm currently heavily invested
+                in my spare time.
+            </p>
+            <p>
+                I'm passionate about building CLI based applications and
+                developer tooling, and optimizing program performance in
+                different levels. Making QOL extensions and plugins for
+                applications and games I used and played in a daily biased is
+                also my primary interest. This goes the same with tinkering
+                embedded hardware & ICs.
+            </p>
+            <p>
+                My works have a strong emphasis on <i>simplicity</i> and{" "}
+                <i>performance</i>. I’m deeply care about implementation detail
+                of my work to ensure they are{" "}
+                <a
+                    href="https://www.computerenhance.com/p/table-of-contents"
+                    target="_blank"
+                    class="text-solar-yellow-500 hover:text-solar-yellow-300 font-bold animate-ease-in-out"
+                >
+                    blazingly fast {bolt}
+                </a>{" "}
+                and{" "}
+                <a
+                    href="https://suckless.org/philosophy/"
+                    target="_blank"
+                    class="text-solar-blue-500 hover:text-solar-blue-300 font-bold animate-ease-in-out"
+                >
+                    <span class="text-2xl">{rocket}</span> suckless
+                </a>
+                .
+            </p>
+            <p>
+                I’m currently based in Canada. If you happen to speak Chinese,
+                my Chinese name is 李承轩 (lǐ chéng xuān).
+            </p>
+            <p>
+                You can message me via my{" "}
+                <a
+                    id="social-anchor"
+                    class="bg-solar-base-3 text-solar-base-03 px-2 hover:bg-solar-green-700 font-bold animate-ease-in-out"
+                >
+                    Social
+                </a>
+                .
+            </p>
         </section>
-    )
+    );
 }
 
 function Aritlce() {
     return (
         <section id="article" class="flex flex-col gap-2 text-justify hide">
-            <p class="sm:text-xl">I haven't written any article yet {`\udb83\udd12`}... </p>
+            <p>
+                I haven't written any article yet {`\udb83\udd12`}...{" "}
+            </p>
         </section>
-    )
+    );
 }
 
 function Experience() {
     return (
         <section id="experience" class="flex flex-col gap-2">
-            <h2 class="text-solar-blue-300 font-bold w-fit">## Experience</h2>
+            <h1 class="text-solar-blue-300 font-bold w-fit"># Experience</h1>
+            <h2 class="text-solar-blue-300 font-bold w-fit">## Education</h2>
             <ul class="flex gap-4">
-                <li>University of Alberta - Bachelor of Science In Computer Engineering</li>
+                <li>
+                     University of Alberta - Bachelor of Science In Computer 
+                    Engineering
+                </li>
+            </ul>
+            <h2 class="text-solar-blue-300 font-bold w-fit">## Employment</h2>
+            <ul class="flex flex-col gap-4 text-justify">
+                <li>
+                    <p class="mb-4">
+                         Aurora Technology Development - Technical Intern
+                    </p>
+                    <ul class="flex flex-col gap-4">
+                        <li>
+                            <p class="ml-8">
+                                 Developed and released quality of life
+                                enhancements and hot fixes on both frontend and 
+                                backend systems, resulting in a more user 
+                                friendly website UI, and an improvement on 
+                                backend systems’ error handling capabilities 
+                                for two active projects.
+                            </p>
+                        </li>
+                        <li>
+                            <p class="ml-8">
+                                 Developed and implemented an image upload and 
+                                conversion service that allowed customers to 
+                                upload various design files for clothing printing, 
+                                enhancing user experience and workflow efficiency.
+                            </p>
+                        </li>
+                        <li>
+                            <p class="ml-8">
+                                 Refactored and standardized UI components 
+                                within frontend codebase, resulting in improved 
+                                code maintainability and enhanced user interface 
+                                consistency.
+                            </p>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </section>
-    )
+    );
 }
 
 function Project() {
     return (
         <section id="project" class="flex flex-col gap-2">
-            <h2 class="text-solar-blue-300 font-bold w-fit">## Project</h2>
-            <p>This section is still under construction <span class="text-solar-yellow-300 text-xl">{safety} {landslide}</span> ...</p>
+            <h1 class="text-solar-blue-300 font-bold w-fit"># Project</h1>
+            <h2 class="text-solar-blue-300 font-bold w-fit">## Open Source</h2>
+            <h3 class="font-bold w-fit">
+                <a 
+                    class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
+                    href="https://github.com/Dekr0/RPC.nvim"
+                    target="_blank"
+                >
+                    ### RPC.nvim
+                </a>                
+            </h3>
+            <p class="text-justify">
+                RPC.nvim is a Neovim plugin that integrates Discord Rich 
+                Presence, displaying live status update from Neovim and directly 
+                to users' Discord profiles.
+            </p>
+            <h3 class="font-bold w-fit">
+                <a
+                    class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
+                    href="https://github.com/Dekr0/8086-sim"
+                    target="_blank"
+                >
+                    ### 8086 Emulator
+                </a>
+            </h3>
+            <p class="text-justify">
+                A working in progress 8086 Emulator capable of decoding assembly 
+                binaries, executing instructions sequentially, and outputting the 
+                final state of the CPU and 1MB memory of 8086. The emulator also 
+                provides a TUI debugger that visually representing the internal 
+                state of the 8086 CPU and memory for debugging purposes.
+            </p>
+            <h2 class="text-solar-blue-300 font-bold w-fit">
+                ## "Reinvent The Wheel"
+            </h2>
+            <h3 class="font-bold w-fit">
+                <a
+                    class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
+                    href="https://github.com/Dekr0/c-http"
+                    target="_blank"
+                >
+                    ### HTTP Server
+                </a>
+            </h3>
+            <p class="text-justify">
+                a HTTP server written in C, capable of parsing HTTP 
+                message efficiently and handling multiple concurrent client 
+                connections
+            </p>
+            <h3 class="font-bold w-fit">
+                <a
+                    class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
+                    href="https://github.com/Dekr0/redis-clone"
+                    target="_blank"
+                >
+                    ### Redis Clone
+                </a>
+            </h3>
+             <p class="text-justify">
+                 a working in progress Redis Clone written in C, mirroring 
+                 essential Redis functionalities.
+             </p>
         </section>
-    )
+    );
 }
 
 function Social() {
@@ -48,11 +203,46 @@ function Social() {
         <section id="social" class="flex flex-col gap-2">
             <h2 class="text-solar-blue-300 font-bold w-fit">## Social</h2>
             <ul class="flex flex-col gap-4 content-center sm:text-xl text-solar-cyna-500">
-                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://discord.com/invite/un4hz3uZ" target="_blank"><span>{`\uf1ff`}</span> <span>Discord</span></a></li>
-                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><span>{`\udb80\uddee`}</span> <span>Email - dekr0.dk@protonmail.com</span></li>
-                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://github.com/Dekr0" target="_blank"><span>{`\ue708`}</span> <span>GitHub</span></a></li>
-                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="linkedin.com/in/chengxuan-li" target="_blank"><span>{`\udb80\udf3b`}</span> <span>LinkedIn</span></a></li>
-                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://twitter.com/notDeKr0" target="_blank"><span>{`\uf35e`}</span> <span>X</span></a></li>
+                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out">
+                    <a
+                        class="text-center"
+                        href="https://discord.com/invite/un4hz3uZ"
+                        target="_blank"
+                    >
+                        <span>{`\uf1ff`}</span> <span>Discord</span>
+                    </a>
+                </li>
+                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out">
+                    <span>{`\udb80\uddee`}</span>{" "}
+                    <span>Email - dekr0.dk@protonmail.com</span>
+                </li>
+                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out">
+                    <a
+                        class="text-center"
+                        href="https://github.com/Dekr0"
+                        target="_blank"
+                    >
+                        <span>{`\ue708`}</span> <span>GitHub</span>
+                    </a>
+                </li>
+                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out">
+                    <a
+                        class="text-center"
+                        href="linkedin.com/in/chengxuan-li"
+                        target="_blank"
+                    >
+                        <span>{`\udb80\udf3b`}</span> <span>LinkedIn</span>
+                    </a>
+                </li>
+                <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out">
+                    <a
+                        class="text-center"
+                        href="https://twitter.com/notDeKr0"
+                        target="_blank"
+                    >
+                        <span>{`\uf35e`}</span> <span>X</span>
+                    </a>
+                </li>
             </ul>
         </section>
     );
@@ -61,8 +251,8 @@ function Social() {
 function NoMan(cmd: string) {
     return {
         c: <p>No manual entry {cmd}</p>,
-        e: "16"
-    }
+        e: "16",
+    };
 }
 
 export default function Man(cmd: string, args?: string[]): Result {
@@ -70,32 +260,32 @@ export default function Man(cmd: string, args?: string[]): Result {
         case "about": {
             return {
                 c: About(),
-                e: ""
-            }
+                e: "",
+            };
         }
         case "article": {
             return {
                 c: Aritlce(),
-                e: ""
-            }
+                e: "",
+            };
         }
         case "experience": {
             return {
                 c: Experience(),
-                e: ""
-            }
+                e: "",
+            };
         }
         case "project": {
             return {
                 c: Project(),
-                e: ""
-            }
+                e: "",
+            };
         }
         case "social": {
             return {
                 c: Social(),
-                e: ""
-            }
+                e: "",
+            };
         }
         default:
             return NoMan(cmd);
