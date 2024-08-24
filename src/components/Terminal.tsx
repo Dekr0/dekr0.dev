@@ -1,10 +1,29 @@
-import { batch, createMemo, createSignal, For, Show, type JSXElement } from "solid-js";
+import {
+    batch,
+    createMemo,
+    createSignal,
+    For,
+    Show,
+    type JSXElement,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 
 import ModRingBuffer from "../queue.mts";
 
 import HistoryPrompt from "./HistoryPrompt";
-import commands, { About, Echo, NotFound, Help, Quote, Welcome, Experience, Project, CoreDumpCtl, Article, Social } from "./Commands";
+import commands, {
+    About,
+    Echo,
+    NotFound,
+    Help,
+    Quote,
+    Welcome,
+    Experience,
+    Project,
+    CoreDumpCtl,
+    Article,
+    Social,
+} from "./Commands";
 import { bolt, pulse, warning } from "../icon.mts";
 import Man from "./Man";
 
@@ -22,10 +41,13 @@ export default function Terminal() {
     const [suggest, setSuggest] = createSignal<string[]>([]);
     const [showSuggest, setShowSuggest] = createSignal(true);
     const [caretBuffer, setCaretBuffer] = createSignal(" ");
-    const [historyOut, setHistoryOut] = createSignal<JSXElement[]>([Welcome(), Quote().c]); // Escape Hatch?
+    const [historyOut, setHistoryOut] = createSignal<JSXElement[]>([
+        Welcome(),
+        Quote().c,
+    ]); // Escape Hatch?
     const [history, setHistory] = createStore({
         i: 0,
-        history: new Array<string>()
+        history: new Array<string>(),
     });
     const [shortcut, setShortCut] = createSignal("", { equals: false });
     const [runtime, setRuntime] = createSignal(0);
@@ -60,7 +82,7 @@ export default function Terminal() {
         if (!lookup) return;
 
         // Escape hatch
-        stdin.value = lookup; 
+        stdin.value = lookup;
         stdin.selectionEnd = stdin.value.length;
 
         setBuffer(lookup);
@@ -80,19 +102,19 @@ export default function Terminal() {
         if (cmd) {
             switch (cmd) {
                 case "about": {
-                    const {c, e} = About();
+                    const { c, e } = About();
                     result = c;
                     nextError = e;
                     break;
                 }
                 case "article": {
-                    const {c, e} = Article();
+                    const { c, e } = Article();
                     result = c;
                     nextError = e;
                     break;
                 }
                 case "coredumpctl": {
-                    const {c, e} = CoreDumpCtl();
+                    const { c, e } = CoreDumpCtl();
                     result = c;
                     nextError = e;
                     break;
@@ -102,25 +124,25 @@ export default function Terminal() {
                     break;
                 }
                 case "echo": {
-                    const {c, e} = Echo(buffer().slice(cmd.length + 1));
+                    const { c, e } = Echo(buffer().slice(cmd.length + 1));
                     result = c;
                     nextError = e;
                     break;
                 }
                 case "experience": {
-                    const {c, e} = Experience();
+                    const { c, e } = Experience();
                     result = c;
                     nextError = e;
                     break;
                 }
                 case "help": {
-                    const {c, e} = Help();
+                    const { c, e } = Help();
                     result = c;
                     nextError = e;
                     break;
                 }
                 case "project": {
-                    const {c, e} = Project();
+                    const { c, e } = Project();
                     result = c;
                     nextError = e;
                     break;
@@ -130,19 +152,19 @@ export default function Terminal() {
                     break;
                 }
                 case "social": {
-                    const {c, e} = Social();
+                    const { c, e } = Social();
                     result = c;
                     nextError = e;
                     break;
                 }
                 case "man": {
-                    const {c, e} = Man(buffer().slice(cmd.length + 1));
+                    const { c, e } = Man(buffer().slice(cmd.length + 1));
                     result = c;
                     nextError = e;
                     break;
                 }
                 default: {
-                    const {c, e} = NotFound(cmd);
+                    const { c, e } = NotFound(cmd);
                     result = c;
                     nextError = e;
                     break;
@@ -156,34 +178,32 @@ export default function Terminal() {
             } else if (cmd) {
                 setHistoryOut([
                     ...historyOut(),
-                    HistoryPrompt(buffer(), (runtime()).toPrecision(), error()),
-                    result
+                    HistoryPrompt(buffer(), runtime().toPrecision(), error()),
+                    result,
                 ]);
             } else {
                 setHistoryOut([
                     ...historyOut(),
-                    HistoryPrompt(buffer(), (runtime()).toPrecision(), error()),
+                    HistoryPrompt(buffer(), runtime().toPrecision(), error()),
                 ]);
             }
             setError(nextError);
 
-            cmd && setHistory("history", (currentHistory) => {
-                const index = currentHistory.indexOf(buffer());
-                if (index > -1) {
-                    return [
-                        ...currentHistory.slice(0, index),
-                        ...currentHistory.slice(index + 1),
-                        buffer(),
-                    ]
-                } else {
-                    return [
-                        ...currentHistory,
-                        buffer()
-                    ];
-                }
-            });
+            cmd &&
+                setHistory("history", (currentHistory) => {
+                    const index = currentHistory.indexOf(buffer());
+                    if (index > -1) {
+                        return [
+                            ...currentHistory.slice(0, index),
+                            ...currentHistory.slice(index + 1),
+                            buffer(),
+                        ];
+                    } else {
+                        return [...currentHistory, buffer()];
+                    }
+                });
             setHistory("i", (_) => history.history.length);
-            
+
             setBuffer("");
             setCaret(0);
             setSuggest([]);
@@ -217,16 +237,17 @@ export default function Terminal() {
 
         if (!modRingBuffer.isEmpty()) {
             const shortcut = [modRingBuffer.toArray(), ev.key].join();
-            const upper = shortcut.startsWith("Shift") &&
+            const upper =
+                shortcut.startsWith("Shift") &&
                 ev.key.length === 1 &&
-                ev.key.charCodeAt(0) >= 32 && ev.key.charCodeAt(0) <= 126;
+                ev.key.charCodeAt(0) >= 32 &&
+                ev.key.charCodeAt(0) <= 126;
             if (upper || ModRingBuffer.isBrowser(shortcut)) return;
 
             ev.preventDefault();
 
             return setShortCut(shortcut);
         }
-
 
         switch (ev.key) {
             case "ArrowLeft": {
@@ -249,7 +270,7 @@ export default function Terminal() {
                 setHistory("i", (ci) => {
                     debug("Look forward", ci);
                     return ci < history.history.length ? ci + 1 : ci;
-                })
+                });
                 break;
             }
             case "Tab": {
@@ -280,7 +301,6 @@ export default function Terminal() {
         }
     }
 
-
     function onInput(ev: Event) {
         if (!ev.target) {
             throw new Error(`${ev.type} event fired with a null target`);
@@ -289,7 +309,6 @@ export default function Terminal() {
         setBuffer(t.value);
         setCaret(t.selectionEnd || 0);
     }
-
 
     function onKeyUp(ev: KeyboardEvent) {
         if (!ev.target) {
@@ -302,7 +321,7 @@ export default function Terminal() {
 
         modRingBuffer.flush();
     }
-    
+
     function onMouseUp(ev: MouseEvent) {
         if (!ev.target) {
             throw new Error(`${ev.type} event fired with a null target`);
@@ -318,47 +337,73 @@ export default function Terminal() {
     }
 
     return (
-        <main 
-         onMouseUp={onMouseUp}
-         onTouchEnd={onTouchEnd}
-         class="flex flex-col gap-2 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto mb-4 py-4 h-screen text-solar-base-1 text-sm xs:text-base font-mono selection:bg-solar-base-1 selection:text-solar-base-04">
-            <section id="history-prompt" class="flex flex-col gap-2 overflow-hidden">
+        <main
+            onMouseUp={onMouseUp}
+            onTouchEnd={onTouchEnd}
+            class="flex flex-col gap-2 w-5/6 sm:w-9/12 md:w-8/12 lg:w-7/12 xl:w-6/12 2xl:w-5/12 mx-auto mb-4 py-4 h-screen text-solar-base-1 text-sm xs:text-base font-mono selection:bg-solar-base-1 selection:text-solar-base-04"
+        >
+            <section
+                id="history-prompt"
+                class="flex flex-col gap-2 overflow-hidden"
+            >
                 {historyOut().map((e, i) => {
                     return (
-                    <div tabindex="0"
-                     class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2">
-                        <span class="text-solar-yellow-700 text-center self-start">{i}</span>
-                        {e}
-                    </div>)
+                        <div
+                            tabindex="0"
+                            class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2"
+                        >
+                            <span class="text-solar-yellow-700 text-center self-start">
+                                {i}
+                            </span>
+                            {e}
+                        </div>
+                    );
                 })}
             </section>
             <section id="prompt">
                 <form
-                 onSubmit={(ev) => ev.preventDefault()}
-                 class="flex flex-wrap gap-2 items-center">
-                    <label for="stdin" id="prompt-status"
-                     class="flex gap-2 basis-full items-center">
+                    onSubmit={(ev) => ev.preventDefault()}
+                    class="flex flex-wrap gap-2 items-center"
+                >
+                    <label
+                        for="stdin"
+                        id="prompt-status"
+                        class="flex gap-2 basis-full items-center"
+                    >
                         <span class="text-solar-yellow-300">{bolt}</span>
-                        <span class="text-solar-green-700 px-3">{runtime()} s</span>
+                        <span class="text-solar-green-700 px-3">
+                            {runtime()} s
+                        </span>
                         <Show when={error()}>
-                            <span class="text-solar-red-300 text-2xl">{warning}</span>
-                            <span class="text-solar-red-300 pl-1.5">{error()}</span>
+                            <span class="text-solar-red-300 text-2xl">
+                                {warning}
+                            </span>
+                            <span class="text-solar-red-300 pl-1.5">
+                                {error()}
+                            </span>
                         </Show>
                     </label>
                     <label for="stdin" id="prompt-cursor">
-                        <span class="text-solar-yellow-500 text-2xl">{pulse}</span>
+                        <span class="text-solar-yellow-500 text-2xl">
+                            {pulse}
+                        </span>
                     </label>
-                    <input id="stdin" ref={(el) => { stdin = el }} autofocus autocomplete="off"
-                     onKeyDown={onKeyDown}
-                     onInput={onInput}
-                     onKeyUp={onKeyUp}
-                     class="absolute right-full bg-solar-base-04 focus:outline-none pb-2" />
+                    <input
+                        id="stdin"
+                        ref={(el) => {
+                            stdin = el;
+                        }}
+                        autofocus
+                        autocomplete="off"
+                        onKeyDown={onKeyDown}
+                        onInput={onInput}
+                        onKeyUp={onKeyUp}
+                        class="absolute right-full bg-solar-base-04 focus:outline-none pb-2"
+                    />
                     <label for="stdin" id="prompt-caret">
-                        <span 
-                         class="whitespace-pre">
+                        <span class="whitespace-pre">
                             {buffer().slice(0, caret())}
-                            <span 
-                             class="text-solar-base-04 bg-solar-base-3 animate-pulse">
+                            <span class="text-solar-base-04 bg-solar-base-3 animate-pulse">
                                 {caretBuffer()}
                             </span>
                             {buffer().slice(caret() + 1)}
@@ -368,15 +413,18 @@ export default function Terminal() {
             </section>
             <section id="command-suggestion">
                 <Show when={suggest().length > 1 && !showSuggest()}>
-                    <div>Show all {suggest().length} possibilities? (Hit Tab or "y" to continue)</div>
+                    <div>
+                        Show all {suggest().length} possibilities? (Hit Tab or
+                        "y" to continue)
+                    </div>
                 </Show>
                 <Show when={suggest().length > 1 && showSuggest()}>
                     <div class="grid grid-cols-2 lg:grid-cols-3">
-                        <For each={suggest()}>{(command) => 
-                            <span>{command}</span>
-                        }</For>
+                        <For each={suggest()}>
+                            {(command) => <span>{command}</span>}
+                        </For>
                     </div>
-                </Show> 
+                </Show>
             </section>
         </main>
     );
