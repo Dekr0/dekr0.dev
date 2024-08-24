@@ -5,26 +5,82 @@ import Layout from "../layouts/Layout.astro";
 import Line from "../components/Line.astro";
 import Zen from "../components/Zen.astro";
 
-import quotes from "../quote.mts"
+import quotes from "../quote.mts";
 
 let line = 0;
 ---
+
 <Layout title="Experience">
     <Zen>
-        <p class="pt-2 text-solar-green-500 italic font-mono text-justify text-base">"{quotes()}"</p>
+        <p class="pt-2 text-solar-green-500 italic font-mono text-justify text-base">
+            "{quotes()}"
+        </p>
         <section id="experience" class="flex flex-col gap-4">
             <Line line={line++}>
-                <HistoryPrompt buffer="man experience"/>
+                <HistoryPrompt buffer="man experience" />
             </Line>
+
             <Line line={line++}>
-                <h2 class="text-solar-blue-300 font-bold w-fit">## Experience</h2>
+                <h1 class="text-solar-blue-300 font-bold w-fit">
+                    # Experience
+                </h1>
             </Line>
-            <ul class="flex gap-4">
+
+
+            <Line line={line++}>
+                <h2 class="text-solar-blue-300 font-bold w-fit">## Education</h2>
+            </Line>
+            <ul class="flex flex-col gap-4">
                 <Line line={line++}>
-                    <li>University of Alberta - Bachelor of Science In Computer Engineering</li>
-                </Line>
+                    <li>
+                         University of Alberta - Bachelor of Science In 
+                        Computer Engineering
+                    </li>
+            </ul>
+
+
+            <Line line={line++}>
+                <h2 class="text-solar-blue-300 font-bold w-fit">## Employment</h2>
+            </Line>
+
+            <ul class="flex flex-col gap-4 text-justify">
+                <li>
+                    <Line line={line++}>
+                        <p class="mb-4">
+                             Aurora Technology Development - Technical Intern
+                        </p>
+                    </Line>
+                    <ul class="flex flex-col gap-4">
+                        <li>
+                            <Line line={line++}><p class="ml-8">
+                                 Developed and released quality of life
+                                enhancements and hot fixes on both frontend and 
+                                backend systems, resulting in a more user 
+                                friendly website UI, and an improvement on 
+                                backend systems’ error handling capabilities 
+                                for two active projects.
+                            </p></Line>
+                        </li>
+                        <li>
+                            <Line line={line++}><p class="ml-8">
+                                 Developed and implemented an image upload and 
+                                conversion service that allowed customers to 
+                                upload various design files for clothing printing, 
+                                enhancing user experience and workflow efficiency.
+                            </p></Line>
+                        </li>
+                        <li>
+                            <Line line={line++}><p class="ml-8">
+                                 Refactored and standardized UI components 
+                                within frontend codebase, resulting in improved 
+                                code maintainability and enhanced user interface 
+                                consistency.
+                            </p></Line>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </section>
     </Zen>
-    <Header title="experience"/>
+    <Header title="experience" />
 </Layout>

@@ -5,20 +5,32 @@ import Layout from "../layouts/Layout.astro";
 import Line from "../components/Line.astro";
 import Zen from "../components/Zen.astro";
 
-import quotes from "../quote.mts"
+import quotes from "../quote.mts";
 
 let line = 0;
 ---
+
 <Layout title="Home">
     <Zen>
-        <p class="pt-2 text-solar-green-500 italic font-mono text-justify text-base">"{quotes()}"</p>
-        <h2 class="text-solar-base-03 bg-solar-base-3 font-bold w-fit px-2">Dekr0</h2>
+        <p
+            class="pt-2 text-solar-green-500 italic font-mono text-justify text-base"
+        >
+            "{quotes()}"
+        </p>
+        <h2 class="text-solar-base-03 bg-solar-base-3 font-bold w-fit px-2">
+            Dekr0
+        </h2>
         <Line line={line++}>
             <HistoryPrompt buffer="man home" />
         </Line>
         <section id="home" class="flex flex-col gap-4">
             <Line line={line++}>
-                <p>a computer engineer at <span class="px-1 bg-solar-blue-900 text-solar-red-700">[NULL]</span>, and a performance, simplicity, and suckless super fan.</p>
+                <p>
+                    a computer engineer at <span
+                        class="px-1 bg-solar-blue-900 text-solar-red-700"
+                        >[NULL]</span
+                    >, and a performance, simplicity, and suckless super fan.
+                </p>
             </Line>
         </section>
         <section id="social" class="flex flex-col gap-4">
@@ -30,22 +42,60 @@ let line = 0;
             </Line>
             <ul class="flex flex-col gap-4 content-center text-solar-cyna-500">
                 <Line line={line++}>
-                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://discord.com/invite/un4hz3uZ" target="_blank"><span>{`\uf1ff`}</span> <span>Discord</span></a></li>
+                    <li
+                        class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"
+                    >
+                        <a
+                            class="text-center"
+                            href="https://discord.com/invite/un4hz3uZ"
+                            target="_blank"
+                            ><span>{`\uf1ff`}</span> <span>Discord</span></a>
+                    </li>
                 </Line>
                 <Line line={line++}>
-                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><span>{`\udb80\uddee`}</span> <span>Email - dekr0.dk@protonmail.com</span></li>
+                    <li
+                        class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"
+                    >
+                        <span>{`\udb80\uddee`}</span>
+                        <span>Email - dekr0.dk@protonmail.com</span>
+                    </li>
                 </Line>
                 <Line line={line++}>
-                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://github.com/Dekr0" target="_blank"><span>{`\ue708`}</span> <span>GitHub</span></a></li>
+                    <li
+                        class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"
+                    >
+                        <a
+                            class="text-center"
+                            href="https://github.com/Dekr0"
+                            target="_blank"
+                            ><span>{`\ue708`}</span> <span>GitHub</span></a>
+                    </li>
                 </Line>
                 <Line line={line++}>
-                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="linkedin.com/in/chengxuan-li" target="_blank"><span>{`\udb80\udf3b`}</span> <span>LinkedIn</span></a></li>
+                    <li
+                        class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"
+                    >
+                        <a
+                            class="text-center"
+                            href="linkedin.com/in/chengxuan-li"
+                            target="_blank"
+                            ><span>{`\udb80\udf3b`}</span>
+                            <span>LinkedIn</span></a>
+                    </li>
                 </Line>
                 <Line line={line++}>
-                    <li class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"><a class="text-center" href="https://twitter.com/notDeKr0" target="_blank"><span>{`\uf35e`}</span> <span>X</span></a></li>
+                    <li
+                        class="underline underline-offset-2 hover:text-solar-cyna-300 animate-ease-in-out"
+                    >
+                        <a
+                            class="text-center"
+                            href="https://twitter.com/notDeKr0"
+                            target="_blank"
+                            ><span>{`\uf35e`}</span> <span>X</span></a>
+                    </li>
                 </Line>
             </ul>
         </section>
     </Zen>
-    <Header title="index"/>
+    <Header title="index" />
 </Layout>

@@ -5,21 +5,26 @@ import Line from "../components/Line.astro";
 import Layout from "../layouts/Layout.astro";
 import Zen from "../components/Zen.astro";
 
-import quotes from "../quote.mts"
+import quotes from "../quote.mts";
 
 let line = 0;
 ---
+
 <Layout title="Article">
     <Zen>
-        <p class="pt-2 text-solar-green-500 italic font-mono text-justify text-base">"{quotes()}"</p>
+        <p
+            class="pt-2 text-solar-green-500 italic font-mono text-justify text-base"
+        >
+            "{quotes()}"
+        </p>
         <section id="article" class="flex flex-col gap-4 text-justify hide">
             <Line line={line++}>
-                <HistoryPrompt buffer="man article"/>
+                <HistoryPrompt buffer="man article" />
             </Line>
             <Line line={line++}>
-                <p>I haven't written any article yet {`\udb83\udd12`}... </p>
+                <p>I haven't written any article yet {`\udb83\udd12`}...</p>
             </Line>
         </section>
     </Zen>
-    <Header title="article"/>
+    <Header title="article" />
 </Layout>
