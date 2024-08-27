@@ -5,12 +5,12 @@ import Line from "../components/Line.astro";
 import Layout from "../layouts/Layout.astro";
 import Zen from "../components/Zen.astro";
 
+import initLine from "../line.mts";
 import quotes from "../quote.mts";
 import { bolt, rocket } from "../icon.mts";
 
-let line = 0;
+let line = initLine();
 ---
-
 <Layout title="About">
     <Zen>
         <p
@@ -19,25 +19,25 @@ let line = 0;
             "{quotes()}"
         </p>
         <section id="about" class="flex flex-col gap-4 text-justify hide">
-            <Line line={line++}>
+            <Line line={line}>
                 <HistoryPrompt buffer="man about" />
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <h1 class="text-solar-blue-300 font-bold w-fit"># Hello</h1>
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <h2 class="text-solar-blue-300 font-bold w-fit">
                     ## My Name is Chason Li.
                 </h2>
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <p>
                     I'm a computer engineer at [unemployed] comfortable with
                     both front-end & back-end development as well as embedded
                     development to some degree.
                 </p>
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <p>
                     My primary interests is currently focus on low level and system
                     programming, program performance and optimization,
@@ -47,7 +47,7 @@ let line = 0;
                     in my spare time.
                 </p>
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <p>
                     I'm passionate about building CLI based applications and
                     developer tooling, and optimizing program performance in
@@ -57,7 +57,7 @@ let line = 0;
                     tinkering embedded hardware & ICs.
                 </p>
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <p>
                     My works have a strong emphasis on <i>simplicity</i> and <i
                         >performance</i
@@ -75,13 +75,13 @@ let line = 0;
                     >.
                 </p>
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <p>
                     I’m currently based in Canada. If you happen to speak
                     Chinese, my Chinese name is 李承轩 (lǐ chéng xuān).
                 </p>
             </Line>
-            <Line line={line++}>
+            <Line line={line}>
                 <p>
                     You can message me via my <a
                         id="social-anchor"
