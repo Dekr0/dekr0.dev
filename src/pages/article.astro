@@ -5,9 +5,17 @@ import Line from "../components/Line.astro";
 import Layout from "../layouts/Layout.astro";
 import Zen from "../components/Zen.astro";
 
+import initLine from "../line.mts";
 import quotes from "../quote.mts";
 
-let line = 0;
+let allPosts = undefined;
+try {
+    allPosts = await Astro.glob("./posts/*.md");
+} catch(e) {
+
+}
+
+let line = initLine();
 ---
 
 <Layout title="Article">
@@ -18,12 +26,26 @@ let line = 0;
             "{quotes()}"
         </p>
         <section id="article" class="flex flex-col gap-4 text-justify hide">
-            <Line line={line++}>
+            <Line line={line}>
                 <HistoryPrompt buffer="man article" />
             </Line>
-            <Line line={line++}>
-                <p>I haven't written any article yet {`\udb83\udd12`}...</p>
-            </Line>
+            <div>
+                {allPosts ? 
+                <ul>
+                    {allPosts.map((post) => 
+                        <li>
+                            <Line line={line}>
+                                <a class="text-solar-cyna-500 hover:text-solar-cyna-300" href={post.url}>
+                                    {post.frontmatter.title}
+                                </a>
+                            </Line>
+                        </li>)}
+                </ul> : 
+                <Line line={line}>
+                    <p>I haven't written any articles yet ... :(</p>
+                </Line>
+                }
+            </div>
         </section>
     </Zen>
     <Header title="article" />
