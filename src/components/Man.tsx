@@ -72,7 +72,7 @@ function Aritlce() {
     return (
         <section id="article" class="flex flex-col gap-2 text-justify hide">
             <p>
-                I haven't written any article yet {`\udb83\udd12`}...{" "}
+                I haven't written any article yet... :(
             </p>
         </section>
     );
@@ -144,9 +144,10 @@ function Project() {
                 </a>                
             </h3>
             <p class="text-justify">
-                RPC.nvim is a Neovim plugin that integrates Discord Rich 
-                Presence, displaying live status update from Neovim and directly 
-                to users' Discord profiles.
+                RPC.nvim is a Neovim plugin that integrates Discord Rich
+                Presence, displaying live status (keystroke per minute, 
+                editor mode, current workspace, etc) update from Neovim 
+                and directly to users' Discord profiles.
             </p>
             <h3 class="font-bold w-fit">
                 <a
@@ -158,11 +159,13 @@ function Project() {
                 </a>
             </h3>
             <p class="text-justify">
-                A working in progress 8086 Emulator capable of decoding assembly 
-                binaries, executing instructions sequentially, and outputting the 
-                final state of the CPU and 1MB memory of 8086. The emulator also 
-                provides a TUI debugger that visually representing the internal 
-                state of the 8086 CPU and memory for debugging purposes.
+                8086 simulator is a set of tools for 8086 instructions 
+                set that capable of dissembling binary assembly code, 
+                simulating instructions execution, and outputting 
+                dissemble result and simulation result. An TUI 
+                visualizer similar to GDB is provided to display the 
+                internal state of the virtual 8086 CPU and the 1 MB 
+                virtual memory.
             </p>
             <h2 class="text-solar-blue-300 font-bold w-fit">
                 ## "Reinvent The Wheel"
@@ -177,9 +180,9 @@ function Project() {
                 </a>
             </h3>
             <p class="text-justify">
-                a HTTP server written in C, capable of parsing HTTP 
-                message efficiently and handling multiple concurrent client 
-                connections
+                a HTTP server written in C, capable of parsing HTTP message 
+                efficiently, perform simple dynamic endpoint routing, and 
+                handling multiple concurrent client connections.
             </p>
             <h3 class="font-bold w-fit">
                 <a
