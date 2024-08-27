@@ -1,13 +1,15 @@
 ---
-import Line from "../components/Line.astro";
+import Anchor from "../components/Anchor.astro";
 import Header from "../components/Header.astro";
 import HistoryPrompt from "../components/HistoryPrompt.astro";
+import Line from "../components/Line.astro";
 import Layout from "../layouts/Layout.astro";
 import Zen from "../components/Zen.astro";
 
+import initLine from "../line.mts";
 import quotes from "../quote.mts";
 
-let line = 0;
+let line = initLine();
 ---
 
 <Layout title="Project">
@@ -16,105 +18,94 @@ let line = 0;
             "{quotes()}"
         </p>
         <section id="project" class="flex flex-col gap-4">
-            <Line line={line++}>
+            <Line line={line}>
                 <HistoryPrompt buffer="man project" />
             </Line>
 
-            <Line line={line++}>
+            <Line line={line}>
                 <h1 class="text-solar-blue-300 font-bold w-fit"># Project</h1>
             </Line>
 
-            <Line line={line++}>
-                <h2 class="text-solar-blue-300 font-bold w-fit">
-                    ## Open Source
-                </h2>
-            </Line>
+            <div class="flex flex-col gap-4">
+                <Line line={line}>
+                    <h2 class="text-solar-blue-300 font-bold w-fit">
+                        ## Open Source
+                    </h2>
+                </Line>
+    
+                <Line line={line}>
+                    <h3 class="font-bold w-fit">
+                        <Anchor href="https://github.com/Dekr0/RPC.nvim">
+                            ### RPC.nvim
+                        </Anchor>
+                    </h3>
+                </Line>
+                <Line line={line}>
+                    <p class="text-justify">
+                        RPC.nvim is a Neovim plugin that integrates Discord Rich
+                        Presence, displaying live status (keystroke per minute, 
+                        editor mode, current workspace, etc) update from Neovim 
+                        and directly to users' Discord profiles.
+                    </p>
+                </Line>
 
-            <Line line={line++}>
-                <h3 class="font-bold w-fit">
-                    <a
-                        class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
-                        href="https://github.com/Dekr0/RPC.nvim"
-                        target="_blank"
-                        >
-                        ### RPC.nvim
-                    </a>                
-                </h3>
-            </Line>
-            <Line line={line++}>
-                <p class="text-justify">
-                    RPC.nvim is a Neovim plugin that integrates Discord Rich
-                    Presence, displaying live status update from Neovim and
-                    directly to users' Discord profiles.
-                </p>
-            </Line>
+                <Line line={line}>
+                    <h3 class="font-bold w-fit">
+                        <Anchor href="https://github.com/Dekr0/8086-sim">
+                            ### 8086 Simulator
+                        </Anchor>
+                    </h3>
+                </Line>
+                <Line line={line}>
+                    <p class="text-justify">
+                        8086 simulator is a set of tools for 8086 instructions 
+                        set that capable of dissembling binary assembly code, 
+                        simulating instructions execution, and outputting 
+                        dissemble result and simulation result. An TUI 
+                        visualizer similar to GDB is provided to display the 
+                        internal state of the virtual 8086 CPU and the 1 MB 
+                        virtual memory.
+                    </p>
+                </Line>
+            </div>
 
-            <Line line={line++}>
-                <h3 class="font-bold w-fit">
-                    <a
-                        class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
-                        href="https://github.com/Dekr0/8086-sim"
-                        target="_blank"
-                    >
-                        ### 8086 Emulator
-                    </a>
-                </h3>
-            </Line>
-            <Line line={line++}>
-                <p class="text-justify">
-                    A working in progress 8086 Emulator capable of decoding 
-                    assembly binaries, executing instructions sequentially, and 
-                    outputting the final state of the CPU and 1MB memory of 8086. 
-                    The emulator also provides a TUI debugger that visually 
-                    representing the internal state of the 8086 CPU and memory 
-                    for debugging purposes.
-                </p>
-            </Line>
+            <div class="flex flex-col gap-4">
+                <Line line={line}>
+                    <h2 class="text-solar-blue-300 font-bold w-fit">
+                        ## "Reinvent The Wheel"
+                    </h2>
+                </Line>
 
+                <Line line={line}>
+                    <h3 class="font-bold w-fit">
+                        <Anchor href="https://github.com/Dekr0/c-http">
+                            ### HTTP Server
+                        </Anchor>
+                    </h3>
+                </Line>
+                <Line line={line}>
+                    <p class="text-justify">
+                    a HTTP server written in C, capable of parsing HTTP message 
+                    efficiently, perform simple dynamic endpoint routing, and 
+                    handling multiple concurrent client connections.
+                    </p>
+                </Line>
 
-            <Line line={line++}>
-                <h2 class="text-solar-blue-300 font-bold w-fit">
-                    ## "Reinvent The Wheel"
-                </h2>
-            </Line>
-
-            <Line line={line++}>
-                <h3 class="font-bold w-fit">
-                    <a
-                        class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
-                        href="https://github.com/Dekr0/c-http"
-                        target="_blank"
-                    >
-                        ### HTTP Server
-                    </a>
-                </h3>
-            </Line>
-            
-            <Line line={line++}>
-                <p class="text-justify">
-                    a HTTP server written in C, capable of parsing HTTP 
-                    message efficiently and handling multiple concurrent client 
-                    connections
-                </p>
-            </Line>
-
-            <Line line={line++}>
-                <h3 class="font-bold w-fit">
-                    <a
-                        class="underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
-                        href="https://github.com/Dekr0/redis-clone"
-                        target="_blank"
-                    >
-                        ### Redis Clone
-                    </a>
-                </h3>
-            </Line>
-            <Line line={line++}>
-                <p class="text-justify">
-                    a working in progress Redis Clone written in C, mirroring 
-                    essential Redis functionalities.
-                </p>
-            </Line>
+                <Line line={line}>
+                    <h3 class="font-bold w-fit">
+                        <Anchor href="https://github.com/Dekr0/redis-clone">
+                            ### Redis Clone
+                        </Anchor>
+                        </a>
+                    </h3>
+                </Line>
+                <Line line={line}>
+                    <p class="text-justify">
+                        a working in progress Redis Clone written in C, mirroring 
+                        essential Redis functionalities.
+                    </p>
+                </Line>
+            </div>
         </section>
     </Zen>
     <Header title="project" />
