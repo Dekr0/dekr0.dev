@@ -1,0 +1,35 @@
+---
+import HistoryPrompt from "../components/HistoryPrompt.astro";
+import Header from "../components/Header.astro";
+import Line from "../components/Line.astro";
+import Layout from "../layouts/Layout.astro";
+import Zen from "../components/Zen.astro";
+
+import initLine from "../line.mts";
+import quotes from "../quote.mts";
+
+let line = initLine();
+---
+<Layout title="Guestbook">
+    <Zen>
+        <p
+            class="pt-2 text-solar-green-500 italic font-mono text-justify text-base"
+        >
+            "{quotes()}"
+        </p>
+        <section id="about" class="flex flex-col gap-4 text-justify hide">
+            <Line line={line}>
+                <HistoryPrompt buffer="ssh guestbook" />
+            </Line>
+        </section>
+    </Zen>
+    <Header title="guestbook" />
+</Layout>
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        let sse = new EventSource("/api/guestbook");
+        sse.onmessage = (ev: MessageEvent) => {
+            console.log(ev.data);
+        }
+    });
+</script>

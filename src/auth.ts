@@ -1,0 +1,45 @@
+import { GitHub } from "arctic";
+import { Lucia } from "lucia";
+import { LibSQLAdapter } from "@lucia-auth/adapter-sqlite";
+import { tursoDB } from "./db";
+
+type DatabaseUserAttributes = {
+    id: string;
+    username: string;
+};
+
+declare module "lucia" {
+	interface Register {
+		Lucia: typeof lucia;
+		DatabaseUserAttributes: DatabaseUserAttributes;
+	}
+}
+
+export const adapter = new LibSQLAdapter(tursoDB, {
+    user: "user",
+    session: "session"
+});
+
+export const lucia = new Lucia(adapter, {
+	sessionCookie: {
+		attributes: {
+			// set to `true` when using HTTPS
+			secure: import.meta.env.PROD
+		}
+	},
+    getUserAttributes: (attributes) => {
+        return {
+            id: attributes.id,
+            username: attributes.username,
+        };
+    },
+});
+
+export const github = new GitHub(
+    import.meta.env.PROD
+        ? import.meta.env.PROD_GITHUB_CLIENT_ID
+        : import.meta.env.DEV_GITHUB_CLIENT_ID,
+    import.meta.env.PROD
+        ? import.meta.env.PROD_GITHUB_CLIENT_SECRET
+        : import.meta.env.DEV_GITHUB_CLIENT_SECRET,
+);
