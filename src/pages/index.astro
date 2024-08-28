@@ -15,7 +15,7 @@ type Social = {
     url: string
 };
 
-const socials: Socials[] = [
+const socials: Social[] = [
     { 
         icon: "\uf1ff",
         text: "Discord", 
@@ -79,7 +79,7 @@ let line = initLine();
             <ul class="flex flex-col gap-4 content-center">
                 {socials.map((social) => <li>
                     <Line line={line}>
-                        <Anchor target={social.url}> 
+                        <Anchor href={social.url}> 
                             <span>{social.icon}</span> <span>{social.text}</span>
                         </Anchor>
                     </Line>
