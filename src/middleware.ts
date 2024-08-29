@@ -10,9 +10,10 @@ const logger = getLogger().child({
 
 export const onRequest = defineMiddleware(async (context, next) => {
     logger.info(`request method: ${context.request.method}`);
+    const originHeader = context.request.headers.get("Origin");
+    const hostHeader = context.request.headers.get("Host");
+    logger.info(`Incoming request origin = ${originHeader} and host = ${hostHeader}`);
     if (context.request.method !== "GET") {
-        const originHeader = context.request.headers.get("Origin");
-        const hostHeader = context.request.headers.get("Host");
         if (
             !originHeader ||
             !hostHeader ||
