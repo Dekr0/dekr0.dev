@@ -1,0 +1,12 @@
+---
+import Layout from "./Layout.astro";
+import Header from "../components/Header.astro";
+import Zen from "../components/Zen.astro";
+const { frontmatter } = Astro.props;
+---
+<Layout title={frontmatter.title}>
+    <Zen>
+        <slot />
+    </Zen>
+    <Header title={frontmatter.title} />
+</Layout>
