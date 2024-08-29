@@ -9,25 +9,22 @@ function About() {
                 ## My Name is Chason Li.
             </h2>
             <p>
-                I'm a computer engineer at [unemployed] comfortable with
-                both front-end & back-end development as well as embedded
-                development to some degree.
+            I'm a computer engineer at [unemployed] comfortable with back-end 
+            development as well as embedded development to some degree.
             </p>
             <p>
-                My primary interests is currently focus on low level and system
-                programming, program performance and optimization,
-                programming language relative topics (compiler design,
-                programming paradigm), computer architectures, and game
-                engine. These are the areas I'm currently heavily invested
-                in my spare time.
+            Currently I'm primarily focus on low level and system programming, 
+            program performance and optimization, computer architectures, 
+            and low level game development. These are the areas I'm currently 
+            heavily invested in my spare time.
             </p>
             <p>
-                I'm passionate about building CLI based applications and
-                developer tooling, and optimizing program performance in
-                different levels. Making QOL extensions and plugins for
-                applications and games I used and played in a daily biased is
-                also my primary interest. This goes the same with tinkering
-                embedded hardware & ICs.
+            I'm passionate about building CLI / TUI applications and tooling 
+            that improves workflow and automation, or provides an alternative 
+            UI for those who prefer using their terminal over existing GUI 
+            applications. I'm enjoy spending time and effort on optimizing 
+            program performance in different levels. This goes the same with 
+            tinkering embedded hardware & ICs.
             </p>
             <p>
                 My works have a strong emphasis on <i>simplicity</i> and{" "}
