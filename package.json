@@ -6,6 +6,7 @@
         "dev": "astro dev | pino-pretty",
         "start": "astro dev",
         "build": "astro check && astro build",
+        "prod": "node dist/server/entry.mjs | pino-pretty",
         "preview": "astro preview",
         "astro": "astro"
     },

@@ -120,8 +120,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const stdin = document.querySelector("input");
     const stdout = document.getElementById("stdout");
     const caret = document.getElementById("caret");
-    if (!main || !stdin || !stdout || !caret) 
-        throw new Error("Unexpected UI error");
+    if (!main || !stdin || !stdout || !caret) return;
 
     function sign() {
         if (!stdout || !stdin) throw new Error("Unexpected UI error");
