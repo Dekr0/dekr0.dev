@@ -6,7 +6,8 @@ export default {
     theme: {
         extend: {
             screens: {
-                xs: "400px",
+                xs: "512px",
+                mdp: "800px"
             },
             colors: {
                 solar: {
