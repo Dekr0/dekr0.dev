@@ -148,6 +148,7 @@ window.addEventListener("DOMContentLoaded", () => {
             };
 
             const req: RequestInit = {
+                mode: "same-origin",
                 body: params,
                 method: "POST",
                 headers: headers,
