@@ -1,12 +1,12 @@
 import { OAuth2RequestError } from "arctic";
 import { generateId } from "lucia";
 import { github, lucia } from "src/auth";
-import { tursoDB } from "src/db";
+import db from "src/db";
 import getLogger from "src/logger";
 
 import type { APIContext } from "astro";
 
-const child = getLogger().child({
+const logger = getLogger().child({
     filename: "/api/auth/oauth/callback/github.ts",
     function: "GET",
 });
@@ -37,18 +37,10 @@ export async function GET(context: APIContext) {
         const response = await fetch(api, { headers: headers });
         const user: GitHubUser = await response.json();
 
-        // const result = await tursoDB
-        //     .execute({
-        //         sql: `SELECT * FROM oauth_account 
-        //                 WHERE provider_id = ? 
-        //                 AND provider_user_id = ?`,
-        //         args: ["github", user.id]
-        //     });
+        const a = await db.getOAuthAccountByOne("github", user.id);
 
-        let account: undefined | { providerUserId: string };
-
-        if (account) {
-            const session = await lucia.createSession(account.providerUserId, {});
+        if (a) {
+            const session = await lucia.createSession(a.local_uid, {});
             const sessionCookie = lucia.createSessionCookie(session.id);
             context.cookies.set(
                 sessionCookie.name,
@@ -59,26 +51,15 @@ export async function GET(context: APIContext) {
             return context.redirect("/guestbook");
         }
 
-        const userId = generateId(15);
-        !import.meta.env.PROD && child.info(
-            `New GitHub OAuth account with associated local user id: ${userId}`,
+        const uid = generateId(15);
+        logger.info(
+            `New GitHub OAuth account with associated local user id: ${uid}`
         );
 
-        await tursoDB.batch(
-            [ 
-                { 
-                    sql: `INSERT INTO user (id,  username) VALUES (?, ?)`,
-                    args: [userId, user.login]
-                },
-                {
-                    sql: `INSERT INTO oauth_account (provider_id, provider_user_id, user_id) VALUES (?, ?, ?)`,
-                    args: ["github", user.id, userId]
-                }
-            ],
-            "write"
-        );
+        await db.createNewUser(uid, user.login);
+        await db.createNewOAuthAccount("github", user.id, uid);
 
-        const session = await lucia.createSession(userId, {});
+        const session = await lucia.createSession(uid, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
         context.cookies.set(
             sessionCookie.name,
@@ -89,15 +70,15 @@ export async function GET(context: APIContext) {
         return context.redirect("/guestbook");
     } catch (e) {
         if (e instanceof OAuth2RequestError) {
-            child.info(e.message);
-            child.info(e.description);
+            logger.info(e.message);
+            logger.info(e.description);
             const reason = JSON.stringify({
                 reason: "Encounter server side error during GitHub OAuth",
             });
             return new Response(reason, { status: 400 });
         }
 
-        child.info(e);
+        logger.info(e);
         const reason = JSON.stringify({
             reason: "Unkonw server side error during GitHub OAuth",
         });
