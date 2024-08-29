@@ -8,7 +8,7 @@ export async function GET(context: APIContext): Promise<Response> {
 	const url = await github.createAuthorizationURL(state);
 	context.cookies.set("github_oauth_state", state, {
 		path: "/",
-		secure: import.meta.env.PROD,
+		secure: true,
 		httpOnly: true,
 		maxAge: 60 * 10,
 		sameSite: "lax"
