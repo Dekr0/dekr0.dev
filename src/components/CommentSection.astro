@@ -28,7 +28,7 @@ try {
         <p><span class="text-solar-red-500">{warning} 500</span>Failed to retrieve comments</p>
      </Line>
      :
-     <div>
+     <div id="line-ref">
         <ul id="comments" class="flex flex-col gap-4 content-center">
             {comments.map((comment) => <li 
                 id={comment.comment_id}

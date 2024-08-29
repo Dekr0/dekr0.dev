@@ -22,7 +22,8 @@ const user = Astro.locals.user;
         >
             "{quotes()}"
         </p>
-        <section id="about" class="flex flex-col gap-4 text-justify hide">
+        <section data-auth={user ? "true" : "false"} id="guestbook" 
+            class="flex flex-col gap-4 text-justify hide">
             <Line line={line}>
                 <HistoryPrompt buffer="guestbook sign --dry-run || guestbook signin & \\" />
             </Line>
@@ -64,23 +65,30 @@ type CommentView = {
 };
 
 window.addEventListener("DOMContentLoaded", () => {
+    const section = document.getElementById("guestbook");
+    if (!section || !section.dataset.auth) 
+        throw new Error("Unexpected UI error");
+
+    const auth = JSON.parse(section.dataset.auth) as Boolean;
+
+    const lineRef = document.getElementById("line-ref");
     const commentsList = document.getElementById("comments");
-    if (!commentsList) throw new Error("Unexpected UI error");
+
     const sse = new EventSource("/api/guestbook_event");
+
     function refreshComments(comments: CommentView[]) {
-        if (!commentsList) {
-            throw new Error("Unexpected UI error");
-        }
-        const commentTE = commentsList.firstElementChild;
-        if (!commentTE) {
-            throw new Error("Unexpected UI error");
-        }
-        let lineNumSpan = commentTE.querySelector("span");
-        if (!lineNumSpan || !lineNumSpan.textContent) {
-            throw new Error("Unexpected UI error");
-        }
-        let lineNum = parseInt(lineNumSpan.textContent);
+        if (!commentsList || !lineRef) throw new Error("Unexpected UI error");
+
+        let prevLine = lineRef.previousElementSibling;
+        if (!prevLine) throw new Error("Unexpected UI error");
+
+        const lineNumE = prevLine.querySelector("span");
+        if (!lineNumE || !lineNumE.textContent) throw new Error("Unexpected UI error");
+
+        let lineNum = parseInt(lineNumE.textContent) + 1;
+
         commentsList.innerHTML = "";
+
         for (const comment of comments) {
             const commentE = document.createElement("li");
             commentE.id = comment.comment_id
@@ -90,37 +98,31 @@ window.addEventListener("DOMContentLoaded", () => {
                     tabindex="0"
                     class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2"
                 >
-                    <span class="text-solar-yellow-700 text-center self-start">${lineNum++}</span>
+                    <span class="text-solar-yellow-700 pl-2 text-center self-start">${lineNum++}</span>
                     <p>${comment.comment_author}: ${comment.comment}</p>
                 </div>
             `
             commentsList.append(commentE);
         }
     }
+
     sse.addEventListener("message", (e) => {
-        if (!commentsList) {
+        if (!commentsList || !lineRef) { 
             sse.close();
             throw new Error("Unexpected UI error");
-        }
-        const commentTE = commentsList.firstElementChild;
-        if (!commentTE) {
-            sse.close();
-            throw new Error("Unexpected UI error")
-        }
-        let lineNumSpan = commentTE.querySelector("span");
-        if (!lineNumSpan || !lineNumSpan.textContent) {
-            sse.close();
-            throw new Error("Unexpected UI error")
         }
         const comments: CommentView[] = JSON.parse(e.data);
         refreshComments(comments);
     });
 
+    if (!auth) return;
+
     const main = document.querySelector("main");
     const stdin = document.querySelector("input");
     const stdout = document.getElementById("stdout");
     const caret = document.getElementById("caret");
-    if (!main || !stdin || !stdout || !caret) return;
+    if (!main || !stdin || !stdout || !caret)
+        throw new Error("Unexpected UI error");
 
     function sign() {
         if (!stdout || !stdin) throw new Error("Unexpected UI error");
