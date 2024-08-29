@@ -3,14 +3,13 @@ import { defineMiddleware } from "astro:middleware";
 import { lucia } from "./auth";
 import getLogger from "./logger";
 
-const child = getLogger().child({
+const logger = getLogger().child({
     filename: "middleware.ts",
     function: "onRequest",
 });
 
 export const onRequest = defineMiddleware(async (context, next) => {
-    !import.meta.env.PROD && 
-            child.info(`request method: ${context.request.method}`);
+    logger.info(`request method: ${context.request.method}`);
     if (context.request.method !== "GET") {
         const originHeader = context.request.headers.get("Origin");
         const hostHeader = context.request.headers.get("Host");
@@ -35,8 +34,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
     const { session, user } = await lucia.validateSession(sessionId);
     if (session && session.fresh) {
-        !import.meta.env.PROD &&
-            child.info(`session fresh: creating new session cookie`);
+        logger.info(`session fresh: creating new session cookie`);
         const sessionCookie = lucia.createSessionCookie(session.id);
         context.cookies.set(
             sessionCookie.name,
