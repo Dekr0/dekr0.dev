@@ -1,7 +1,7 @@
 import { GitHub } from "arctic";
 import { Lucia } from "lucia";
-import { LibSQLAdapter } from "@lucia-auth/adapter-sqlite";
-import { tursoDB } from "./db";
+import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
+import { luciaDB } from "./db";
 
 type DatabaseUserAttributes = {
     id: string;
@@ -15,7 +15,7 @@ declare module "lucia" {
 	}
 }
 
-export const adapter = new LibSQLAdapter(tursoDB, {
+export const adapter = new BetterSqlite3Adapter(luciaDB, {
     user: "user",
     session: "session"
 });
