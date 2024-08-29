@@ -1,15 +1,15 @@
 ---
 export const prerender = true;
 
-import HistoryPrompt from "../components/HistoryPrompt.astro";
-import Header from "../components/Header.astro";
-import Line from "../components/Line.astro";
-import Layout from "../layouts/Layout.astro";
-import Zen from "../components/Zen.astro";
+import HistoryPrompt from "@components/HistoryPrompt.astro";
+import Header from "@components/Header.astro";
+import Line from "@components/Line.astro";
+import Layout from "@layouts/Layout.astro";
+import Zen from "@components/Zen.astro";
 
-import initLine from "../line.mts";
-import quotes from "../quote.mts";
-import { bolt, rocket } from "../icon.mts";
+import initLine from "src/line.mts";
+import quotes from "src/quote.mts";
+import { bolt, rocket } from "src/icon.mts";
 
 let line = initLine();
 ---

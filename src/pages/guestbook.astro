@@ -1,14 +1,19 @@
 ---
-import HistoryPrompt from "../components/HistoryPrompt.astro";
-import Header from "../components/Header.astro";
-import Line from "../components/Line.astro";
-import Layout from "../layouts/Layout.astro";
-import Zen from "../components/Zen.astro";
+import Anchor from "@components/Anchor.astro";
+import CommentSection from "@components/CommentSection.astro";
+import CommentForm from "@components/CommentForm.astro";
+import Header from "@components/Header.astro";
+import HistoryPrompt from "@components/HistoryPrompt.astro";
+import Line from "@components/Line.astro";
+import Layout from "@layouts/Layout.astro";
+import Zen from "@components/Zen.astro";
 
-import initLine from "../line.mts";
-import quotes from "../quote.mts";
+import initLine from "src/line.mts";
+import quotes from "src/quote.mts";
 
 let line = initLine();
+const start = Date.now();
+const user = Astro.locals.user;
 ---
 <Layout title="Guestbook">
     <Zen>
@@ -19,17 +24,203 @@ let line = initLine();
         </p>
         <section id="about" class="flex flex-col gap-4 text-justify hide">
             <Line line={line}>
-                <HistoryPrompt buffer="ssh guestbook" />
+                <HistoryPrompt buffer="guestbook sign --dry-run || guestbook signin & \\" />
             </Line>
+            <Line line={line}>
+                <p>guestbook list</p>
+            </Line>
+            <Line line={line}>
+                <p>[1] {Math.floor(Math.random() * 50000)}</p>
+            </Line>
+            {!user ?
+                <Line line={line}>
+                    <p>guestbook sign --dry-run: Login required</p>
+                </Line>
+                <Line line={line}>
+                    <p>[1] + done guestbook sign --dry-run</p>
+                </Line>
+                <Line line={line}>
+                    <Anchor href="/api/auth/oauth/github" notblank={true}> 
+                        <span>{"\ue708"}</span> <span>GitHub</span>
+                    </Anchor>
+                </Line>
+                :
+                <Line line={line}>
+                    <p>[1] + done guestbook sign --dry-run</p>
+                </Line>
+                <CommentForm line={line} start={start} />
+            }
+            <CommentSection line={line}/>
         </section>
     </Zen>
     <Header title="guestbook" />
 </Layout>
 <script>
-    window.addEventListener("DOMContentLoaded", () => {
-        let sse = new EventSource("/api/guestbook");
-        sse.onmessage = (ev: MessageEvent) => {
-            console.log(ev.data);
+type CommentView = {
+    comment_id: string,
+    comment_author: string,
+    comment: string,
+    comment_time: number
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+    const commentsList = document.getElementById("comments");
+    if (!commentsList) throw new Error("Unexpected UI error");
+    const sse = new EventSource("/api/guestbook_event");
+    function refreshComments(comments: CommentView[]) {
+        if (!commentsList) {
+            throw new Error("Unexpected UI error");
+        }
+        const commentTE = commentsList.firstElementChild;
+        if (!commentTE) {
+            throw new Error("Unexpected UI error");
+        }
+        let lineNumSpan = commentTE.querySelector("span");
+        if (!lineNumSpan || !lineNumSpan.textContent) {
+            throw new Error("Unexpected UI error");
+        }
+        let lineNum = parseInt(lineNumSpan.textContent);
+        commentsList.innerHTML = "";
+        for (const comment of comments) {
+            const commentE = document.createElement("li");
+            commentE.id = comment.comment_id
+            commentE.dataset.time = comment.comment_time.toString(10);
+            commentE.innerHTML = `
+                <div
+                    tabindex="0"
+                    class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2"
+                >
+                    <span class="text-solar-yellow-700 text-center self-start">${lineNum++}</span>
+                    <p>${comment.comment_author}: ${comment.comment}</p>
+                </div>
+            `
+            commentsList.append(commentE);
+        }
+    }
+    sse.addEventListener("message", (e) => {
+        if (!commentsList) {
+            sse.close();
+            throw new Error("Unexpected UI error");
+        }
+        const commentTE = commentsList.firstElementChild;
+        if (!commentTE) {
+            sse.close();
+            throw new Error("Unexpected UI error")
+        }
+        let lineNumSpan = commentTE.querySelector("span");
+        if (!lineNumSpan || !lineNumSpan.textContent) {
+            sse.close();
+            throw new Error("Unexpected UI error")
+        }
+        const comments: CommentView[] = JSON.parse(e.data);
+        refreshComments(comments);
+    });
+
+    const main = document.querySelector("main");
+    const stdin = document.querySelector("input");
+    const stdout = document.getElementById("stdout");
+    const caret = document.getElementById("caret");
+    if (!main || !stdin || !stdout || !caret) 
+        throw new Error("Unexpected UI error");
+
+    function sign() {
+        if (!stdout || !stdin) throw new Error("Unexpected UI error");
+        const comment = stdout.textContent;
+        if (!comment) throw new Error("Unexpected UI error");
+        if (comment.length >= 2) {
+            if (comment.startsWith("\\u0017")) {
+                return fetch("/api/auth/logout", { method: "POST", redirect: "manual" }).
+                    then(() => {
+                        window.location.replace("/guestbook");
+                    }).
+                    catch((err) => {
+                        console.error("Unexpected error during logout");
+                    })
+            }
+
+            const params = new URLSearchParams();
+            params.set("comment", comment);
+
+            const headers: HeadersInit = {
+                Accept: "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+            };
+
+            const req: RequestInit = {
+                body: params,
+                method: "POST",
+                headers: headers,
+            };        
+
+            fetch("/api/guestbook", req);
+            stdinBuffer = "";
+            stdin.value = "";
+            caretPos.caret = 0;
+        }
+    }
+
+    let stdinBuffer = "";
+    main.addEventListener("mouseup", () => stdin.focus());
+    main.addEventListener("touchend", () => stdin.focus());
+    stdin.focus();
+
+    const caretchange = new Event("caret");
+    const caretPos = new Proxy({ caret: 0 }, {
+        set: (target, prop, newValue, _) => {
+            if (prop !== "caret" || typeof newValue !== "number") return false;
+            target.caret = newValue;
+            stdout.dispatchEvent(caretchange);
+            return true;
         }
     });
+
+    stdin.addEventListener("keydown", (e) => {
+        if (!e.target)
+            throw new Error(`${e.type} event fired with a null target`);
+        if (e.altKey || e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            return;
+        }
+        switch (e.key) {
+            case "ArrowLeft": {
+                if (caretPos.caret <= 0) break;
+                caretPos.caret -= 1;
+                break;
+            }
+            case "ArrowRight": {
+                if (caretPos.caret >= stdinBuffer.length) break;
+                caretPos.caret += 1;
+                break;
+            }
+            case "Enter": {
+                sign();
+                fetch("/api/guestbook").then(res => {
+                    return res.json(); 
+                }).then(comments => {
+                    refreshComments(comments);
+                })
+                break;
+            }
+        }
+    })
+
+    stdin.addEventListener("input", (e) => {
+        if (!e.target)
+            throw new Error(`${e.type} event fired with a null target`);
+        const t = e.target as HTMLInputElement;
+        stdinBuffer = t.value;
+        caretPos.caret = t.selectionEnd || 0;
+    });
+
+    stdout.addEventListener(caretchange.type, (e) => {
+        if (!e.target)
+            throw new Error(`${e.type} event fired with a null target`);
+        const t = e.target as HTMLSpanElement;
+        t.innerHTML = "";
+        caret.innerText = stdinBuffer[caretPos.caret] || " ";
+        t.appendChild(caret);
+        t.insertAdjacentText("afterbegin", stdinBuffer.slice(0, caretPos.caret));
+        t.insertAdjacentText("beforeend", stdinBuffer.slice(caretPos.caret + 1));
+    });
+});
 </script>
