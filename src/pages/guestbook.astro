@@ -103,7 +103,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2"
                 >
                     <span class="text-solar-yellow-700 pl-2 text-center self-start">${lineNum++}</span>
-                    <p><span class="text-solar-cyna-300">{comment.comment_author}</span>: {comment.comment}</p>
+                    <p><span class="text-solar-cyna-300">${comment.comment_author}</span>: ${comment.comment}</p>
                 </div>
             `
             commentsList.append(commentE);
@@ -131,7 +131,7 @@ window.addEventListener("DOMContentLoaded", () => {
     main.addEventListener("touchend", () => stdin.focus());
     stdin.focus();
 
-    function sign() {
+    async function sign() {
         if (!stdout || !stdin) throw new Error("Unexpected UI error");
         const comment = stdout.textContent;
         if (!comment) throw new Error("Unexpected UI error");
@@ -161,22 +161,25 @@ window.addEventListener("DOMContentLoaded", () => {
                 headers: headers,
             };        
 
-            fetch("/api/guestbook", req).then(() => {
+            try {
+                await fetch("/api/guestbook", req);
+
                 sse?.removeEventListener("message", onMessage);
                 sse?.close();
                 sse = new EventSource("/api/guestbook_event")
                 sse.addEventListener("message", onMessage);            
-            }).catch(e => {
+
+                stdinBuffer = "";
+                stdin.value = "";
+                caretPos.caret = 0;
+            } catch(e) {
                 console.log(e);
-            });
-            stdinBuffer = "";
-            stdin.value = "";
-            caretPos.caret = 0;
+            }
         }
     }
 
 
-    function onKeyDown(e: KeyboardEvent) {
+    async function onKeyDown(e: KeyboardEvent) {
         if (!e.target)
             throw new Error(`${e.type} event fired with a null target`);
         if (e.altKey || e.ctrlKey || e.metaKey) {
@@ -198,7 +201,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 sse?.removeEventListener("message", onMessage);
                 sse?.close();
                 sse = undefined;
-                sign();
+                await sign();
                 break;
             }
         }
