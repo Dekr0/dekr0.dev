@@ -1,14 +1,14 @@
 ---
 export const prerender = true;
 
-import Header from "../components/Header.astro";
-import HistoryPrompt from "../components/HistoryPrompt.astro";
-import Line from "../components/Line.astro";
-import Layout from "../layouts/Layout.astro";
-import Zen from "../components/Zen.astro";
+import Header from "@components/Header.astro";
+import HistoryPrompt from "@components/HistoryPrompt.astro";
+import Line from "@components/Line.astro";
+import Layout from "@layouts/Layout.astro";
+import Zen from "@components/Zen.astro";
 
-import initLine from "../line.mts";
-import quotes from "../quote.mts";
+import initLine from "src/line.mts";
+import quotes from "src/quote.mts";
 
 let allPosts = undefined;
 try {
