@@ -103,7 +103,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2"
                 >
                     <span class="text-solar-yellow-700 pl-2 text-center self-start">${lineNum++}</span>
-                    <p>${comment.comment_author}: ${comment.comment}</p>
+                    <p><span class="text-solar-cyna-300">{comment.comment_author}</span>: {comment.comment}</p>
                 </div>
             `
             commentsList.append(commentE);
