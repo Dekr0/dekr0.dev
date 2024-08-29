@@ -74,7 +74,11 @@ window.addEventListener("DOMContentLoaded", () => {
     const lineRef = document.getElementById("line-ref");
     const commentsList = document.getElementById("comments");
 
-    const sse = new EventSource("/api/guestbook_event");
+    let sse: EventSource | undefined;
+    sse = new EventSource("/api/guestbook_event");
+    sse.addEventListener("message", onMessage);
+
+    if (!auth) return;
 
     function refreshComments(comments: CommentView[]) {
         if (!commentsList || !lineRef) throw new Error("Unexpected UI error");
@@ -106,16 +110,14 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    sse.addEventListener("message", (e) => {
+    function onMessage(e: MessageEvent) {
         if (!commentsList || !lineRef) { 
-            sse.close();
+            sse
             throw new Error("Unexpected UI error");
         }
         const comments: CommentView[] = JSON.parse(e.data);
         refreshComments(comments);
-    });
-
-    if (!auth) return;
+    }
 
     const main = document.querySelector("main");
     const stdin = document.querySelector("input");
@@ -123,6 +125,11 @@ window.addEventListener("DOMContentLoaded", () => {
     const caret = document.getElementById("caret");
     if (!main || !stdin || !stdout || !caret)
         throw new Error("Unexpected UI error");
+
+    let stdinBuffer = "";
+    main.addEventListener("mouseup", () => stdin.focus());
+    main.addEventListener("touchend", () => stdin.focus());
+    stdin.focus();
 
     function sign() {
         if (!stdout || !stdin) throw new Error("Unexpected UI error");
@@ -154,29 +161,22 @@ window.addEventListener("DOMContentLoaded", () => {
                 headers: headers,
             };        
 
-            fetch("/api/guestbook", req);
+            fetch("/api/guestbook", req).then(() => {
+                sse?.removeEventListener("message", onMessage);
+                sse?.close();
+                sse = new EventSource("/api/guestbook_event")
+                sse.addEventListener("message", onMessage);            
+            }).catch(e => {
+                console.log(e);
+            });
             stdinBuffer = "";
             stdin.value = "";
             caretPos.caret = 0;
         }
     }
 
-    let stdinBuffer = "";
-    main.addEventListener("mouseup", () => stdin.focus());
-    main.addEventListener("touchend", () => stdin.focus());
-    stdin.focus();
 
-    const caretchange = new Event("caret");
-    const caretPos = new Proxy({ caret: 0 }, {
-        set: (target, prop, newValue, _) => {
-            if (prop !== "caret" || typeof newValue !== "number") return false;
-            target.caret = newValue;
-            stdout.dispatchEvent(caretchange);
-            return true;
-        }
-    });
-
-    stdin.addEventListener("keydown", (e) => {
+    function onKeyDown(e: KeyboardEvent) {
         if (!e.target)
             throw new Error(`${e.type} event fired with a null target`);
         if (e.altKey || e.ctrlKey || e.metaKey) {
@@ -195,26 +195,35 @@ window.addEventListener("DOMContentLoaded", () => {
                 break;
             }
             case "Enter": {
+                sse?.removeEventListener("message", onMessage);
+                sse?.close();
+                sse = undefined;
                 sign();
-                fetch("/api/guestbook").then(res => {
-                    return res.json(); 
-                }).then(comments => {
-                    refreshComments(comments);
-                })
                 break;
             }
         }
-    })
+    }
 
-    stdin.addEventListener("input", (e) => {
+    function onInput(e: Event) {
         if (!e.target)
             throw new Error(`${e.type} event fired with a null target`);
         const t = e.target as HTMLInputElement;
         stdinBuffer = t.value;
         caretPos.caret = t.selectionEnd || 0;
+    }
+
+    const caretchange = new Event("caret");
+    const caretPos = new Proxy({ caret: 0 }, {
+        set: (target, prop, newValue, _) => {
+            if (prop !== "caret" || typeof newValue !== "number") return false;
+            target.caret = newValue;
+            stdout.dispatchEvent(caretchange);
+            return true;
+        }
     });
 
-    stdout.addEventListener(caretchange.type, (e) => {
+    function onCaretChange(e: Event) {
+        if (!caret) throw new Error("Unexpected UI error");
         if (!e.target)
             throw new Error(`${e.type} event fired with a null target`);
         const t = e.target as HTMLSpanElement;
@@ -223,6 +232,10 @@ window.addEventListener("DOMContentLoaded", () => {
         t.appendChild(caret);
         t.insertAdjacentText("afterbegin", stdinBuffer.slice(0, caretPos.caret));
         t.insertAdjacentText("beforeend", stdinBuffer.slice(caretPos.caret + 1));
-    });
+    }
+
+    stdin.addEventListener("keydown", onKeyDown);
+    stdin.addEventListener("input", onInput);
+    stdout.addEventListener(caretchange.type, onCaretChange);
 });
 </script>

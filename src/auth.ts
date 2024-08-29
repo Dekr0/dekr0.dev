@@ -25,6 +25,7 @@ export const lucia = new Lucia(adapter, {
 		attributes: {
 			// set to `true` when using HTTPS
 			secure: true 
+			// secure: false
 		}
 	},
     getUserAttributes: (attributes) => {
