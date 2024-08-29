@@ -1,0 +1,42 @@
+---
+import Line from "@components/Line.astro";
+import { GET } from "@apis/guestbook";
+
+import getLogger from "src/logger";
+import { type Comment } from "src/db";
+import { warning } from "src/icon.mjs";
+
+interface Props {
+    line: () => number;
+}
+
+const { line } = Astro.props;
+
+const logger = getLogger().child({ filename: "/pages/guestbook" });
+
+let comments: Comment[] | undefined;
+try {
+    const result = await GET(Astro);
+    comments = await result.json();
+} catch(e) {
+    logger.error(e);
+}
+---
+{
+    comments === undefined ?
+    <Line line={line}>
+        <p><span class="text-solar-red-500">{warning} 500</span>Failed to retrieve comments</p>
+     </Line>
+     :
+     <div>
+        <ul id="comments" class="flex flex-col gap-4 content-center">
+            {comments.map((comment) => <li 
+                id={comment.comment_id}
+                data-time={comment.comment_time}>
+                <Line line={line}>
+                    <p><span class="text-solar-cyna-300">{comment.comment_author}</span>: {comment.comment}</p>
+                </Line>
+            </li>)}
+        </ul>
+     </div>
+}

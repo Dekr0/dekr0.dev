@@ -1,0 +1,33 @@
+---
+interface Props {
+    line: () => number;
+    start: number
+}
+
+import Line from "@components/Line.astro";
+import { bolt, pulse } from "src/icon.mjs";
+
+const { line, start } = Astro.props;
+---
+<Line line={line}>
+    <div class="flex flex-wrap gap-2 items-center">
+        <div class="flex gap-2 basis-full items-center">
+            <span class="text-solar-yellow-300">{bolt}</span>
+            <span class="text-solar-green-700 px-3"
+                >{((Date.now() - start) / 1000).toPrecision(4)} s</span
+            >
+        </div>
+        <p class="text-solar-base-1"><span class="text-solar-yellow-500 text-2xl">{pulse}</span> guestbook sign -i</p>
+    </div>
+</Line>
+<Line line={line}>
+    <input autofocus autocomplete="off" type="text" 
+        class="absolute right-full bg-solar-base-04 text-solar-base-1 focus:outline-none pb-2">
+    <span id="stdout" 
+        class="whitespace-pre text-solar-base-1 font-mono">
+        <span 
+            id="caret"
+            class="whitespace-pre text-solar-base-04 bg-solar-base-3 animate-pulse font-mono"
+        >&nbsp;</span>
+    </span>
+</Line>
