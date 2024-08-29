@@ -1,78 +1,90 @@
 ---
+export const prerender = true;
+
 interface Props {
     title: string;
     ext?: string;
 }
 
+type FileType = {
+    icon: string,
+    name: string
+};
+
 const { title, ext } = Astro.props;
-let icon = " markdown";
+let fileType: FileType = {
+    icon: "",
+    name: "markdown",
+};
 if (ext?.endsWith("tsx") || ext?.endsWith("jsx")) {
-    icon = " solid";
+    fileType = {
+        icon: "",
+        name: "solid"
+    };
 }
 ---
-
 <footer
     class="mx-auto py-4 text-sm w-full font-mono text-solar-base-1 selection:bg-solar-base-1 selection:text-solar-base-04"
 >
     <nav
-        class="font-semibold w-full fixed bottom-0 selection:bg-solar-base-03 selection:text-solar-base-3 text-xs xs:text-base lg:text-lg"
+        class="font-semibold w-full fixed bottom-0 selection:bg-solar-base-03 selection:text-solar-base-3 text-xs xs:text-sm"
     >
         <ul class="flex text-solar-base-03 bg-solar-base-02">
             <li
                 class="px-2 bg-solar-blue-700 text-solar-base-04 animate-ease-in-out tracking-wide"
             >
-                 <span class="hidden sm:inline">NORMAL</span>
+            <span class="text-lg xs:text-sm"> </span><span class="hidden sm:inline">NORMAL</span>
             </li>
             <li
                 class="px-2 bg-solar-base-3 hover:bg-solar-green-700 animate-ease-in-out"
             >
-                <a href="/">Home</a>
+                <a href="/"><span class="inline text-lg xs:hidden xs:test-base">󰻺</span><span class="hidden xs:inline">Home</span></a>
             </li>
             <li
                 class="px-2 bg-solar-base-3 hover:bg-solar-green-700 animate-ease-in-out"
             >
-                <a href="/about">About</a>
+                <a href="/about"><span class="inline text-lg xs:hidden xs:test-base"></span><span class="hidden xs:inline">About</span></a>
             </li>
             <li
                 class="px-2 bg-solar-base-3 hover:bg-solar-green-700 animate-ease-in-out"
             >
-                <a href="/article">Article</a>
+                <a href="/article"><span class="inline text-lg xs:hidden xs:test-base"></span><span class="hidden xs:inline">Article</span></a>
             </li>
             <li
                 class="px-2 bg-solar-base-3 hover:bg-solar-green-700 animate-ease-in-out"
             >
-                <a href="/experience">Experience</a>
+                <a href="/experience"><span class="inline text-lg xs:hidden xs:test-base">󰶨</span><span class="hidden xs:inline">Experience</span></a>
             </li>
             <li
                 class="px-2 bg-solar-base-3 hover:bg-solar-green-700 animate-ease-in-out"
             >
-                <a href="/project">Project</a>
+                <a href="/project"><span class="inline text-lg xs:hidden xs:test-base"></span><span class="hidden xs:inline">Project</span></a>
             </li>
             <li
                 class="px-2 bg-solar-base-3 hover:bg-solar-green-700 animate-ease-in-out"
             >
-                <a href="/project">Guestbook</a>
+                <a href="/guestbook"><span class="inline text-lg xs:hidden xs:test-base">󱦹</span><span class="hidden xs:inline">Guestbook</span></a>
             </li>
  
             <li
-                class="px-2 hidden sm:block mr-auto text-solar-base-3 font-thin animate-ease-in-out tracking-wide"
+                class="px-2 pt-1/2 text-base xs:pt-0 xs:text-sm mr-auto text-solar-base-3 font-thin animate-ease-in-out tracking-wide"
             >
                 {title}.{ext || "md"}
             </li>
             <li
-                class="px-2 hidden md:block text-solar-base-3 font-thin animate-ease-in-out tracking-wide"
+                class="px-2 hidden mdp:block text-solar-base-3 font-thin animate-ease-in-out tracking-wide"
             >
                 utf-8
             </li>
             <li
-                class="px-2 hidden md:block text-solar-base-3 font-normal animate-ease-in-out tracking-wide"
+                class="px-2 hidden mdp:block text-solar-base-3 font-normal animate-ease-in-out tracking-wide"
             >
                 󰣇
             </li>
             <li
-                class="px-2 hidden sm:block text-solar-base-3 font-normal animate-ease-in-out tracking-wide"
+                class="px-2 hidden mdp:block text-solar-base-3 font-normal animate-ease-in-out tracking-wide"
             >
-                {icon}
+                {fileType.icon}<span class="hidden mdp:inline"> {fileType.name}</span>
             </li>
         </ul>
         <div class="bg-solar-base-04">
