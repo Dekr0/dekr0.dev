@@ -5,7 +5,8 @@ export type Comment = {
     comment_id: string,
     comment_author: string,
     comment: string,
-    comment_time: number
+    comment_time: number,
+    comment_author_uid: string
 };
 
 type OAuthAccount = {
@@ -15,13 +16,14 @@ type OAuthAccount = {
 };
 
 interface DBAdapter {
-    createNewUser: (uid: string, usrname: string) => Promise<void>;
-    createNewOAuthAccount: (provider: string, providerUId: string, uid: string)
-        => Promise<void>;
-    getAllComments: () => Promise<Comment[]>;
+    createNewUser: (id: string, username: string) => void;
+    createNewOAuthAccount: (provider: string, providerUId: string, id: string)
+        => void;
+    deleteComment: (commentId: string) => void;
+    getAllComments: () => Comment[];
     getOAuthAccountByOne: (provider: string, providerUId: string) => 
-        Promise<OAuthAccount | undefined>;
-    postComment: (author: string, comment: string) => Promise<void>;
+        OAuthAccount | undefined;
+    postComment: (id: string, author: string, comment: string) => void;
 };
 
 class SQLiteAdapter implements DBAdapter {
@@ -31,25 +33,29 @@ class SQLiteAdapter implements DBAdapter {
         this.db = sqlite(filename, opts);
     }
 
-    async createNewUser(uid: string, usrname: string) {
+    createNewUser(id: string, username: string) {
         const s = this.db.prepare(`INSERT INTO user (id,  username) VALUES (?, ?)`);
-        s.run(uid, usrname);
+        s.run(id, username);
     }
 
-    async createNewOAuthAccount(provider: string, providerUId: string, 
+    createNewOAuthAccount(provider: string, providerUId: string, 
                                  uid: string) {
         const s = this.db.prepare(`INSERT INTO oauth_accounts 
                           (provider, provider_uid, local_uid) 
                           VALUES (?, ?, ?)`);
         s.run(provider, providerUId, uid);
     }
+
+    deleteComment(commentId: string) {
+        this.db.prepare("DELETE FROM comments WHERE comment_id = ?").run(commentId);
+    }
    
-    async getAllComments() {
+    getAllComments() {
         return this.db.prepare("SELECT * FROM comments ORDER BY comment_time desc").all() as Comment[];
     }
 
-    async getOAuthAccountByOne(provider: string, providerUId: string): 
-        Promise<OAuthAccount | undefined> {
+    getOAuthAccountByOne(provider: string, providerUId: string): 
+        OAuthAccount | undefined {
         const a = this.db.prepare(
                 `SELECT * FROM oauth_accounts
                         WHERE provider = ? 
@@ -60,10 +66,10 @@ class SQLiteAdapter implements DBAdapter {
         return a;
     }
 
-    async postComment(author: string, comment: string) {
+    postComment(id: string, author: string, comment: string) {
         const s = this.db.prepare(`INSERT INTO comments (
-            comment_id, comment_author, comment) VALUES (?, ?, ?)`);
-        s.run(crypto.randomUUID(), author, comment);
+            comment_id, comment_author, comment, comment_author_uid) VALUES (?, ?, ?, ?)`);
+        s.run(crypto.randomUUID(), author, comment, id);
     }
 
     expose() {
@@ -78,26 +84,30 @@ class Database {
         this.adapter = db;
     }
 
-    async createNewUser(uid: string, usrname: string) {
-        await this.adapter.createNewUser(uid, usrname);
+    createNewUser(id: string, username: string) {
+        this.adapter.createNewUser(id, username);
     }
 
-    async createNewOAuthAccount(provider: string, providerUId: string, 
-                                 uid: string) {
-        await this.adapter.createNewOAuthAccount(provider, providerUId, uid);
+    createNewOAuthAccount(provider: string, providerUId: string, 
+                                 id: string) {
+        this.adapter.createNewOAuthAccount(provider, providerUId, id);
     }
 
-    async getOAuthAccountByOne(provider: string, providerUId: string): 
-        Promise<OAuthAccount | undefined> {
-        return await this.adapter.getOAuthAccountByOne(provider, providerUId);
+    deleteComment(commentId: string) {
+        this.adapter.deleteComment(commentId);
     }
 
-    async getAllComments() {
-        return await this.adapter.getAllComments();
+    getOAuthAccountByOne(provider: string, providerUId: string): 
+        OAuthAccount | undefined {
+        return this.adapter.getOAuthAccountByOne(provider, providerUId);
     }
 
-    async postComment(author: string, comment: string) {
-        return await this.adapter.postComment(author, comment);
+    getAllComments() {
+        return this.adapter.getAllComments();
+    }
+
+    postComment(id: string, author: string, comment: string) {
+        this.adapter.postComment(id, author, comment);
     }
 }
 
@@ -133,7 +143,9 @@ luciaDB.exec(`CREATE TABLE IF NOT EXISTS comments (
 	"comment_author" TEXT NOT NULL,
 	"comment" TEXT NOT NULL,
 	"comment_time" INTEGER DEFAULT (unixepoch('now')) NOT NULL,
-	PRIMARY KEY("comment_id")
+    "comment_author_uid" TEXT NOT NULL,
+	PRIMARY KEY("comment_id"),
+    FOREIGN KEY("comment_author_uid") REFERENCES "user"("id")
 )`);
 
 export default db;
