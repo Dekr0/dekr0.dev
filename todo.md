@@ -22,4 +22,7 @@ different corners just to make thing work as close to a terminal.
 - Find grain control on how comments should be updated in the UI. Right now the 
 comment section is completely erase, fetch all comments, and then render the 
 whole section again.
+- There's desync between SSE and database change. Right now, the solution is 
+is reopen an SSE and extend each SSE (1 minutes). The further away from the server, 
+the worse it becomes.
 - Security relative issues, particularly comments deletion.

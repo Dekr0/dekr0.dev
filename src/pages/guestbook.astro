@@ -13,7 +13,6 @@ import quotes from "src/quote.mts";
 import getLogger from "src/logger";
 import { type Comment } from "src/db";
 
-
 const user = Astro.locals.user;
 
 let line = initLine();
@@ -56,9 +55,6 @@ try {
                 <Line line={line}>
                     <Anchor href="/api/auth/oauth/github" notblank={true}> 
                         <span>{"\ue708"}</span> <span>GitHub</span>
-                    </Anchor>
-                    <Anchor href="/api/auth/oauth/X" notblank={true}> 
-                        <span>{"\uf35e"}</span> <span>X</span>
                     </Anchor>
                 </Line>
                 :
