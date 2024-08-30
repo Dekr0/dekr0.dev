@@ -1,4 +1,4 @@
-import { GitHub } from "arctic";
+import { GitHub, Twitter } from "arctic";
 import { Lucia } from "lucia";
 import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
 import { luciaDB } from "./db";
@@ -24,8 +24,8 @@ export const lucia = new Lucia(adapter, {
 	sessionCookie: {
 		attributes: {
 			// set to `true` when using HTTPS
-			secure: true 
-			// secure: false
+			// secure: true 
+			secure: false
 		}
 	},
     getUserAttributes: (attributes) => {
@@ -43,4 +43,10 @@ export const github = new GitHub(
     import.meta.env.PROD
         ? import.meta.env.PROD_GITHUB_CLIENT_SECRET
         : import.meta.env.DEV_GITHUB_CLIENT_SECRET,
+);
+
+export const twitter = new Twitter(
+    import.meta.env.TWITTER_CLIENT_ID,
+    import.meta.env.TWITTER_CLIENT_SECRET,
+    "https://dekr0.com/api/auth/oauth/callback/twitter"
 );
