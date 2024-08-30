@@ -1,6 +1,5 @@
 ---
 import Anchor from "@components/Anchor.astro";
-import CommentSection from "@components/CommentSection.astro";
 import CommentForm from "@components/CommentForm.astro";
 import Header from "@components/Header.astro";
 import HistoryPrompt from "@components/HistoryPrompt.astro";
@@ -22,7 +21,7 @@ const user = Astro.locals.user;
         >
             "{quotes()}"
         </p>
-        <section data-auth={user ? "true" : "false"} id="guestbook" 
+        <section id="guestbook" 
             class="flex flex-col gap-4 text-justify hide">
             <Line line={line}>
                 <HistoryPrompt buffer="guestbook sign --dry-run || guestbook signin & \\" />
@@ -51,7 +50,10 @@ const user = Astro.locals.user;
                 </Line>
                 <CommentForm line={line} start={start} />
             }
-            <CommentSection line={line}/>
+            <div id="line-ref">
+               <ul id="comments" class="flex flex-col gap-4 content-center">
+               </ul>
+            </div>
         </section>
     </Zen>
     <Header title="guestbook" />
@@ -61,7 +63,8 @@ type CommentView = {
     comment_id: string,
     comment_author: string,
     comment: string,
-    comment_time: number
+    comment_time: number,
+    comment_author_uid: string
 };
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -69,16 +72,40 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!section || !section.dataset.auth) 
         throw new Error("Unexpected UI error");
 
-    const auth = JSON.parse(section.dataset.auth) as Boolean;
-
     const lineRef = document.getElementById("line-ref");
     const commentsList = document.getElementById("comments");
 
-    let sse: EventSource | undefined;
-    sse = new EventSource("/api/guestbook_event");
+    const sse = new EventSource("/api/guestbook_event");
     sse.addEventListener("message", onMessage);
 
-    if (!auth) return;
+    const stdin = document.querySelector("input");
+    if (!stdin) return;
+
+    async function deleteComment(authorUid: string, commentId: string) {
+        const params = new URLSearchParams();
+        params.set("comment_author_uid", authorUid);
+        params.set("comment_id", commentId);
+
+        const headers: HeadersInit = {
+            Accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+        };
+        
+        const req: RequestInit = {
+            mode: "same-origin",
+            body: params,
+            method: "DELETE",
+            headers: headers,
+        };        
+        
+        try {
+            const res = await fetch("/api/guestbook", req);
+            const latestComments: CommentView[] = await res.json();
+            refreshComments(latestComments);
+        } catch(e) {
+            console.log(e);
+        }
+    }
 
     function refreshComments(comments: CommentView[]) {
         if (!commentsList || !lineRef) throw new Error("Unexpected UI error");
@@ -97,22 +124,32 @@ window.addEventListener("DOMContentLoaded", () => {
             const commentE = document.createElement("li");
             commentE.id = comment.comment_id
             commentE.dataset.time = comment.comment_time.toString(10);
-            commentE.innerHTML = `
-                <div
-                    tabindex="0"
-                    class="flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2"
-                >
-                    <span class="text-solar-yellow-700 pl-2 text-center self-start">${lineNum++}</span>
+            const div = document.createElement("div");
+            div.tabIndex = 0;
+            div.className = "flex gap-4 md:gap-8 lg:gap-10 pl-2 items-center hover:border-solar-orange-500 hover:border-l-2";
+            div.innerHTML = `
+                    <span class="text-solar-yellow-700 pl-2 text-center self-start">
+                        ${lineNum++}
+                    </span>
                     <p><span class="text-solar-cyna-300">${comment.comment_author}</span>: ${comment.comment}</p>
-                </div>
-            `
+            `;
+
+            if (stdin && authorUid === comment.comment_author_uid) {
+                const btn = document.createElement("button");
+                btn.textContent = "󰆴";
+                btn.addEventListener("click", async () => {
+                    await deleteComment(authorUid, comment.comment_id);
+                });
+                div.append(btn);
+            }
+
+            commentE.append(div);
             commentsList.append(commentE);
         }
     }
 
     function onMessage(e: MessageEvent) {
         if (!commentsList || !lineRef) { 
-            sse
             throw new Error("Unexpected UI error");
         }
         const comments: CommentView[] = JSON.parse(e.data);
@@ -120,7 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     const main = document.querySelector("main");
-    const stdin = document.querySelector("input");
+    const authorUid = stdin?.dataset.authoruid;
     const stdout = document.getElementById("stdout");
     const caret = document.getElementById("caret");
     if (!main || !stdin || !stdout || !caret)
@@ -134,10 +171,15 @@ window.addEventListener("DOMContentLoaded", () => {
     async function sign() {
         if (!stdout || !stdin) throw new Error("Unexpected UI error");
         const comment = stdout.textContent;
+
         if (!comment) throw new Error("Unexpected UI error");
+
         if (comment.length >= 2) {
             if (comment.startsWith("\\u0017")) {
-                return fetch("/api/auth/logout", { method: "POST", redirect: "manual" }).
+                return fetch("/api/auth/logout", { 
+                    method: "POST",
+                    redirect: "manual"
+                }).
                     then(() => {
                         window.location.replace("/guestbook");
                     }).
@@ -162,12 +204,10 @@ window.addEventListener("DOMContentLoaded", () => {
             };        
 
             try {
-                await fetch("/api/guestbook", req);
+                const res = await fetch("/api/guestbook", req);
+                const latestComments: CommentView[] = await res.json();
 
-                sse?.removeEventListener("message", onMessage);
-                sse?.close();
-                sse = new EventSource("/api/guestbook_event")
-                sse.addEventListener("message", onMessage);            
+                refreshComments(latestComments);
 
                 stdinBuffer = "";
                 stdin.value = "";
@@ -177,7 +217,6 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
-
 
     async function onKeyDown(e: KeyboardEvent) {
         if (!e.target)
@@ -198,9 +237,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 break;
             }
             case "Enter": {
-                sse?.removeEventListener("message", onMessage);
-                sse?.close();
-                sse = undefined;
                 await sign();
                 break;
             }
