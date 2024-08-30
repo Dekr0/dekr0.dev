@@ -9,8 +9,8 @@ export const GET: APIRoute = async ({ params, request }) => {
     const encoder = new TextEncoder();
     const eventStream = new ReadableStream({
         async start(controller) {
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify(await db.getAllComments())}\n\n`))
-            await new Promise((r) => setTimeout(r, 16000))
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(db.getAllComments())}\n\n`))
+            await new Promise((r) => setTimeout(r, 65536));
             controller.close()  
         }
     });

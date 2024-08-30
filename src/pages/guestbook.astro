@@ -1,4 +1,5 @@
 ---
+import { GET } from "@apis/guestbook";
 import Anchor from "@components/Anchor.astro";
 import CommentForm from "@components/CommentForm.astro";
 import Header from "@components/Header.astro";
@@ -9,10 +10,23 @@ import Zen from "@components/Zen.astro";
 
 import initLine from "src/line.mts";
 import quotes from "src/quote.mts";
+import getLogger from "src/logger";
+import { type Comment } from "src/db";
+
+
+const user = Astro.locals.user;
 
 let line = initLine();
 const start = Date.now();
-const user = Astro.locals.user;
+const logger = getLogger().child({ filename: "/pages/guestbook" });
+
+let comments: Comment[] | undefined;
+try {
+    const result = await GET(Astro);
+    comments = await result.json();
+} catch(e) {
+    logger.error(e);
+}
 ---
 <Layout title="Guestbook">
     <Zen>
@@ -55,6 +69,31 @@ const user = Astro.locals.user;
             }
             <div id="line-ref">
                <ul id="comments" class="flex flex-col gap-4 content-center">
+               {
+                   comments !== undefined &&
+                    <div id="line-ref">
+                       <ul id="comments" class="flex flex-col gap-4 content-center">
+                           {comments.map((comment) => <li id={comment.comment_id}>
+                               <Line line={line}>
+                               <p>
+                                   <span class="text-solar-cyna-300">
+                                       {comment.comment_author}
+                                   </span>: {comment.comment}
+                               </p>
+                               {
+                                   user && 
+                                   user.id === comment.comment_author_uid && 
+                                   <button 
+                                       id={comment.comment_id}
+                                       data-authoruid={comment.comment_author_uid}
+                                       data-comment-delete
+                                   >󰆴</button>
+                               }
+                               </Line>
+                           </li>)}
+                       </ul>
+                    </div>
+               }
                </ul>
             </div>
         </section>
@@ -72,17 +111,29 @@ type CommentView = {
 
 window.addEventListener("DOMContentLoaded", () => {
     const section = document.getElementById("guestbook");
-    if (!section || !section.dataset.auth) 
+    if (!section) 
         throw new Error("Unexpected UI error");
 
     const lineRef = document.getElementById("line-ref");
     const commentsList = document.getElementById("comments");
 
-    const sse = new EventSource("/api/guestbook_event");
+    let sse = new EventSource("/api/guestbook_event");
     sse.addEventListener("message", onMessage);
 
     const stdin = document.querySelector("input");
+    const authorUid = stdin?.dataset.authoruid;
     if (!stdin) return;
+
+    const btns = document.querySelectorAll("[data-comment-delete]");
+    btns.forEach((btn) => {
+        if (!authorUid) throw new Error("Unexpected UI error");
+        if ((btn as HTMLButtonElement).dataset.authoruid !== authorUid)
+            throw new Error("Unexpected UI error");
+        btn.addEventListener("click", (e) => {
+            if (!e.target) throw new Error("Unexpected UI error");
+            deleteComment(authorUid, (e.target as HTMLButtonElement).id);
+        });
+    })
 
     async function deleteComment(authorUid: string, commentId: string) {
         const params = new URLSearchParams();
@@ -104,7 +155,10 @@ window.addEventListener("DOMContentLoaded", () => {
         try {
             const res = await fetch("/api/guestbook", req);
             const latestComments: CommentView[] = await res.json();
+            sse.close();
             refreshComments(latestComments);
+            sse = new EventSource("/api/guestbook_event");
+            sse.addEventListener("message", onMessage);
         } catch(e) {
             console.log(e);
         }
@@ -139,6 +193,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
             if (stdin && authorUid === comment.comment_author_uid) {
                 const btn = document.createElement("button");
+                btn.id = comment.comment_id;
+                btn.dataset.authoruid = comment.comment_author_uid;
                 btn.textContent = "󰆴";
                 btn.addEventListener("click", async () => {
                     await deleteComment(authorUid, comment.comment_id);
@@ -160,7 +216,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     const main = document.querySelector("main");
-    const authorUid = stdin?.dataset.authoruid;
     const stdout = document.getElementById("stdout");
     const caret = document.getElementById("caret");
     if (!main || !stdin || !stdout || !caret)
@@ -177,7 +232,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (!comment) throw new Error("Unexpected UI error");
 
-        if (comment.length >= 2) {
+        if (comment.trim() !== "" && comment.length >= 2) {
             if (comment.startsWith("\\u0017")) {
                 return fetch("/api/auth/logout", { 
                     method: "POST",
@@ -210,7 +265,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 const res = await fetch("/api/guestbook", req);
                 const latestComments: CommentView[] = await res.json();
 
+                sse.close();
                 refreshComments(latestComments);
+                sse = new EventSource("/api/guestbook_event");
+                sse.addEventListener("message", onMessage);
 
                 stdinBuffer = "";
                 stdin.value = "";
