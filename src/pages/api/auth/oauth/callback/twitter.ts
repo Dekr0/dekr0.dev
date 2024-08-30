@@ -1,6 +1,6 @@
 import { OAuth2RequestError } from "arctic";
 import type { APIContext } from "astro";
-import { twitter } from "src/auth";
+import { X } from "src/auth";
 import getLogger from "src/logger";
 
 const logger = getLogger().child({
@@ -32,7 +32,7 @@ export async function GET(context: APIContext) {
 	}
 
     try {
-        const tokens = await twitter.validateAuthorizationCode(code, 
+        const tokens = await X.validateAuthorizationCode(code, 
                                                                codeVerifier);
         const headers = { Authorization: `Bearer ${tokens.accessToken}` };
         const response = await fetch(api, { headers: headers });
