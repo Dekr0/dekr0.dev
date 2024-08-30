@@ -1,18 +1,12 @@
-# syntax=docker/dockerfile:1
-
-FROM node:20.17-bullseye
-
+FROM node:lts AS runtime
 WORKDIR /app
-
-COPY package.json package-lock.json ./
-
-RUN npm install
-RUN npm -g install pino-pretty
 
 COPY . .
 
+RUN npm install
 RUN npm run build
 
+ENV HOST=0.0.0.0
+ENV PORT=4321
 EXPOSE 4321
-
-CMD ["npm", "run", "prod"]
+CMD node ./dist/server/entry.mjs
