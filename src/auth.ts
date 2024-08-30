@@ -24,8 +24,7 @@ export const lucia = new Lucia(adapter, {
 	sessionCookie: {
 		attributes: {
 			// set to `true` when using HTTPS
-			// secure: true 
-			secure: false
+			secure: import.meta.env.PROD
 		}
 	},
     getUserAttributes: (attributes) => {
@@ -45,7 +44,7 @@ export const github = new GitHub(
         : import.meta.env.DEV_GITHUB_CLIENT_SECRET,
 );
 
-export const twitter = new Twitter(
+export const X = new Twitter(
     import.meta.env.TWITTER_CLIENT_ID,
     import.meta.env.TWITTER_CLIENT_SECRET,
     "https://dekr0.com/api/auth/oauth/callback/twitter"
