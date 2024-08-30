@@ -8,6 +8,7 @@ import Line from "@components/Line.astro";
 import { bolt, pulse } from "src/icon.mjs";
 
 const { line, start } = Astro.props;
+const users = Astro.locals.user;
 ---
 <Line line={line}>
     <div class="flex flex-wrap gap-2 items-center">
@@ -21,7 +22,7 @@ const { line, start } = Astro.props;
     </div>
 </Line>
 <Line line={line}>
-    <input autofocus autocomplete="off" type="text" 
+    <input autofocus autocomplete="off" type="text" data-authoruid={users?.id}
         class="absolute right-full bg-solar-base-04 text-solar-base-1 focus:outline-none pb-2">
     <span id="stdout" 
         class="whitespace-pre text-solar-base-1 font-mono">
