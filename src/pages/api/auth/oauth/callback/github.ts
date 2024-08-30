@@ -37,10 +37,10 @@ export async function GET(context: APIContext) {
         const response = await fetch(api, { headers: headers });
         const user: GitHubUser = await response.json();
 
-        const a = await db.getOAuthAccountByOne("github", user.id);
+        const OAuthAccount = db.getOAuthAccountByOne("github", user.id);
 
-        if (a) {
-            const session = await lucia.createSession(a.local_uid, {});
+        if (OAuthAccount) {
+            const session = await lucia.createSession(OAuthAccount.local_uid, {});
             const sessionCookie = lucia.createSessionCookie(session.id);
             context.cookies.set(
                 sessionCookie.name,
@@ -56,8 +56,8 @@ export async function GET(context: APIContext) {
             `New GitHub OAuth account with associated local user id: ${uid}`
         );
 
-        await db.createNewUser(uid, user.login);
-        await db.createNewOAuthAccount("github", user.id, uid);
+        db.createNewUser(uid, user.login);
+        db.createNewOAuthAccount("github", user.id, uid);
 
         const session = await lucia.createSession(uid, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
