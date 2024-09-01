@@ -4,7 +4,7 @@
 - The current state of my personal website is under re-design and re-implementation.
 - The UI design is almost identical to the apperance of my day-to-day used terminal, neovim,
 and glow (a TUI based markdown viewer). Checkout my dotfile if you're interested in it.
-- Currently, this website is lacking the ability of leaving comments in the guestbook page or
+- Currently, this website is lacking the ability of keeping track of live viewer in the guestbook page or
 booking an appointment for meeting like the old version of this website.
     - They will come back in the future once I get some spare time to port the code
     from the [old branch](https://github.com/Dekr0/dekr0.dev/tree/main/src/pages/api/auth/oauth) away
