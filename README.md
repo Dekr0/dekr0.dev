@@ -6,10 +6,7 @@
 and glow (a TUI based markdown viewer). Checkout my dotfile if you're interested in it.
 - Currently, this website is lacking the ability of keeping track of live viewer in the guestbook page or
 booking an appointment for meeting like the old version of this website.
-    - They will come back in the future once I get some spare time to port the code
-    from the [old branch](https://github.com/Dekr0/dekr0.dev/tree/main/src/pages/api/auth/oauth) away
-    from my self-hosted infrastructure (a Linode server with NGINX that ran both PostgreSQL and
-    [golang backend](https://github.com/dekwo-dev/messenger) for the guestbook) to other free-tire
+    - They will come back in the future once I get some spare time to port the code from the [old branch](https://github.com/Dekr0/dekr0.dev/tree/main/src/pages/api/auth/oauth) away from my AWS EC2 (running NGINX that proxies both PostgreSQL and [golang backend](https://github.com/dekwo-dev/messenger) for the guestbook) to Linode nanonode server (same setup but swap out PostgreSQL with SQLite for simplicity and convenience sake).
     ones.
 - The website comes with two version static and interactive. Visitors can switch from one to
 another.
