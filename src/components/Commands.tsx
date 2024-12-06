@@ -61,9 +61,9 @@ export function Help(): Result {
                 <p>static - Switch static version of this portfolio site</p>
                 <p>coredumptctl - Show a lists of bugs in the system</p>
                 <p>echo - Display a line of text</p>
-                <p>perf - Show performance metric in the system</p>
+                {/* <p>perf - Show performance metric in the system</p> */}
                 <p>man - An interface to system reference manual</p>
-                <p>quote - Quote generator</p>
+                {/* <p>quote - Quote generator</p> */}
                 <p>
                     Press Tab with an empty prompt to see all possible commands
                 </p>

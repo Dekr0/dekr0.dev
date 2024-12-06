@@ -1,25 +1,19 @@
 ## Introduction
 
 - This is repository that contains the source code of my personal website.
-- The current state of my personal website is under re-design and re-implementation.
-- The UI design is almost identical to the apperance of my day-to-day used terminal, neovim,
-and glow (a TUI based markdown viewer). Checkout my dotfile if you're interested in it.
-- Currently, this website is lacking the ability of keeping track of live viewer in the guestbook page or
-booking an appointment for meeting like the old version of this website.
-    - They will come back in the future once I get some spare time to port the code from the [old branch](https://github.com/Dekr0/dekr0.dev/tree/main/src/pages/api/auth/oauth) away from my AWS EC2 (running NGINX that proxies both PostgreSQL and [golang backend](https://github.com/dekwo-dev/messenger) for the guestbook) to Linode nanonode server (same setup but swap out PostgreSQL with SQLite for simplicity and convenience sake).
-    ones.
-- The website comes with two version static and interactive. Visitors can switch from one to
-another.
+- The UI design is almost identical to the apperance of my day-to-day used 
+terminal, neovim, and glow (a TUI based markdown viewer). Checkout my dotfile 
+if you're interested in it.
+- The current main focus of my personal website is on the static version and 
+personal blogging. 
+- The interactive version of this site that is used to be in the old branch is 
+disabled since it's in a rather broken state. I plan to rework them but currently
+I have other things that are high in the priority list.
 
 ### Static Version
 
 - This version is intended for visitors that
-    - want minimial amount or zero JavaScript and other non-essential payloads requested every
-    time they visit this website,
+    - want minimial amount or zero JavaScript and other non-essential payloads 
+    requested every time they visit this website,
     - minimal amount or zero visual (eye candy) effects,
     - solely focus on reading contents (articles, blog posting, ...).
-
-### Interactive Version
-
-- This version attempts the basic behaviors of a shell. Visitors can still access different
-contents in the website but they need to type in specific commands beforehand.
