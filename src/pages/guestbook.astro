@@ -34,17 +34,21 @@ try {
         >
             "{quotes()}"
         </p>
+
         <section id="guestbook" 
             class="flex flex-col gap-4 text-justify hide">
             <Line line={line}>
                 <HistoryPrompt buffer="guestbook sign --dry-run || guestbook signin & \\" />
             </Line>
+
             <Line line={line}>
                 <p>guestbook list</p>
             </Line>
+
             <Line line={line}>
                 <p>[1] {Math.floor(Math.random() * 50000)}</p>
             </Line>
+
             {!user ?
                 <Line line={line}>
                     <p>guestbook sign --dry-run: Login required</p>
@@ -52,6 +56,7 @@ try {
                 <Line line={line}>
                     <p>[1] + done guestbook sign --dry-run</p>
                 </Line>
+
                 <Line line={line}>
                     <Anchor href="/api/auth/oauth/github" notblank={true}> 
                         <span>{"\ue708"}</span> <span>GitHub</span>
@@ -63,6 +68,7 @@ try {
                 </Line>
                 <CommentForm line={line} start={start} />
             }
+
             <div id="line-ref">
                <ul id="comments" class="flex flex-col gap-4 content-center">
                {
