@@ -5,11 +5,15 @@ import Anchor from "@components/Anchor.astro";
 import Header from "@components/Header.astro";
 import HistoryPrompt from "@components/HistoryPrompt.astro";
 import Line from "@components/Line.astro";
-import Layout from "@layouts/Layout.astro";
 import Zen from "@components/Zen.astro";
+
+import Layout from "@layouts/Layout.astro";
 
 import initLine from "src/line.mts";
 import quotes from "src/quote.mts";
+
+import { open_source, reinvent_wheel } from "src/projects.mts";
+import { socials } from "src/social.mts";
 
 let line = initLine();
 ---
@@ -34,41 +38,16 @@ let line = initLine();
                         ## Open Source
                     </h2>
                 </Line>
-    
-                <Line line={line}>
-                    <h3 class="font-bold w-fit">
-                        <Anchor href="https://github.com/Dekr0/RPC.nvim">
-                            ### RPC.nvim
-                        </Anchor>
-                    </h3>
-                </Line>
-                <Line line={line}>
-                    <p class="text-justify">
-                        RPC.nvim is a Neovim plugin that integrates Discord Rich
-                        Presence, displaying live status (keystroke per minute, 
-                        editor mode, current workspace, etc) update from Neovim 
-                        and directly to users' Discord profiles.
-                    </p>
-                </Line>
-
-                <Line line={line}>
-                    <h3 class="font-bold w-fit">
-                        <Anchor href="https://github.com/Dekr0/8086-sim">
-                            ### 8086 Simulator
-                        </Anchor>
-                    </h3>
-                </Line>
-                <Line line={line}>
-                    <p class="text-justify">
-                        8086 simulator is a set of tools for 8086 instructions 
-                        set that capable of dissembling binary assembly code, 
-                        simulating instructions execution, and outputting 
-                        dissemble result and simulation result. An TUI 
-                        visualizer similar to GDB is provided to display the 
-                        internal state of the virtual 8086 CPU and the 1 MB 
-                        virtual memory.
-                    </p>
-                </Line>
+                {open_source.map((o) => 
+                    <Line line={line}> 
+                        <h3 class="font-bold w-fit">
+                            <Anchor href={o.url}>### {o.name}</Anchor>
+                        </h3>
+                    </Line>
+                    <Line line={line}>
+                        <p class="text-justify">{o.p}</p>
+                    </Line>
+                )}
             </div>
 
             <div class="flex flex-col gap-4">
@@ -77,36 +56,16 @@ let line = initLine();
                         ## "Reinvent The Wheel"
                     </h2>
                 </Line>
-
-                <Line line={line}>
-                    <h3 class="font-bold w-fit">
-                        <Anchor href="https://github.com/Dekr0/c-http">
-                            ### HTTP Server
-                        </Anchor>
-                    </h3>
-                </Line>
-                <Line line={line}>
-                    <p class="text-justify">
-                    a HTTP server written in C, capable of parsing HTTP message 
-                    efficiently, perform simple dynamic endpoint routing, and 
-                    handling multiple concurrent client connections.
-                    </p>
-                </Line>
-
-                <Line line={line}>
-                    <h3 class="font-bold w-fit">
-                        <Anchor href="https://github.com/Dekr0/redis-clone">
-                            ### Redis Clone
-                        </Anchor>
-                        </a>
-                    </h3>
-                </Line>
-                <Line line={line}>
-                    <p class="text-justify">
-                        a working in progress Redis Clone written in C, mirroring 
-                        essential Redis functionalities.
-                    </p>
-                </Line>
+                {reinvent_wheel.map((r) => 
+                    <Line line={line}> 
+                        <h3 class="font-bold w-fit">
+                            <Anchor href={r.url}>### {r.name}</Anchor>
+                        </h3>
+                    </Line>
+                    <Line line={line}>
+                        <p class="text-justify">{r.p}</p>
+                    </Line>
+                )}
             </div>
         </section>
     </Zen>

@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 
+import Anchor from "@components/Anchor.astro";
 import HistoryPrompt from "@components/HistoryPrompt.astro";
 import Header from "@components/Header.astro";
 import Line from "@components/Line.astro";
@@ -9,7 +10,7 @@ import Zen from "@components/Zen.astro";
 
 import initLine from "src/line.mts";
 import quotes from "src/quote.mts";
-import { bolt, rocket } from "src/icon.mts";
+import { learning, working } from "src/status.mts";
 
 let line = initLine();
 ---
@@ -24,69 +25,62 @@ let line = initLine();
             <Line line={line}>
                 <HistoryPrompt buffer="man about" />
             </Line>
+
             <Line line={line}>
-                <h1 class="text-solar-blue-300 font-bold w-fit"># Hello</h1>
+                <h1 class="text-solar-blue-300 font-bold w-fit">
+                    # Hello
+                </h1>
             </Line>
+
             <Line line={line}>
                 <h2 class="text-solar-blue-300 font-bold w-fit">
                     ## My Name is Chason Li.
                 </h2>
             </Line>
+
             <Line line={line}>
                 <p>
-                I'm a computer engineer at [unemployed] comfortable with back-end 
-                development as well as embedded development to some degree.
+                    I'm a computer engineer at [unemployed] comfortable with 
+                    front-end and back-end development.
                 </p>
             </Line>
+
             <Line line={line}>
-                <p>
-                Currently I'm primarily focus on low level and system programming, 
-                program performance and optimization, computer architectures, 
-                and low level game development. These are the areas I'm currently 
-                heavily invested in my spare time.
-                </p>
+                <p>I'm currently learning:</p>
             </Line>
+            {learning.map((e, i, a) => 
+                <Line line={line}>
+                    <p class="ml-8">
+                         {i == a.length - 1 ? "and" : ""}
+                        {e.url ? <Anchor href={e.url}>{e.name}</Anchor> : e.name}{i == a.length - 1 ? "." : ","}
+                    </p>
+                </Line>
+            )}
+
             <Line line={line}>
-                <p>
-                I'm passionate about building CLI / TUI applications and tooling 
-                that improves workflow and automation, or provides an alternative 
-                UI for those who prefer using their terminal over existing GUI 
-                applications. I'm enjoy spending time and effort on optimizing 
-                program performance in different levels. This goes the same with 
-                tinkering embedded hardware & ICs.
-                </p>
+                <p>I'm currently working on:</p>
             </Line>
+            {working.map((e, i, a) => 
+                <Line line={line}>
+                    <p class="ml-8">
+                         {i == a.length - 1 ? "and" : ""}
+                        {e.url ? <Anchor href={e.url}>{e.name}</Anchor> : e.name}{i == a.length - 1 ? "." : ","}
+                    </p>
+                </Line>
+            )}
+
             <Line line={line}>
-                <p>
-                My works have a strong emphasis on <i>simplicity</i> and <i
-                    >performance</i
-                >. I’m deeply care about implementation detail of my work to
-                ensure they are <a
-                    href="https://www.computerenhance.com/p/table-of-contents"
-                    target="_blank"
-                    class="text-solar-yellow-500 hover:text-solar-yellow-300 font-bold animate-ease-in-out"
-                    >blazingly fast {bolt}</a
-                > and <a
-                    href="https://suckless.org/philosophy/"
-                    target="_blank"
-                    class="text-solar-blue-500 hover:text-solar-blue-300 font-bold animate-ease-in-out"
-                    ><span class="text-2xl">{rocket}</span> suckless</a
-                >.
-                </p>
+                <p>I’m currently based in Canada.</p>
             </Line>
+
             <Line line={line}>
                 <p>
-                I’m currently based in Canada. If you happen to speak
-                Chinese, my Chinese name is 李承轩 (lǐ chéng xuān).
-                </p>
-            </Line>
-            <Line line={line}>
-                <p>
-                You can message me via my <a
-                    id="social-anchor"
-                    class="bg-solar-base-3 text-solar-base-03 px-2 hover:bg-solar-green-700 font-bold animate-ease-in-out"
-                    href="/">Social</a
-                >.
+                    You can message me via my 
+                    <a
+                        id="social-anchor"
+                        class="bg-solar-base-3 text-solar-base-03 px-2 hover:bg-solar-green-700 font-bold animate-ease-in-out"
+                        href="/">
+                        Social</a>.
                 </p>
             </Line>
         </section>
