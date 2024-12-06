@@ -61,12 +61,6 @@ if (ext?.endsWith("tsx") || ext?.endsWith("jsx")) {
                 <a href="/project"><span class="inline text-lg xs:hidden xs:test-base"></span><span class="hidden xs:inline">Project</span></a>
             </li>
             <li
-                class="px-2 bg-solar-base-3 hover:bg-solar-green-700 animate-ease-in-out"
-            >
-                <a href="/guestbook"><span class="inline text-lg xs:hidden xs:test-base">󱦹</span><span class="hidden xs:inline">Guestbook</span></a>
-            </li>
- 
-            <li
                 class="px-2 pt-1/2 text-base xs:pt-0 xs:text-sm mr-auto text-solar-base-3 font-thin animate-ease-in-out tracking-wide"
             >
                 {title}.{ext || "md"}
@@ -87,13 +81,13 @@ if (ext?.endsWith("tsx") || ext?.endsWith("jsx")) {
                 {fileType.icon}<span class="hidden mdp:inline"> {fileType.name}</span>
             </li>
         </ul>
-        <div class="bg-solar-base-04">
+        {/* <div class="bg-solar-base-04">
             <a class="text-solar-orange-500 ml-0.5 mb-1.5" href="/ssh"
                 >:ssh dekr0.de<span
                     class="text-solar-base-04 bg-solar-base-3 animate-pulse"
                     >v</span
                 ></a
             >
-        </div>
+        </div> */}
     </nav>
 </footer>
