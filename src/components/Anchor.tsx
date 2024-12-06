@@ -1,4 +1,9 @@
-export default function Anchor(props) {
+type Prop = {
+    name: string
+    url: string
+}
+
+export default function Anchor(props: Prop) {
     return (
         <a 
             href={props.url}

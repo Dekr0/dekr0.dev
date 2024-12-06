@@ -3,9 +3,9 @@ import { socials } from "src/social.mts";
 import { open_source, reinvent_wheel } from "src/projects.mts";
 import { learning, working } from "src/status.mts";
 
-import Anchor from "./Anchor"
-import Social from "./Social"
-import Project from "./Project"
+import Anchor from "./Anchor";
+import Social from "./Social";
+import Project from "./Project";
 
 import type { Result } from "./Commands";
 

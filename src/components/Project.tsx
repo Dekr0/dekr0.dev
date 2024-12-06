@@ -1,6 +1,8 @@
-import Anchor from "./Anchor"
+import Anchor from "./Anchor";
 
-export default function Project(props) {
+import type { Project } from "src/projects.mts";
+
+export default function Project(props: Project) {
     return (
         <h3 class="font-bold w-fit">
             <Anchor name={`### ${props.name}`} url={props.url}/>
