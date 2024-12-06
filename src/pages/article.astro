@@ -31,13 +31,16 @@ let line = initLine();
             <Line line={line}>
                 <HistoryPrompt buffer="man article" />
             </Line>
+
             <div>
                 {allPosts ? 
                 <ul>
                     {allPosts.map((post) => 
                         <li>
                             <Line line={line}>
-                                <a class="text-solar-cyna-500 hover:text-solar-cyna-300" href={post.url}>
+                                <a 
+                                    class="text-solar-cyna-500 hover:text-solar-cyna-300"
+                                    href={post.url}>
                                     {post.frontmatter.title}
                                 </a>
                             </Line>
