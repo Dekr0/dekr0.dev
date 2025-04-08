@@ -58,6 +58,18 @@ let line = initLine();
             )}
 
             <Line line={line}>
+                <p>I'm currently reading:</p>
+            </Line>
+            {reading.map((e, i, a) => 
+                <Line line={line}>
+                    <p class="ml-8">
+                         {i == a.length - 1 ? "and" : ""}
+                        {e.url ? <Anchor href={e.url}>{e.name}</Anchor> : e.name}{i == a.length - 1 ? "." : ","}
+                    </p>
+                </Line>
+            )}
+
+            <Line line={line}>
                 <p>I'm currently working on:</p>
             </Line>
             {working.map((e, i, a) => 
