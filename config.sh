@@ -1,7 +1,7 @@
 build() {
+    npm run build
     docker image rm dekr0.com:latest
     docker build . -t dekr0.com:latest
-    npm run build
 }
 
 up() {

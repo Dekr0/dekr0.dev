@@ -1,6 +1,6 @@
 services:
   portfolio:
-    build: .
+    image: "dekr0.com:latest"
     ports:
       - "4321:4321"
     volumes:
