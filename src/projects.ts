@@ -6,6 +6,23 @@ export type Project = {
 
 export const open_source: Project[] = [
     {
+        name: "Wwise Teller",
+        url: "https://github.com/Dekr0/wwise-teller",
+        p: `Wwise teller is a SDK built in ImGUI to editing data of generated 
+            Wwise sound banks. Wwise teller essentially attemp to replicate 
+            different functionalities in Wwise sound engine authoring tool.
+            Currently, wwise teller is only targeting toward sound bank version 
+            141. This sound bank version is targeting version used by Helldivers 
+            2.`
+    },
+    {
+        name: "Shutil",
+        url: "https://github.com/Dekr0/shutil",
+        p: `Shutil is a CLI application built in Go. It includes a set of 
+            automation and workflow optimization that is specifically for my 
+            personal development environment in Linux and Windows`
+    },
+    {
         name: "Helldivers 2 Audio Modding Tool",
         url: "https://github.com/RaidingForPants/hd2-audio-modder",
         p: `This is an audio modding tool for Helldivers 2 that provides a 
@@ -24,7 +41,8 @@ export const open_source: Project[] = [
             query and explore SFX assets. It also comes with a CLI for export 
             binary content of SFX assets and XML analysis from Wwiser. This is 
             useful for users who want to manually adjust parameters in the SFX 
-            asset via hex editor.`
+            asset via hex editor, or want to use hd2-audio-modder as a library 
+            to automate the process of editing sound bank.`
     },
     {
         name: "RPC.nvim",
@@ -52,5 +70,30 @@ export const reinvent_wheel: Project[] = [
         p: `a HTTP server written in C, capable of parsing HTTP message efficiently, 
             perform simple dynamic endpoint routing, and handling multiple concurrent 
             client connections.`
+    },
+    {
+        name: "Auto Scaler",
+        url: "https://github.com/Dekr0/auto-scaler",
+        p: `a bare bond implementation of an auto scaler for web services 
+        using docker swarm and Queuing Theory.`
+    },
+    {
+        name: "C Shell",
+        url: "https://github.com/Dekr0/sh-clone",
+        p: `a bare bone implementation of a terminal shell with a small number 
+        of essential commands.`
+    }
+]
+
+export const legacy_school_projects: Project[] = [
+    {
+        name: "CSTC",
+        url: "https://github.com/CMPUT-492-W2023-Capstone",
+        p: `A traffic counter powered by YOLO real-time object detection system`
+    },
+    {
+        name: "Nosh",
+        url: "https://github.com/Dekr0/nosh",
+        p: `A prototype meal planning android application`
     }
 ]

@@ -12,7 +12,7 @@ import Layout from "@layouts/Layout.astro";
 import initLine from "src/line.ts";
 import quotes from "src/quote.ts";
 
-import { open_source, reinvent_wheel } from "src/projects.ts";
+import { open_source, reinvent_wheel, legacy_school_projects } from "src/projects.ts";
 
 let line = initLine();
 ---
@@ -29,6 +29,15 @@ let line = initLine();
 
             <Line line={line}>
                 <h1 class="text-solar-blue-300 font-bold w-fit"># Project</h1>
+            </Line>
+
+            <Line line={line}>
+                <p>The "Reinvent The Wheel" and "Legacy School Projects" only 
+                    contain a small subset of my projects. The full list is 
+                    still under construction. Currently, I'm only focus on the 
+                    open source section since this is what I'm actively working 
+                    on.
+                </p>
             </Line>
 
             <div class="flex flex-col gap-4">
@@ -56,6 +65,24 @@ let line = initLine();
                     </h2>
                 </Line>
                 {reinvent_wheel.map((r) => 
+                    <Line line={line}> 
+                        <h3 class="font-bold w-fit">
+                            <Anchor href={r.url}>### {r.name}</Anchor>
+                        </h3>
+                    </Line>
+                    <Line line={line}>
+                        <p class="text-justify">{r.p}</p>
+                    </Line>
+                )}
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <Line line={line}>
+                    <h2 class="text-solar-blue-300 font-bold w-fit">
+                        ## Legacy School Projects
+                    </h2>
+                </Line>
+                {legacy_school_projects.map((r) => 
                     <Line line={line}> 
                         <h3 class="font-bold w-fit">
                             <Anchor href={r.url}>### {r.name}</Anchor>
