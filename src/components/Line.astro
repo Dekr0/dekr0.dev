@@ -6,10 +6,7 @@ interface Props {
 }
 const { line } = Astro.props;
 ---
-<div
-    tabindex="0"
-    class="flex gap-4 md:gap-8 lg:gap-10 ml-2 items-center hover:border-solar-orange-500 hover:border-l-2"
->
-    <span class="text-solar-yellow-700 ml-2 text-center self-start">{line()}</span>
+<div tabindex="0" class="flex gap-4 md:gap-8 lg:gap-10 ml-2 items-center text-lack-gray4 hover:text-lack-gray7 hover:bg-lack-gray2 animate-ease-in-out">
+    <span class="ml-2 text-center self-start">{line()}</span>
     <slot />
 </div>

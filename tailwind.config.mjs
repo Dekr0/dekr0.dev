@@ -6,10 +6,33 @@ export default {
     theme: {
         extend: {
             screens: {
-                xs: "512px",
+                xxs: "480px",
+                xs: "560px",
                 mdp: "800px"
             },
             colors: {
+                lack: {
+                    "gray0": "#101010",
+                    "gray1": "#080808",
+                    "gray2": "#191919",
+                    "gray3": "#2A2A2A",
+                    "gray4": "#444444",
+                    "gray5": "#555555",
+                    "gray6": "#7A7A7A",
+                    "gray7": "#AAAAAA",
+                    "gray8": "#CCCCCC",
+                    "gray9": "#DDDDDD",
+                    "black": "#000000",
+                    "error": "#D70000",
+                    "warn": "#FFAA88",
+                    "warn-high": "#7f5544",
+                    "special": "#789978",
+                    "special-high": "#3C4C3C",
+                    "hint": "#7788AA",
+                    "hint-high": "#3B4455",
+                    "lack": "#708090",
+                    "luster": "#DEEEED"
+                },
                 solar: {
                     "base-00": "#657B83",
                     "base-01": "#586E75",
@@ -50,12 +73,12 @@ export default {
                     "yellow-300": "#FFC100",
                     "yellow-500": "#B58900",
                     "yellow-700": "#664D00",
-                    "yellow-900": "#332700",
-                },
+                    "yellow-900": "#332700"
+                }
             },
         },
         fontFamily: {
-            mono: ["codenew", ...defaultTheme.fontFamily.mono],
+            mono: ["mono", ...defaultTheme.fontFamily.mono],
         },
     },
     plugins: [],

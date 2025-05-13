@@ -1,0 +1,59 @@
+---
+export const prerender = true;
+
+interface Props {
+    title: string;
+    ext?: string;
+}
+
+type FileType = {
+    icon: string,
+    name: string
+};
+
+const { title, ext } = Astro.props;
+let fileType: FileType = {
+    name: "markdown",
+};
+if (ext?.endsWith("tsx") || ext?.endsWith("jsx")) {
+    fileType = {
+        name: "solid"
+    };
+}
+---
+<footer class="mx-auto py-4 w-full text-xs xs:text-sm text-lack-gray7" >
+    <nav class="w-full fixed bottom-0" >
+        <ul class="flex bg-lack-gray3">
+            <li class="xs:hidden px-2 text-lack-black bg-lack-gray9">
+                <span>N</span>
+            </li>
+            <li class="hidden xs:inline px-2 text-lack-black bg-lack-gray9">
+                Normal
+            </li>
+            <li class="hidden xxs:inline px-2 hover:text-lack-black hover:bg-lack-gray9 animate-ease-in-out" >
+                <a href="/">Home</a>
+            </li>
+            <li class="hidden xxs:inline px-2 hover:text-lack-black hover:bg-lack-gray9 animate-ease-in-out" >
+                <a href="/about">About</a>
+            </li>
+            <li class="hidden xxs:inline px-2 hover:text-lack-black hover:bg-lack-gray9 animate-ease-in-out" >
+                <a href="/article">Article</a>
+            </li>
+            <li class="hidden xxs:inline px-2 hover:text-lack-black hover:bg-lack-gray9 animate-ease-in-out" >
+                <a href="/experience">Experience</a>
+            </li>
+            <li class="hidden xxs:inline px-2 hover:text-lack-black hover:bg-lack-gray9 animate-ease-in-out" >
+                <a href="/project">Project</a>
+            </li>
+            <li class="px-2 pt-1/2 xs:pt-0 xs:text-sm mr-auto tracking-wide" >
+                {title}.{ext || "md"}
+            </li>
+            <li class="px-2 hidden mdp:block tracking-wide">
+                <span class="hidden mdp:inline">{fileType.name}</span>
+            </li>
+            <li class="px-2 hidden mdp:block tracking-wide" >
+                utf-8[unix]
+            </li>
+        </ul>
+    </nav>
+</footer>

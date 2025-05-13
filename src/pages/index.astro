@@ -3,6 +3,7 @@ export const prerender = true;
 
 import Anchor from "@components/Anchor.astro";
 import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
 import HistoryPrompt from "@components/HistoryPrompt.astro";
 import Line from "@components/Line.astro";
 import Zen from "@components/Zen.astro";
@@ -17,59 +18,53 @@ import { socials } from "src/social.ts";
 
 let line = initLine();
 ---
-
 <Layout title="Home">
     <Zen>
-        <p
-            class="pt-2 text-solar-green-500 italic font-mono text-justify text-base"
-        >
+        <p class="pt-2 text-lack-special font-mono text-justify" >
             "{quotes()}"
         </p>
-
-        <h2 class="text-solar-base-03 bg-solar-base-3 font-bold w-fit px-2">
+        <h2 class="text-lack-black bg-lack-gray9 w-fit px-2">
             Dekr0
         </h2>
-
+        <Header />
         <section id="home" class="flex flex-col gap-4">
             <Line line={line}>
                 <HistoryPrompt buffer="man home" />
             </Line>
-
             <Line line={line}>
                 <p>
                     a computer engineer at 
-                    <span class="px-1 bg-solar-blue-900 text-solar-red-700">[NULL]</span>, 
+                    <span class="px-1 text-lack-error">[NULL]</span>, 
                     making things simple, 
                     <a 
                         href="https://www.computerenhance.com/p/table-of-contents"
                         target="_blank"
-                        class="text-solar-yellow-500 hover:text-solar-yellow-300 font-bold animate-ease-in-out">
-                        blazingly fast {bolt}
+                        class="text-lack-warn hover:text-lack-warn-high animate-ease-in-out">
+                        blazingly fast 
                     </a> and 
                     <a
                         href="https://suckless.org/philosophy/"
                         target="_blank"
-                        class="text-solar-blue-500 hover:text-solar-blue-300 font-bold animate-ease-in-out">
+                        class="text-lack-hint hover:text-lack-hint-high animate-ease-in-out">
                         suckless
                     </a>
                 </p>
             </Line>
         </section>
-
         <section id="social" class="flex flex-col gap-4">
             <Line line={line}>
                 <HistoryPrompt buffer="man social" />
             </Line>
 
             <Line line={line}>
-                <h2 class="text-solar-blue-300 font-bold w-fit">## Social</h2>
+                <h2 class="text-lack-hint w-fit">## Social</h2>
             </Line>
             <ul class="flex flex-col gap-4 content-center">
                 {socials.map((social) => 
                 <li>
                     <Line line={line}>
                         <Anchor href={social.url}> 
-                            <span>{social.icon}</span> <span>{social.text}</span>
+                            {social.text}
                         </Anchor>
                     </Line>
                 </li>)}
@@ -77,5 +72,5 @@ let line = initLine();
             </ul>
         </section>
     </Zen>
-    <Header title="index" />
+    <Footer title="index" />
 </Layout>

@@ -8,7 +8,8 @@ interface Props {
 const { href, notblank } = Astro.props;
 ---
 <a 
-    class="text-center underline underline-offset-2 text-solar-cyna-500 hover:text-solar-cyna-300 animate-ease-in-out"
+    class="text-center underline underline-offset-2 text-lack-special hover:text-lack-special-high animate-ease-in-out"
     href={href}
     target={notblank ? "" : "_blank"}>
-    <slot /></a>
+    <slot />
+</a>

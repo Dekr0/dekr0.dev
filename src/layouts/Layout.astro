@@ -19,7 +19,7 @@ const { title, css } = Astro.props;
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
     </head>
-    <body class="bg-solar-base-04">
+    <body class="font-mono bg-lack-gray0 selection:bg-lack-gray9 selection:text-lack-black">
         <slot />
     </body>
 </html>
@@ -36,26 +36,9 @@ const { title, css } = Astro.props;
     }
 
     @font-face {
-        font-family: "codenew";
-        src: url("/fonts/CodeNewRomanNerdFontMono-Regular.otf")
-            format("opentype");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: "codenew-bold";
-        src: url("/fonts/CodeNewRomanNerdFontMono-Bold.otf") format("opentype");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-    }
-
-    @font-face {
-        font-family: "codenew-italic";
-        src: url("/fonts/CodeNewRomanNerdFontMono-Italic.otf")
-            format("opentype");
+        font-family: "mono";
+        src: url("/fonts/Iosevka-Extended.ttf")
+            format("truetype");
         font-weight: normal;
         font-style: normal;
         font-display: swap;
